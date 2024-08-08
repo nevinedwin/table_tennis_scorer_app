@@ -1,0 +1,37 @@
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #e8e8e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.footer-container {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.footer-option {
+    margin: 0 28px;
+    color: #AB1E23;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, font-size 0.3s ease-in-out;
+}
+
+.footer-option.selected {
+    transform: scale(1.2);
+    font-size: 18px;
+    z-index: 1;
+}
+
+.footer-option:not(.selected) {
+    transform: scale(0.8);
+    font-size: 15px;
+}

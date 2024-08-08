@@ -1,0 +1,14 @@
+{
+  "name": "ttapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-f": "cd client && npm start",
+    "run-b": "cd api && npm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

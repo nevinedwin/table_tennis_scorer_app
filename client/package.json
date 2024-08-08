@@ -17,6 +17,7 @@
     "@react-oauth/google": "^0.12.1",
     "@types/react-calendar": "^4.1.0",
     "axios": "^1.7.2",
+    "firebase": "^10.12.5",
     "googleapis": "^140.0.1",
     "moment": "^2.30.1",
     "react": "^18.3.1",

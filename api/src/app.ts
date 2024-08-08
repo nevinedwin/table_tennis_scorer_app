@@ -16,8 +16,6 @@ import session from "express-session";
 
 import { JsonMiddlewareOptionType } from './utils/types.utils.js';
 import connectDatabase from './utils/mongo.config.js';
-import passport from 'passport';
-import './utils/passport.js';
 
 const { status_codes_msg } = constant;
 
@@ -46,13 +44,8 @@ app.use(cookieParser());
 app.use(hpp());
 app.use(helmet());
 
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-
 const whitelist: Array<string> = [
-  "http://localhost:5173",
+  "http://localhost:5174",
   "*://192.168.*.*",
 ];
 

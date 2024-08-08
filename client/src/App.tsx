@@ -1,6 +1,6 @@
 import { AuthProvider } from './context/authContext/authContext'
 import { GlobalStateProvider } from './context/globalStateContext/globalStateContext'
-import { getConfig } from './utilities/config';
+import { getConfig } from './config';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRouter from './routes/appRouter';
 import { GoogleOAuthProvider } from '@react-oauth/google';

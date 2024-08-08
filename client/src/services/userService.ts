@@ -1,9 +1,19 @@
 import api from './axiosService.js';
 
 const endpoints = {
-    GET_USER: "auth/login/sucess"
+    LOGIN: "auth/google"
 }
 
-export const fetchUser = async () => {
-    return api.get(endpoints.GET_USER);
+export interface GoogleRespBodyProp {
+    displayName: string | null;
+    email: string | null;
+    photoUrl: string | null;
 };
+
+
+export const googleResp = async (body: GoogleRespBodyProp) => {
+    console.log("entered googleResp");
+    return api.post(endpoints.LOGIN, body);
+};
+
+

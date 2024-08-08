@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { getConfig } from "../utilities/config";
+import { getConfig } from "../config.js";
 
 
 const config = getConfig();
@@ -9,7 +9,7 @@ class ApiService {
     private baseUrl: string;
 
     constructor() {
-        this.baseUrl = config.BASE_URL;
+        this.baseUrl = config.baseUrl;
     };
 
 

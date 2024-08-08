@@ -6,6 +6,10 @@ const ERROR_MESSAGES = {
     SET_ITEM: "Error setting Item in local storage"
 };
 
+export const localStorageKeys = {
+    loggedInKey: "loggedIn"
+};
+
 
 
 
@@ -18,7 +22,6 @@ const ManageLocalStorage = {
      * @returns The pasrse JSON object or string, or null if the key is invalid or parsing error
      */
     get(key: string): StorageData {
-        console.log("object");
         if (!key) {
             console.error(ERROR_MESSAGES.INVALID_KEY)
             return null;

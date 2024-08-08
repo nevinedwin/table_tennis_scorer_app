@@ -1,7 +1,7 @@
-import { useQuery } from "react-query"
-import { fetchUser } from "../../services/userService"
+import { useMutation } from "react-query"
+import { googleResp } from "../../services/userService";
 
 
-export const useFetchUser = (userId: string) => {
-    return useQuery(['user-fetch', userId], fetchUser);
+export const useSendGoogleResponse = () => {
+    return useMutation(googleResp)
 };

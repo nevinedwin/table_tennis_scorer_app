@@ -1,5 +1,5 @@
 import React from 'react';
-import GoogleLoginButton from '../../assets/loginComponent/googleAuth';
+import GoogleLoginButton from '../../components/loginComponent/googleAuth';
 
 const LoginPage: React.FC = () => {
 
@@ -18,13 +18,6 @@ const LoginPage: React.FC = () => {
             endless possibilities it holds."
           </p>
           <GoogleLoginButton />
-          {/* <button
-            onClick={handleGoogleSignIn}
-            className="flex justify-center items-center bg-primary hover:bg-primary-light text-light font-medium rounded-lg py-2 px-4 w-full animate-bounce"
-          >
-            <FontAwesomeIcon icon={faGoogle} className="mr-2 text-2xl" />
-            Sign in with Google
-          </button> */}
         </div>
       </div>
     </div>

@@ -1,82 +1,65 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
-import { User, UserRole } from "./authContextTypes";
-import ENDPOINTS from "../../utilities/endpoints";
-import { getConfig } from "../../utilities/config";
-import axios from "axios";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
+import { AUTH_ACTIONS, AuthAction, AuthState } from "./authContextTypes";
+import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 
-const config = getConfig();
 
-type AuthState = {
-    user: User | null;
-    error: string | null;
-    login?: () => void;
-    logout?: () => void;
-};
+const { loggedInKey } = localStorageKeys;
 
-type AuthAction =
-    | { type: 'SET_USER'; payload: User }
-    | { type: 'SET_ERROR'; payload: string }
-    | { type: 'LOGOUT' };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
-        case 'SET_USER':
-            return { ...state, user: action.payload, error: null };
-        case 'SET_ERROR':
-            return { ...state, error: action.payload, user: null };
-        case 'LOGOUT':
-            return { user: null, error: null };
+        case AUTH_ACTIONS.LOGIN_STARTS:
+            return { ...state, loading: true };
+        case AUTH_ACTIONS.LOGIN_SUCCESS:
+            ManageLocalStorage.set(loggedInKey, 'true');
+            return { ...state, isLoggedIn: true, loading: false };
+        case AUTH_ACTIONS.LOGIN_FAILURE:
+            return { ...state, error: action.payload, loading: false };
+        case AUTH_ACTIONS.FETCH_USER:
+            return { ...state, user: action.payload };
+        case AUTH_ACTIONS.LOGOUT:
+            ManageLocalStorage.set(loggedInKey, 'false');
+            return { ...state, user: null, isLoggedIn: false };
         default:
             return state;
-    }
+    };
 };
 
-const AuthContext = createContext<AuthState | undefined>(undefined)
+const AuthContext = createContext<{ state: AuthState, dispatch: React.Dispatch<AuthAction> } | undefined>(undefined)
+
+const intialState: AuthState = {
+    user: null,
+    error: false,
+    loading: false,
+    isLoggedIn: false,
+};
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(authReducer, { user: null, error: null });
+    const [state, dispatch] = useReducer(authReducer, intialState);
 
-    const login = useCallback(() => {
-        window.open(`${config.BASE_URL}${ENDPOINTS.LOGIN}`, "_self");
-    }, []);
-
-    const logout = useCallback(() => {
-        dispatch({ type: 'LOGOUT' });
-        window.open(`${config.BASE_URL}${ENDPOINTS.LOGOUT}`, "_self");
-    }, []);
-
-    const getUser = useCallback(async () => {
-        try {
-            const resp = await axios.get(`${config.BASE_URL}${ENDPOINTS.GET_USER}`, { withCredentials: true });
-            const userData = resp.data.data || resp.data;
-            const userDataErr = resp.data.data.error || "";
-
-            console.log("csbjdkv", userDataErr);
-
-            if (userDataErr || userData?.email?.endsWith('@inapp.com')) {
-                dispatch({ type: 'SET_ERROR', payload: userDataErr || 'Please use a company email address to log in.' });
-            } else {
-                dispatch({ type: 'SET_USER', payload: userData });
-            }
-        } catch (error) {
-            console.error("Failed to fetch user:", error);
-            dispatch({ type: 'SET_ERROR', payload: 'Error fetching user data.' });
-        }
-    }, [logout]);
 
     useEffect(() => {
-        if (state.user === null && state.error === null) {
-            getUser();
-            console.log(state);
-        }
-    }, [state.user, getUser]);
+
+        const value = ManageLocalStorage.get(loggedInKey);
+
+        // debugger
+        console.log(value, state.isLoggedIn);
+
+        if (state.isLoggedIn && value) {
+            console.log("fetch user");
+        };
+
+    }, [state.isLoggedIn])
 
     const memoizedValue = useMemo(() => ({
-        user: state.user,
-        error: state.error,
-        login,
-        logout
-    }), [state.user, state.error, login, logout]);
+        state: {
+            user: state.user,
+            error: state.error,
+            loading: state.loading,
+            isLoggedIn: state.isLoggedIn
+        },
+        dispatch
+    }), [state.user, state.error]);
 
     return (
         <AuthContext.Provider value={memoizedValue}>

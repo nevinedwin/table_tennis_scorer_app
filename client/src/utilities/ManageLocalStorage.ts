@@ -7,7 +7,7 @@ const ERROR_MESSAGES = {
 };
 
 export const localStorageKeys = {
-    loggedInKey: "loggedIn"
+    userIdKey: "cognitovalue"
 };
 
 

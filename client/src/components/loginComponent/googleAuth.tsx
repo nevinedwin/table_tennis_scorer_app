@@ -5,7 +5,7 @@ import { GoogleAuthProvider, signInWithPopup, getAuth } from 'firebase/auth';
 import { app } from '../../config';
 import { useSendGoogleResponse } from '../../hooks/queryHooks/useUserQuery';
 import { useAuth } from '../../context/authContext/authContext';
-import { AUTH_ACTIONS } from '../../context/authContext/authContextTypes';
+import { AUTH_ACTIONS, User, UserRole } from '../../context/authContext/authContextTypes';
 
 
 const GoogleLoginButton: React.FC = () => {
@@ -13,7 +13,7 @@ const GoogleLoginButton: React.FC = () => {
     const { dispatch, state: { error: signInError } } = useAuth()
 
     // post api for google signIn 
-    const { mutate: sendGoogleResp, isError: isSendGoogleRespErr, error: sendGoogleRespErr } = useSendGoogleResponse();
+    const { mutate: sendGoogleResp } = useSendGoogleResponse();
 
     const checkIsValidEmail = (email: string): boolean => {
         const emailSplit = email.split('@');
@@ -42,15 +42,26 @@ const GoogleLoginButton: React.FC = () => {
                 };
 
                 sendGoogleResp(body, {
-                    onSuccess: (data) => {
-                        // debugger
-                        console.log(data);
+                    onSuccess: (data: any) => {
+                        
+                        const userData: User = {
+                            role: data?.role as UserRole,
+                            userId: data.userId,
+                            displayName: data.displayName,
+                            email: data.email,
+                            image: data.image,
+                            predictionWinScore: data.predictionWinScore,
+                            predictionLoseScore: data.predictionLoseScore,
+                            totalPredictions: data.totalPredictions,
+                            teamId: data?.teamId || ""
+                        };
+
+                        dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userData });
+                    },
+                    onError: (err) => {
+                        throw err;
                     }
                 });
-
-                if (isSendGoogleRespErr) throw sendGoogleRespErr;
-
-                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS })
 
 
             } else {

@@ -3,23 +3,21 @@ import { AUTH_ACTIONS, AuthAction, AuthState } from "./authContextTypes";
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 
 
-const { loggedInKey } = localStorageKeys;
+const { userIdKey } = localStorageKeys;
 
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
-        case AUTH_ACTIONS.LOGIN_STARTS:
-            return { ...state, loading: true };
         case AUTH_ACTIONS.LOGIN_SUCCESS:
-            ManageLocalStorage.set(loggedInKey, 'true');
-            return { ...state, isLoggedIn: true, loading: false };
+            ManageLocalStorage.set(userIdKey, action.payload.userId);
+            return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGIN_FAILURE:
-            return { ...state, error: action.payload, loading: false };
+            return { ...state, error: action.payload };
         case AUTH_ACTIONS.FETCH_USER:
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
-            ManageLocalStorage.set(loggedInKey, 'false');
-            return { ...state, user: null, isLoggedIn: false };
+            ManageLocalStorage.delete(userIdKey);
+            return { ...state, user: null };
         default:
             return state;
     };
@@ -30,8 +28,6 @@ const AuthContext = createContext<{ state: AuthState, dispatch: React.Dispatch<A
 const intialState: AuthState = {
     user: null,
     error: false,
-    loading: false,
-    isLoggedIn: false,
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -40,23 +36,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     useEffect(() => {
 
-        const value = ManageLocalStorage.get(loggedInKey);
+        const value = ManageLocalStorage.get(userIdKey);
 
-        // debugger
-        console.log(value, state.isLoggedIn);
+        if (!value) dispatch({ type: AUTH_ACTIONS.LOGOUT });
 
-        if (state.isLoggedIn && value) {
-            console.log("fetch user");
-        };
+        console.log(value);
 
-    }, [state.isLoggedIn])
+    }, [])
 
     const memoizedValue = useMemo(() => ({
         state: {
             user: state.user,
             error: state.error,
-            loading: state.loading,
-            isLoggedIn: state.isLoggedIn
         },
         dispatch
     }), [state.user, state.error]);

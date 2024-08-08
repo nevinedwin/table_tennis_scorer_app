@@ -32,19 +32,16 @@ export interface User {
 export type AuthContextType = {
     user: User | null;
     error: Error | string | null;
-    isLoggedIn: boolean
 };
 
 export type AuthState = {
     user: User | null;
     error: any;
-    loading: boolean;
-    isLoggedIn: boolean;
 };
 
 export type AuthAction =
     | { type: AUTH_ACTIONS.LOGIN_STARTS }
-    | { type: AUTH_ACTIONS.LOGIN_SUCCESS }
+    | { type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: User }
     | { type: AUTH_ACTIONS.LOGOUT }
     | { type: AUTH_ACTIONS.LOGIN_FAILURE, payload: any }
     | { type: AUTH_ACTIONS.FETCH_USER, payload: User }

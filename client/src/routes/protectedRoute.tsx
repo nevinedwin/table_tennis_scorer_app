@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
-    const { user } = useAuth();
+    const { state: { user } } = useAuth();
 
     if (!user) return <Navigate to="/login" replace />;
 

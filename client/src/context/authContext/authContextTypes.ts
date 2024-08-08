@@ -1,7 +1,8 @@
 
 export enum UserRole {
-    USER = "USER",
-    ADMIN = "ADMIN"
+    USER = "user",
+    ADMIN = "admin",
+    SUPER_ADMIN = "superAdmin"
 }
 
 export enum AUTH_ACTIONS {
@@ -27,6 +28,7 @@ export interface User {
     predictionWinScore: number;
     predictionLoseScore: number;
     totalPredictions: number;
+    token: string;
 }
 
 export type AuthContextType = {
@@ -45,3 +47,9 @@ export type AuthAction =
     | { type: AUTH_ACTIONS.LOGOUT }
     | { type: AUTH_ACTIONS.LOGIN_FAILURE, payload: any }
     | { type: AUTH_ACTIONS.FETCH_USER, payload: User }
+
+
+export interface IuserIdKey {
+    id: string;
+    token: string;
+};

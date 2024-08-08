@@ -1,15 +1,27 @@
 import axios, { AxiosResponse } from "axios";
 import { getConfig } from "../config.js";
+import ManageLocalStorage, { localStorageKeys } from "../utilities/ManageLocalStorage.js";
 
 
 const config = getConfig();
+const { userIdKey } = localStorageKeys;
+
+
+interface ConfigType {
+    headers: {
+        "Content-Type": string;
+        Authorization?: string
+    }
+};
 
 class ApiService {
 
     private baseUrl: string;
+    private token: string;
 
     constructor() {
         this.baseUrl = config.baseUrl;
+        this.token = (ManageLocalStorage.get(userIdKey) as any)?.token as string || "";
     };
 
 
@@ -21,10 +33,14 @@ class ApiService {
         try {
 
             const url = `${this.baseUrl}/${endpoint}`;
-            const config = {
+            const config: ConfigType = {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 }
+            };
+
+            if (this.token) {
+                config.headers.Authorization = `Bearer ${this.token}`;
             };
 
             let response: AxiosResponse<T>;
@@ -45,10 +61,6 @@ class ApiService {
 
             return response.data;
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                throw new Error(`Api Request failed: ${error?.message}`);
-            };
-
             throw error;
         };
     };

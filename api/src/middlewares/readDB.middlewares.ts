@@ -3,4 +3,4 @@ import { resolvePromise } from "../utils/common.utils.js";
 
 
 
-export const findSingleUser = (id: string): Promise<[Error | null, IUser[] | null]> => resolvePromise(userModel.findOne({ userId: id }))
+export const findSingleUser = (id: string): Promise<[Error | null, IUser | null]> => resolvePromise(userModel.findOne({ _id: id }))

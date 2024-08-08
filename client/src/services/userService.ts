@@ -1,7 +1,8 @@
 import api from './axiosService.js';
 
 const endpoints = {
-    LOGIN: "auth/google"
+    LOGIN: "auth/google",
+    FETCH_USER: "user"
 }
 
 export interface GoogleRespBodyProp {
@@ -12,8 +13,14 @@ export interface GoogleRespBodyProp {
 
 
 export const googleResp = async (body: GoogleRespBodyProp) => {
-    console.log("entered googleResp");
     return api.post(endpoints.LOGIN, body);
 };
+
+
+export const fetchUser = async (id?: string) => {
+    if(id){
+        return api.get(`${endpoints.FETCH_USER}/${id}`)
+    }
+}; 
 
 

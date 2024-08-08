@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import userModel, { ROLE } from "../models/users.model.js";
 import { v4 as uuidV4 } from 'uuid';
+import { success } from "../utils/common.utils.js";
+import { createAuthToken } from "../middlewares/auth.Middlewares.js";
 
 const { JWT_SECRET } = getConfig();
 
@@ -17,7 +19,7 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
 
         if (user) {
 
-            token = jwt.sign({ id: user._id }, JWT_SECRET)
+            token = createAuthToken((user as any)?._id);
 
         } else {
 
@@ -39,20 +41,30 @@ export const googleAuth = async (req: Request, res: Response, next: NextFunction
                 ...photoUrl && { image: photoUrl },
             };
 
-            const createUser = new userModel(userParams);
-            await createUser.save()
+            const createUser = await new userModel(userParams).save();
 
             user = createUser;
 
-            token = jwt.sign({ id: createUser._id }, JWT_SECRET)
+            token = createAuthToken((createUser as any)._doc._id);
         }
 
-        const expireDate = new Date(Date.now() + (11 * 3600000)) //11 hrs
+        const newData = (user as any)._doc;
 
-        res.cookie('access_token', token, {
-            httpOnly: true,
-            expires: expireDate
-        }).status(200).json(user)
+
+        success(res, {
+            user: {
+                token,
+                email: newData?.email,
+                displayName: newData?.displayName,
+                role: newData?.role,
+                userId: newData?.userId,
+                image: newData.image,
+                predictionWinScore: newData.predictionWinScore,
+                predictionLoseScore: newData.predictionLoseScore,
+                totalPredictions: newData.totalPredictions,
+                teamId: newData?.teamId || "",
+            }
+        });
 
     } catch (error) {
         next(error);

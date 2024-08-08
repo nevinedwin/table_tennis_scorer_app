@@ -15,16 +15,12 @@ const VottingSection: React.FC<VottingSectionPropType> = ({isVoted, handleVoted}
         team2: 70
     }
 
-    const handleClick = (teamName: string, teamNumber: 1 | 2) => {
+    const handleClick = (_teamName: string, teamNumber: 1 | 2) => {
         if (!votingEnded && !isVoted) {
             handleVoted(true);
             setIsVotedTeam(teamNumber)
-            console.log(teamName);
         }
     };
-
-    console.log(isVoted, votingEnded, `w-[${team.team1}%]`);
-
 
     return (
         <div className={`bg-backgroundLightColor relative mt-[8px] mb-[8px] rounded-[16px] text-center cursor-default`}>

@@ -9,7 +9,7 @@ const Login = lazy(() => import("../pages/login/login"));
 const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));
 const PredictionScoreBoard = lazy(() => import("../pages/predictionScoreBoard/predictionScoreBoard"));
 
-const ROUTES = {
+export const ROUTES = {
     LOGIN: "/login",
     DASHBOARD: "/dashboard",
     PREDICTION_SCOREBOARD: "/prediction_scores"
@@ -17,7 +17,7 @@ const ROUTES = {
 
 const AppRouter: React.FC = () => {
 
-    const { user } = useAuth();
+    const { state: { user } } = useAuth();
 
     return (
         <Suspense fallback={<div>Loading....</div>}>
@@ -27,7 +27,7 @@ const AppRouter: React.FC = () => {
 
 
                 {/* user and admin routes */}
-                <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.USER]} />}>
+                <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.USER, UserRole.SUPER_ADMIN]} />}>
                     <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={ROUTES.PREDICTION_SCOREBOARD} element={<PredictionScoreBoard />} />
 

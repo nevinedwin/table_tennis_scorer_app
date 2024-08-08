@@ -2,9 +2,18 @@ import { useState } from 'react';
 import logo from "../../assets/InApp Logo - Vector (RGB).svg";
 import useThemeSwitcher from '../../hooks/useThemeSwitcher';
 import { MoonIcon, SunIcon } from '../../assets/icons/icons';
+import { useAuth } from '../../context/authContext/authContext';
+import { AUTH_ACTIONS } from '../../context/authContext/authContextTypes';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../../routes/appRouter';
 
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
+
+    const { dispatch } = useAuth();
+
+    const navigate = useNavigate();
+
     const [mode, setMode] = useThemeSwitcher();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -12,10 +21,18 @@ const Navbar = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    const handleNavLinks = (option: string) => {
 
-    console.log(isMenuOpen);
+        if (option === "Logout") {
+            dispatch({ type: AUTH_ACTIONS.LOGOUT });
+        } else {
+            navigate(ROUTES.PREDICTION_SCOREBOARD);
+        };
+    };
 
-    const navItems = ["prediction scoreboard","Logout"]
+
+
+    const navItems = ["prediction scoreboard", "Logout"]
 
     return (
         <nav className="bg-light dark:bg-secondary shadow-lg h-[80px]">
@@ -26,7 +43,7 @@ const Navbar = () => {
                 <div className="hidden lg:block">
                     <ul className="flex justify-start items-center gap-[20px] text-secondary dark:text-light">
                         {navItems.map((item) => (
-                            <li key={item} className="relative group">
+                            <li key={item} onClick={() => handleNavLinks(item)} className="relative group">
                                 <span className="cursor-pointer transition-colors duration-300 ease-in-out hover:text-secondary-light">{item}</span>
                                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out origin-left"></span>
                             </li>

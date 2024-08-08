@@ -45,7 +45,7 @@ app.use(hpp());
 app.use(helmet());
 
 const whitelist: Array<string> = [
-  "http://localhost:5174",
+  "http://localhost:5173",
   "*://192.168.*.*",
 ];
 

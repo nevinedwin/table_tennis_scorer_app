@@ -11,9 +11,6 @@ export const localStorageKeys = {
 };
 
 
-
-
-
 const ManageLocalStorage = {
 
     /**

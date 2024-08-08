@@ -19,14 +19,9 @@ const CalendarWrapper: React.FC<CalendarWrapperProps> = ({ isOpen, onClose }) =>
     const [activeStartDate, setActiveStartDate] = useState<Date>(new Date());
 
     const handleChange = (newValue: Value) => {
-        // debugger
-        console.log(newValue);
 
         setValue(newValue);
     }
-
-    // debugger
-    console.log(value);
 
     const handleActiveStartDate = ({ activeStartDate }: { activeStartDate: Date | null; }) => {
         if (activeStartDate) {

@@ -25,8 +25,6 @@ const RightPortion: React.FC<RightPortionTypes> = ({ matchData, setIsMatchDetail
         setIsMatchDetailOpen(false)
     }
 
-    console.log(navigation);
-
     return (
         <div className={`overflow-hidden bg-backgroundLight h-[100%] rounded-none lg:rounded-[16px] lg:shadow-[0_1px_4px_] lg:shadow-boxShadowLightColor pb-[16px] text-secondary`}>
             <div className={`p-[14px_16px_6px] text-left font-bold text-secondary text-[16px] flex justify-between lg:block`}>

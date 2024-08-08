@@ -43,17 +43,20 @@ const GoogleLoginButton: React.FC = () => {
 
                 sendGoogleResp(body, {
                     onSuccess: (data: any) => {
-                        
+
+                        const { user } = data.data;
+
                         const userData: User = {
-                            role: data?.role as UserRole,
-                            userId: data.userId,
-                            displayName: data.displayName,
-                            email: data.email,
-                            image: data.image,
-                            predictionWinScore: data.predictionWinScore,
-                            predictionLoseScore: data.predictionLoseScore,
-                            totalPredictions: data.totalPredictions,
-                            teamId: data?.teamId || ""
+                            role: user?.role as UserRole,
+                            userId: user.userId,
+                            displayName: user.displayName,
+                            email: user.email,
+                            image: user.image,
+                            predictionWinScore: user.predictionWinScore,
+                            predictionLoseScore: user.predictionLoseScore,
+                            totalPredictions: user.totalPredictions,
+                            teamId: user?.teamId || "",
+                            token: user?.token
                         };
 
                         dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userData });

@@ -13,7 +13,7 @@ interface CalendarWrapperProps {
     onClose?: () => void;
 }
 
-const CalendarWrapper: React.FC<CalendarWrapperProps> = ({ isOpen, onClose }) => {
+const CalendarWrapper: React.FC<CalendarWrapperProps> = ({ onClose }) => {
 
     const [value, setValue] = useState<Value>(new Date());
     const [activeStartDate, setActiveStartDate] = useState<Date>(new Date());

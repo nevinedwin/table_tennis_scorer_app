@@ -8,7 +8,7 @@ type VottingSectionPropType = {
 const VottingSection: React.FC<VottingSectionPropType> = ({isVoted, handleVoted}) => {
 
     const [isVotedTeam, setIsVotedTeam] = useState<1 | 2 | null>(null);
-    const [votingEnded, setVotingEnded] = useState<boolean>(false);
+    const [votingEnded] = useState<boolean>(false);
 
     const team = {
         team1: 30,

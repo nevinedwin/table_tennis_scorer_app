@@ -5,13 +5,13 @@
     "lib": [
       "es2023"
     ],
-    "module": "node16",
+    "module": "ESNext",
     "target": "es2022",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "Node",
     "outDir": "dist"
   },
   "include": [

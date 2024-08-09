@@ -15,7 +15,7 @@ type TableRowPropsType = {
     isVoted: boolean;
 }
 
-const TableRow: React.FC<TableRowPropsType> = ({ matchData, setMatchDetails, setIsMatchDetailOpen, navigation, handleNavigation, isVoted }) => {
+const TableRow: React.FC<TableRowPropsType> = ({ matchData, setMatchDetails, setIsMatchDetailOpen, handleNavigation, isVoted }) => {
 
     const [isTeamName, setIsTeamName] = useState(true);
 

@@ -15,11 +15,8 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
 
     const [mode, setMode] = useThemeSwitcher();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen] = useState(false);
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
 
     const handleNavLinks = (option: string) => {
 

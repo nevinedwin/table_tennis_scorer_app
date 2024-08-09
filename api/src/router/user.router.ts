@@ -7,5 +7,4 @@ const app = express();
 
 app.get("/:id", verifyToken, getUserController);
 
-
 export default app;

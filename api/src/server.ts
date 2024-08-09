@@ -13,7 +13,6 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import session from "express-session";
-
 import { JsonMiddlewareOptionType } from './utils/types.utils.js';
 import connectDatabase from './utils/mongo.config.js';
 
@@ -46,6 +45,7 @@ app.use(helmet());
 
 const whitelist: Array<string> = [
   "http://localhost:5173",
+  "http://localhost:8081",
   "*://192.168.*.*",
 ];
 
@@ -71,9 +71,8 @@ const limit = rateLimit({
 
 app.use('/api', cors(corsOption), limit, indexRouter);
 
-
 /* to handle the not found apis*/
-app.use("/", (req: Request, res: Response, next: NextFunction) => {
+app.use("/api", (req: Request, res: Response, next: NextFunction) => {
   failure(res, status_codes_msg.API_NOT_FOUND);
 });
 

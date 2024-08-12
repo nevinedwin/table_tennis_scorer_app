@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PredictionScoreBoard = () => {
+const PredictionScoreBoard: React.FC = () => {
   return (
     <div>PredictionScoreBoard</div>
   )

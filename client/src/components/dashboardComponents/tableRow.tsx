@@ -10,12 +10,12 @@ type TableRowPropsType = {
     matchData: IMatch;
     setMatchDetails: (match: IMatch) => void;
     setIsMatchDetailOpen: (isDetailOpen: boolean) => void;
-    navigation: NavigationType,
+    navigation?: NavigationType,
     handleNavigation: (nav: NavigationType) => void;
     isVoted: boolean;
 }
 
-const TableRow: React.FC<TableRowPropsType> = ({ matchData, setMatchDetails, setIsMatchDetailOpen, navigation, handleNavigation, isVoted }) => {
+const TableRow: React.FC<TableRowPropsType> = ({ matchData, setMatchDetails, setIsMatchDetailOpen, handleNavigation, isVoted }) => {
 
     const [isTeamName, setIsTeamName] = useState(true);
 

@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "npm run build && node dist/app.js",
-    "dev": "npm run build && nodemon dist/app.js",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
     "code": "tsc -w"
   },
   "keywords": [],
@@ -39,6 +39,7 @@
     "@types/uuid": "^10.0.0",
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.1",
+    "tsx": "^4.17.0",
     "typescript": "^5.2.2"
   }
 }

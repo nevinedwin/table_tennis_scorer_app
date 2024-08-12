@@ -8,7 +8,7 @@
     "build_client": "npm install -f --prefix client && npm run build --prefix client",
     "build_api": "npm install -f --prefix api",
     "build": "npm run build_client && npm run build_api",
-    "start": "npm run build && npm start --prefix api",
+    "start": "npm start --prefix api",
     "api": "npm run dev --prefix api",
     "client": "npm start --prefix client"
   },

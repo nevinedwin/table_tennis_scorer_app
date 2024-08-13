@@ -28,7 +28,6 @@ export interface User {
     predictionWinScore: number;
     predictionLoseScore: number;
     totalPredictions: number;
-    token: string;
 }
 
 export type AuthContextType = {
@@ -39,11 +38,13 @@ export type AuthContextType = {
 export type AuthState = {
     user: User | null;
     error: any;
+    isLoginStarts: boolean;
+    token: string;
 };
 
 export type AuthAction =
-    | { type: AUTH_ACTIONS.LOGIN_STARTS }
-    | { type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: User }
+    | { type: AUTH_ACTIONS.LOGIN_STARTS, payload: boolean }
+    | { type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: string }
     | { type: AUTH_ACTIONS.LOGOUT }
     | { type: AUTH_ACTIONS.LOGIN_FAILURE, payload: any }
     | { type: AUTH_ACTIONS.FETCH_USER, payload: User }

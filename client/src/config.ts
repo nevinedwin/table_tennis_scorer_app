@@ -1,42 +1,61 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-const { VITE_ENV, VITE_FIREBASE_API_KEY } = import.meta.env;
+type ENVType = "prod" | "local" | "dev"
 
-type ENV = "dev" | "prod";
+const { VITE_ENV } = import.meta.env;
 
-// Your web app's Firebase configuration
-const configData = {
-    dev: {
-        firebase: {
-            apiKey: VITE_FIREBASE_API_KEY,
-            authDomain: "tt-webapp-dev.firebaseapp.com",
-            projectId: "tt-webapp-dev",
-            storageBucket: "tt-webapp-dev.appspot.com",
-            messagingSenderId: "714056832189",
-            appId: "1:714056832189:web:ca147ba370f6eef56453d4"
+
+const awsVal = {
+    local: {
+        apiGateWay: {
+            NAME: "apiGateway",
+            REGION: "ap-south-1",
+            URL: "https://gvg0fum6s2.execute-api.ap-south-1.amazonaws.com/local/api",
         },
-        baseUrl: `http://localhost:8081/api/v1`
+        cognito: {
+            REGION: "ap-south-1",
+            USER_POOL_ID: "ap-south-1_CDY2OGUyB",
+            APP_CLIENT_ID: "6hj6i8ugfg5g3sf1fhm69eua9e",
+            DOMAIN: "ttapp-website-local.auth.ap-south-1.amazoncognito.com",
+            SIGN_IN_URL: "http://localhost:5173/",
+            SIGN_OUT_URL: "http://localhost:5173/",
+        }
+    },
+    dev: {
+        apiGateWay: {
+            NAME: "apiGateway",
+            REGION: "ap-south-1",
+            URL: "https://api-dev-dice.inapp.com",
+        },
+        cognito: {
+            REGION: "ap-south-1",
+            USER_POOL_ID: "ap-south-1_HumibfFVT",
+            APP_CLIENT_ID: "3m7l1as5l4c2ulijjr0darcs95",
+            IDENTITY_POOL_ID: "",
+            DOMAIN: "ttapp-website-dev.auth.ap-south-1.amazoncognito.com",
+            SIGN_IN_URL: "https://dev-dice.inapp.com/index.html",
+            SIGN_OUT_URL: "https://dev-dice.inapp.com/index.html",
+        },
     },
     prod: {
-        firebase: {
-            apiKey: VITE_FIREBASE_API_KEY,
-            authDomain: "tt-webapp.firebaseapp.com",
-            projectId: "tt-webapp",
-            storageBucket: "tt-webapp.appspot.com",
-            messagingSenderId: "714056832189",
-            appId: "1:714056832189:web:ca147ba370f6eef56453d4"
+        apiGateWay: {
+            NAME: "apiGateWay Production",
+            REGION: "ap-south-1",
+            URL: "https://api-dice.inapp.com",
         },
-        baseUrl: ``
-    }
+        cognito: {
+            REGION: "ap-south-1",
+            USER_POOL_ID: "ap-south-1_kj1aiCw7X",
+            APP_CLIENT_ID: "7q558oguhbilfm1434tmb7noht",
+            IDENTITY_POOL_ID: "",
+            DOMAIN: "ttapp-website-prod.auth.ap-south-1.amazoncognito.com",
+            SIGN_IN_URL: "https://dice.inapp.com/index.html",
+            SIGN_OUT_URL: "https://dice.inapp.com/index.html",
+        },
+    },
 };
 
-// Initialize Firebase
-export const app = initializeApp(configData[VITE_ENV as ENV].firebase);
-
-export const getConfig = () => {
-    const env = VITE_ENV as ENV;
-    return configData[env] || configData.dev;
+const GetAWSConfig = () => {
+    return awsVal[VITE_ENV as ENVType];
 };
+
+export default GetAWSConfig;

@@ -1,0 +1,270 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTApp Cognito Template"
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 900
+    MemorySize: 512
+    Layers:
+      - !Ref TTAppLayer
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref TableName
+
+Parameters:
+  StageName:
+    Type: String
+  TTAppTableArn:
+    Type: String
+  URLs:
+    Type: String
+  GoogleClientId:
+    Type: String
+  GoogleSecretKey:
+    Type: String
+  TTAppLayer:
+    Type: String
+  TableName:
+    Type: String
+  StackNamePrefix:
+    Type: String
+
+Resources:
+  # userPool
+  TTAppUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "tt-app-user-pool-${StageName}"
+      UsernameAttributes:
+        - "email"
+      LambdaConfig:
+        PreAuthentication: !GetAtt TTAppPreAuthenticationFuncton.Arn
+        PreSignUp: !GetAtt TTAppPreSignUpFuncton.Arn
+        PostConfirmation: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${StackNamePrefix}PostConfirmationFunction${StageName}
+      Schema:
+        - Name: role
+          AttributeDataType: String
+          Mutable: True
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+
+  # userPoolClient
+  TTAppUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    DependsOn: TTAppUserPoolIdentityProvider
+    Properties:
+      ClientName: !Sub "ttApp-user-pool-client-${StageName}"
+      UserPoolId: !Ref TTAppUserPool
+      GenerateSecret: false
+      AllowedOAuthFlows:
+        - "code"
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - "email"
+        - "openid"
+        - "profile"
+      CallbackURLs:
+        - !Ref URLs
+      LogoutURLs:
+        - !Ref URLs
+      RefreshTokenValidity: 13
+      TokenValidityUnits:
+        RefreshToken: hours
+      SupportedIdentityProviders:
+        - "Google"
+
+  # IdentityProvider
+  TTAppUserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      AttributeMapping:
+        email: "email"
+        name: "name"
+      UserPoolId: !Ref TTAppUserPool
+      ProviderName: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleSecretKey
+        authorize_scopes: profile email openid
+      ProviderType: Google
+
+  # UserPool Domain
+  TTAppUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub "ttapp-website-${StageName}"
+      UserPoolId: !Ref TTAppUserPool
+
+  # pre authentiation role
+  TTAppPreAuthenticationFunctonRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub TTAppPreAuthenticationFunctonRole-${StageName}
+      Policies:
+        - PolicyName: !Sub TTAppPreAuthenticationFunctonRolePolciy-${StageName}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:describeLogStreams
+                  - route53:ChangeResourceRecordSets
+                  - amplify:ListDomainAssociations
+                  - amplify:UpdateDomainAssociations
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:GetItem
+                  - cognito-idp:AdminUpdateUserAttributes
+                Resource: "*"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  # Pre authentication function
+  TTAppPreAuthenticationFuncton:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: login
+      FunctionName: !Sub "${StackNamePrefix}-authentication-function-${StageName}"
+      Role: !GetAtt TTAppPreAuthenticationFunctonRole.Arn
+
+  # Pre authentication Lambda permission
+  TTAppPreAuthenticationPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt TTAppPreAuthenticationFuncton.Arn
+      Principal: cognito-idp.amazonaws.com
+
+  # pre signup function role
+  TTAppPreSignUpFunctonRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub TTAppPreSignUpFunctonRole-${StageName}
+      Policies:
+        - PolicyName: !Sub TTAppPreSignUpFunctonRolePolciy-${StageName}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:describeLogStreams
+                  - route53:ChangeResourceRecordSets
+                  - amplify:ListDomainAssociations
+                  - amplify:UpdateDomainAssociations
+                Resource: "*"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  # Pre signUp function
+  TTAppPreSignUpFuncton:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: signup
+      Policies:
+        - AmazonCognitoPowerUser
+      FunctionName: !Sub "${StackNamePrefix}-preSignUp-function-${StageName}"
+      Role: !GetAtt TTAppPreSignUpFunctonRole.Arn
+
+  # Pre signUp Lambda permission
+  TTAppPreSignUpPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt TTAppPreSignUpFuncton.Arn
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt TTAppUserPool.Arn
+
+  # post confirmation lambda role
+  TTAppPostConfirmationLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub TTAppPostConfirmationLambdaRole-${StageName}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub TTAppPostConfirmationLambdaRolePolciy-${StageName}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:describeLogStreams
+                  - route53:ChangeResourceRecordSets
+                  - amplify:ListDomainAssociations
+                  - amplify:UpdateDomainAssociations
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:GetItem
+                Resource: !Ref TTAppTableArn
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminUpdateUserAttributes
+                Resource: !GetAtt TTAppUserPool.Arn
+
+  # Post Confirmation Lambda Function
+  TTAppPostConfirmationLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.main
+      CodeUri: postConfirmation
+      FunctionName: !Sub ${StackNamePrefix}PostConfirmationFunction${StageName}
+      Role: !GetAtt TTAppPostConfirmationLambdaRole.Arn
+
+  # Post confirmation lamdba permission
+  TTAppPostConfirmationLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt TTAppPostConfirmationLambda.Arn
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt TTAppUserPool.Arn
+
+Outputs:
+  UserPoolId:
+    Description: Userpool id
+    Value: !Ref TTAppUserPool
+
+  UserPoolClientId:
+    Description: User Pool Client ID
+    Value: !Ref TTAppUserPoolClient
+
+  UserPoolArn:
+    Description: "Userpool Arn"
+    Value: !GetAtt TTAppUserPool.Arn

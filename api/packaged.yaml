@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: TTAppTable Application
+Parameters:
+  StageName:
+    Default: local
+    Type: String
+    AllowedValues:
+    - dev
+    - prod
+    - local
+  GoogleClientId:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /ttApp/Application/googleClientId
+  GoogleSecretKey:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /ttApp/Application/googleSecretKey
+Mappings:
+  DomainName:
+    dev:
+      URL: https://dev-dice.inapp.com/index.html
+    prod:
+      URL: https://dice.inapp.com/index.html
+    local:
+      URL: http://localhost:5173/
+  StackNamePrefix:
+    dev:
+      Name: ttapp-dev-stack
+    prod:
+      Name: ttapp-stack
+    local:
+      Name: ttapp-local-stack
+Resources:
+  LambdaLayerStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/f57fe60cf0805ba2596df0de55636f94.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      SamResourceId: LambdaLayerStack
+  DynamoDbTableStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e2ffe8c1b8a513ddf100b2b55eb7e59b.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      SamResourceId: DynamoDbTableStack
+  CognitoStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2f25c8ecc2f32cf47b40efa6cd7344b2.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        URLs:
+          Fn::FindInMap:
+          - DomainName
+          - Ref: StageName
+          - URL
+        GoogleClientId:
+          Ref: GoogleClientId
+        GoogleSecretKey:
+          Ref: GoogleSecretKey
+        TTAppLayer:
+          Fn::GetAtt:
+          - LambdaLayerStack
+          - Outputs.TTAppLayer
+        TableName:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableName
+        TTAppTableArn:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableArn
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      SamResourceId: CognitoStack
+  FunctionStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/9ff122c7e3deb774b517aa941ab53a4f.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        UserPoolArn:
+          Fn::GetAtt:
+          - CognitoStack
+          - Outputs.UserPoolArn
+        TTAppLayer:
+          Fn::GetAtt:
+          - LambdaLayerStack
+          - Outputs.TTAppLayer
+        TableName:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableName
+        TTAppTableArn:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableArn
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+        IndexName:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableIndexName
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      SamResourceId: FunctionStack

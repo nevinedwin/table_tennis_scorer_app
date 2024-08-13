@@ -1,45 +1,28 @@
 {
-  "name": "tsboilerplate",
+  "name": "serverless_api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "tsx watch src/server.ts",
-    "code": "tsc -w"
+    "moveLibsToLayer": "node moveLibsToLayer",
+    "prebuildLayer": "cd lambdaLayerStack && npm i && cd .. && npm run moveLibsToLayer",
+    "buildLayer": "node createLambdaLayer",
+    "deploy": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket <Bucket_name> --output-template-file packaged.yaml --region <REGION>",
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttAppStack --s3-bucket <Bucket_name> --parameter-overrides stageName=prod",
+    "l-install": "cd lambdaLayerStack && npm i ",
+    "l-uninstall": "cd lambdaLayerStack && npm uninstall ",
+    "deploy-dev": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket ttapp-dev --output-template-file packaged.yaml --region ap-south-1 --profile nevinedwin",
+    "postdeploy-dev": "sam deploy --template-file ./packaged.yaml --region ap-south-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack-dev --s3-bucket ttapp-dev --parameter-overrides stageName=dev --no-confirm-changeset --profile nevinedwin",
+    "deploy-local": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket ttapp-dev --output-template-file packaged.yaml --region ap-south-1 --profile nevinedwin",
+    "postdeploy-local": "sam deploy --template-file ./packaged.yaml --region ap-south-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack-local --s3-bucket ttapp-dev --parameter-overrides stageName=local --no-confirm-changeset --profile nevinedwin"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/jsonwebtoken": "^9.0.6",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.4",
-    "express-session": "^1.18.0",
-    "helmet": "^7.1.0",
-    "hpp": "^0.2.3",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.2",
-    "uuid": "^10.0.0"
-  },
-  "devDependencies": {
-    "@types/compression": "^1.7.5",
-    "@types/cookie-parser": "^1.4.6",
-    "@types/cors": "^2.8.16",
-    "@types/express": "^4.17.21",
-    "@types/express-session": "^1.18.0",
-    "@types/hpp": "^0.2.5",
-    "@types/node": "^20.9.2",
-    "@types/uuid": "^10.0.0",
-    "dotenv": "^16.3.1",
-    "nodemon": "^3.0.1",
-    "tsx": "^4.17.0",
-    "typescript": "^5.2.2"
+    "archiver": "^7.0.1",
+    "fs-extra": "^11.2.0"
   }
 }

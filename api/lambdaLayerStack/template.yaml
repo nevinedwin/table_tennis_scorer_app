@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTAppTable Application Lambda Layer"
+
+Parameters:
+  StageName:
+    Type: String
+  StackNamePrefix:
+    Type: String
+
+Resources:
+  TTAppLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ./nodejs.zip
+      LayerName: !Sub "${StackNamePrefix}-layer-${StageName}"
+      RetentionPolicy: Delete
+      CompatibleRuntimes:
+        - "nodejs14.x"
+
+Outputs:
+  TTAppLayer:
+    Description: "Npm Layer for all lambda"
+    Value: !Ref TTAppLayer
+    Export:
+      Name: !Sub "${AWS::StackName}-TTAppLayer"

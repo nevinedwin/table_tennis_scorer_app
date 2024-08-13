@@ -19,7 +19,6 @@ function App(): JSX.Element {
           <Router>
             <GlobalStateProvider>
               <AppRouter />
-              
             </GlobalStateProvider>
           </Router>
         </AuthProvider>

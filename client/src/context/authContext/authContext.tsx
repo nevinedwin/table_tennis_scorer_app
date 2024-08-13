@@ -1,19 +1,18 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
+import { createContext, ReactNode, useContext, useMemo, useReducer } from "react";
 import { AUTH_ACTIONS, AuthAction, AuthState } from "./authContextTypes";
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
-import { fetchUser } from "../../services/userService";
-
 
 const { userIdKey } = localStorageKeys;
 
-
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
+        case AUTH_ACTIONS.LOGIN_STARTS:
+            return { ...state, isLoginStarts: action.payload };
         case AUTH_ACTIONS.LOGIN_SUCCESS:
-            ManageLocalStorage.set(userIdKey, { id: action.payload.userId, token: action.payload.token });
-            return { ...state, user: action.payload };
+            // ManageLocalStorage.set(userIdKey, { id: action.payload.userId, token: action.payload.token });
+            return { ...state, token: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.LOGIN_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
@@ -29,47 +28,21 @@ const AuthContext = createContext<{ state: AuthState, dispatch: React.Dispatch<A
 const intialState: AuthState = {
     user: null,
     error: false,
+    isLoginStarts: false,
+    token: ""
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     const [state, dispatch] = useReducer(authReducer, intialState);
-
-    useEffect(() => {
-
-
-        async function handleFetchUser(userId: string) {
-            try {
-
-                const resp = await fetchUser(userId);
-                dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: (resp as any)?.data })
-
-            } catch (error) {
-
-                if ((error as any).response.status === 403) {
-                    dispatch({ type: AUTH_ACTIONS.LOGOUT });
-                };
-            }
-        };
-
-        const value = ManageLocalStorage.get(userIdKey);
-
-        if (!value) dispatch({ type: AUTH_ACTIONS.LOGOUT });
-
-        const id = (value as any)?.id;
-
-        if (id) {
-            if (!state.user) {
-                handleFetchUser(id);
-            }
-        };
-
-    }, []);
+    
 
     const memoizedValue = useMemo(() => ({
         state: {
             user: state.user,
             error: state.error,
+            isLoginStarts: state.isLoginStarts,
+            token: state.token
         },
         dispatch
     }), [state.user, state.error]);

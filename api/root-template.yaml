@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTAppTable Application"
+
+
+Parameters:
+  StageName: 
+    Default: local
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+      - local
+
+  GoogleClientId:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/ttApp/Application/googleClientId"
+
+  GoogleSecretKey:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/ttApp/Application/googleSecretKey"
+
+
+Mappings:
+  DomainName:
+    dev:
+      URL: https://dev-dice.inapp.com/index.html
+    prod:
+      URL: https://dice.inapp.com/index.html
+    local:
+      URL: http://localhost:5173/
+
+  StackNamePrefix:
+    dev:
+      Name: ttapp-dev-stack
+    prod:
+      Name: ttapp-stack
+    local:
+      Name: ttapp-local-stack
+
+
+Resources:
+  LambdaLayerStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./lambdaLayerStack/template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+  
+  DynamoDbTableStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./dynamodbStack/template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+  
+
+  CognitoStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./cognitoStack/template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        URLs: !FindInMap [DomainName, !Ref StageName, URL]
+        GoogleClientId: !Ref GoogleClientId
+        GoogleSecretKey: !Ref GoogleSecretKey
+        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
+        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+  
+  FunctionStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./functionStack/template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        UserPoolArn: !GetAtt CognitoStack.Outputs.UserPoolArn
+        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
+        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        IndexName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete

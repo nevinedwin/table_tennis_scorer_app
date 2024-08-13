@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import { getConfig } from "../config.js";
+import GetAWSConfig from "../config.js";
 import ManageLocalStorage, { localStorageKeys } from "../utilities/ManageLocalStorage.js";
 
 
-const config = getConfig();
+const config = GetAWSConfig();
 const { userIdKey } = localStorageKeys;
 
 
@@ -20,7 +20,7 @@ class ApiService {
     private token: string;
 
     constructor() {
-        this.baseUrl = config.baseUrl;
+        this.baseUrl = config.apiGateWay.URL;
         this.token = (ManageLocalStorage.get(userIdKey) as any)?.token as string || "";
     };
 

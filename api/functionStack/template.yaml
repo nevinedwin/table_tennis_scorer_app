@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTApp lambda functions template"
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 900
+    MemorySize: 1024
+    Layers:
+      - !Ref TTAppLayer
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref TableName
+        INDEX_NAME: !Ref IndexName
+
+Parameters:
+  StageName:
+    Type: String
+  TTAppLayer:
+    Type: String
+  TableName:
+    Type: String
+  TTAppTableArn:
+    Type: String
+  UserPoolArn:
+    Type: String
+  StackNamePrefix:
+    Type: String
+  IndexName:
+    Type: String
+
+Resources:
+  TTAppApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub "ttapp-api-${StageName}"
+      StageName: !Ref StageName
+      Cors:
+        AllowMethods: "'GET,POST,PUT'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-KeyContent-Type,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+        AllowOrigin: "'*'"
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          TTAppCognitoAuthorizer:
+            UserPoolArn: !Ref UserPoolArn
+        DefaultAuthorizer: TTAppCognitoAuthorizer
+  
+  UserApiFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${StackNamePrefix}-UserApiFunctionRolePolicy-${StageName}
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !Ref TTAppTableArn
+                  - !Sub ${TTAppTableArn}/index/*
+
+  UserApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${StackNamePrefix}-userApiFunction-${StageName}"
+      Handler: index.main
+      CodeUri: users
+      Role: !GetAtt UserApiFunctionRole.Arn
+      Events:
+        UserApi:
+          Type: Api
+          Properties:
+            Path: /api/auth/user/{action}
+            Method: GET
+            RestApiId: !Ref TTAppApiGateway
+        UserApiPOST:
+          Type: Api
+          Properties:
+            Path: /api/auth/user/{action}
+            Method: POST
+            RestApiId: !Ref TTAppApiGateway

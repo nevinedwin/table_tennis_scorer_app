@@ -22,6 +22,8 @@ const VottingSection: React.FC<VottingSectionPropType> = ({isVoted, handleVoted}
         }
     };
 
+    console.log(isVoted);
+
     return (
         <div className={`bg-backgroundLightColor relative mt-[8px] mb-[8px] rounded-[16px] text-center cursor-default`}>
             <div className='box-border'>
@@ -37,12 +39,12 @@ const VottingSection: React.FC<VottingSectionPropType> = ({isVoted, handleVoted}
                     {/* polling tile */}
                     <div className={`flex justify-center flex-col pb-[16px] w-full`}>
                         <div className='flex w-full'>
-                            <div onClick={() => handleClick("team1", 1)} className={`min-w-[2.2%] ${isVoted || votingEnded ? `w-[${team.team1}%] !important` : 'w-full !important'} h-[30px] m-[0px_1px] ${isVoted ? 'rounded-none' : 'rounded-[4px]'} `}>
+                            <div onClick={() => handleClick("team1", 1)} className={`min-w-[2.2%] ${isVoted || votingEnded ? `w-[${team.team1}%]` : 'w-full '} h-[30px] m-[0px_1px] ${isVoted ? 'rounded-none' : 'rounded-[4px]'} `}>
                                 <div className={`flex items-center h-[100%] bg-primary ${isVoted || votingEnded ? 'rounded-none cursor-default' : 'rounded-[4px] cursor-pointer'}`}>
                                     <div className={`w-[100%] text-light text-center font-bold text-[14px] ${isVoted || votingEnded ? 'rounded-none' : 'rounded-[4px]'}`}>{isVoted || votingEnded ? `${team.team1}%` : "Team_1"}</div>
                                 </div>
                             </div>
-                            <div onClick={() => handleClick("team_2", 2)} className={`${isVoted || votingEnded ? `w-[${team.team2}%] ` : 'w-[100%]'} h-[30px] m-[0px_1px] ${isVoted ? 'rounded-none' : 'rounded-[4px]'} min-w-[2.2%]`}>
+                            <div onClick={() => handleClick("team_2", 2)} className={`${isVoted || votingEnded ? `w-[${team.team2}%]` : 'w-[100%]'} h-[30px] m-[0px_1px] ${isVoted ? 'rounded-none' : 'rounded-[4px]'} min-w-[2.2%]`}>
                                 <div className={`flex items-center cursor-pointer h-[100%] bg-secondary ${isVoted || votingEnded ? 'rounded-none cursor-default' : 'rounded-[4px] cursor-pointer'}`}>
                                     <div className={`w-[100%] text-light text-center font-bold text-[14px] ${isVoted || votingEnded ? 'rounded-none' : 'rounded-[4px]'}`}>{isVoted || votingEnded ? `${team.team2}%` : "Team_2"}</div>
                                 </div>

@@ -1,29 +1,12 @@
-const moment = require("moment");
 
-const dateFormat = "DD-MM-YYYY, HH:mm:ss";
 
-const getCurrentDate = (day = 0) => {
-  const currentDate = moment()
-    .utcOffset("+05:30")
-    .add(day, "d")
-    .format(dateFormat);
-  return currentDate;
+export const formatDate = (date) => {
+  const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+  return date.toLocaleDateString('en-IN', options);
 };
 
-const momentDate = (dateString) => {
-  return moment(dateString, dateFormat);
-};
 
-const formatDate = (dateString) => {
-  dateString =
-    typeof dateString === "string"
-      ? moment(dateString, dateFormat)
-      : dateString;
-  return dateString.utcOffset("+05:30").format(dateFormat);
-};
-
-module.exports = {
-  getCurrentDate,
-  momentDate,
-  formatDate,
+export const formatTime = (date) => {
+  const options = { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" };
+  return date.toLocaleTimeString("en-IN", options);
 };

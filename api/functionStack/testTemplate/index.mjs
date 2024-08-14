@@ -3,7 +3,7 @@ import { UserRepository } from "./repository";
 import { UserService } from "./service";
 import { LAMBDA } from "libs/roleValidator/lambdaPolicies";
 
-const { failure, unAuthorized } = require("libs/response-lib");
+import { failure, unAuthorized } from "libs/response-lib/index.mjs";
 
 
 const { TABLE_NAME, INDEX_NAME } = process.env;
@@ -37,11 +37,11 @@ export const main = async (event) => {
 
                 data = JSON.parse(event.body);
 
-                if(!data){
+                if (!data) {
 
                     return failure("Body is Empty")
                 }
-                else if(action === "get"){
+                else if (action === "get") {
                     isAuthorized = validateAccess(role, LAMBDA)
                 }
 

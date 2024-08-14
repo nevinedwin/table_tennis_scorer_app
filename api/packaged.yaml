@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/f57fe60cf0805ba2596df0de55636f94.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/f4de5af9af703224cea1d292d81265dc.template
       Parameters:
         StageName:
           Ref: StageName
@@ -50,7 +50,7 @@ Resources:
   DynamoDbTableStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e2ffe8c1b8a513ddf100b2b55eb7e59b.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/5f9d64b12e240d2f2ba0efbbcc99d9af.template
       Parameters:
         StageName:
           Ref: StageName
@@ -66,7 +66,7 @@ Resources:
   CognitoStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2f25c8ecc2f32cf47b40efa6cd7344b2.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e7adfe6f0937da6ca132e73769188652.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/9ff122c7e3deb774b517aa941ab53a4f.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/87228a0f4124b0dd204a394f143e1350.template
       Parameters:
         StageName:
           Ref: StageName
@@ -128,10 +128,6 @@ Resources:
           - StackNamePrefix
           - Ref: StageName
           - Name
-        IndexName:
-          Fn::GetAtt:
-          - DynamoDbTableStack
-          - Outputs.TTAppTableIndexName
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:

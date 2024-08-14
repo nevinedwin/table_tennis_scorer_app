@@ -1,6 +1,5 @@
-// const { PostSignUpRepository } = require("./repository");
-// const { PostSignUpService } = require("./service");
-const { ROLES } = require("libs/roleValidator/lambdaPolicies.js");
+import { PostSignUpRepository } from "./repository.mjs";
+import { PostSignUpService } from "./service.mjs";
 
 
 const { TABLE_NAME } = process.env;
@@ -9,9 +8,9 @@ export async function main(event) {
 
     try {
 
-        // const repo = new PostSignUpRepository(TABLE_NAME, event.userPoolId, event.userName)
+        const repo = new PostSignUpRepository(TABLE_NAME, event.userPoolId, event.userName)
 
-        // const service = new PostSignUpService(repo);
+        const service = new PostSignUpService(repo);
 
         console.log(`Event: ${JSON.stringify(event)}`);
 
@@ -23,24 +22,16 @@ export async function main(event) {
 
 
         // add role
-        // const [roleErr, role] = await service.addRole(email);
+        const [roleErr, role] = await service.addRole(email);
 
-        // if (roleErr) throw roleErr;
+        if (roleErr) throw roleErr;
 
-        // // add user
-        // const [userErr, userResp] = await service.createUser({ role, email, id, name });
+        // add user
+        const [userErr, userResp] = await service.createUser({ role, email, id, name });
 
-        // if (userErr) throw userErr;
+        if (userErr) throw userErr;
 
-        // console.log({ role, userResp });
-
-        // if (role === ROLES.SUPER_ADMIN) return event;
-
-        // const [createErr, createSucc] = await service.checkAndCreateUse(id);
-
-        // console.log({ createSucc });
-
-        // if (createErr) throw createErr;
+        console.log({ role, userResp });
 
     } catch (error) {
 

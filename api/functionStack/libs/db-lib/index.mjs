@@ -1,5 +1,5 @@
-const { dynamoDBOperation } = require("dynamodb-lib");
-const { success, failure } = require("response-lib");
+import { dynamoDBOperation } from "../dynamodb-lib/index.mjs";
+import { success, failure } from "../response-lib/index.mjs";
 
 /**
  *
@@ -50,6 +50,26 @@ export const get = async (params, returnFullResp = true) => {
     return [error];
   }
 };
+
+/**
+ *
+ * @param {Object} params - params for db query
+ * @param {Boolean} returnFullResp - returning full data or not
+ * @returns [error, success]
+ */
+export const query = async (params, returnFullResp = true) => {
+  try {
+    console.log(`db querying initiated`);
+    const result = await dynamoDBOperation("query", params);
+    if (returnFullResp) return [null, result];
+    console.log(`db querying completed`);
+    return [null, result?.Item || result];
+  } catch (error) {
+    console.log(`error: ${error}`);
+    return [error];
+  }
+};
+
 
 export const put = async (params, end = false) => {
   try {

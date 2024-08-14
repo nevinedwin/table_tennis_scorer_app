@@ -116,10 +116,6 @@ Resources:
                   - route53:ChangeResourceRecordSets
                   - amplify:ListDomainAssociations
                   - amplify:UpdateDomainAssociations
-                  - dynamodb:PutItem
-                  - dynamodb:UpdateItem
-                  - dynamodb:GetItem
-                  - cognito-idp:AdminUpdateUserAttributes
                 Resource: "*"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -184,8 +180,6 @@ Resources:
     Properties:
       Handler: index.handler
       CodeUri: signup
-      Policies:
-        - AmazonCognitoPowerUser
       FunctionName: !Sub "${StackNamePrefix}-preSignUp-function-${StageName}"
       Role: !GetAtt TTAppPreSignUpFunctonRole.Arn
 
@@ -225,7 +219,6 @@ Resources:
                   - logs:describeLogStreams
                   - route53:ChangeResourceRecordSets
                   - amplify:ListDomainAssociations
-                  - amplify:UpdateDomainAssociations
                 Resource: "*"
               - Effect: Allow
                 Action:

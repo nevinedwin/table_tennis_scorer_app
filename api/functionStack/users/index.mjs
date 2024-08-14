@@ -3,7 +3,7 @@ import { UserRepository } from "./repository";
 import { UserService } from "./service";
 import { LAMBDA } from "libs/roleValidator/lambdaPolicies";
 
-const { failure, unAuthorized } = require("libs/response-lib");
+import { failure, unAuthorized } from "libs/response-lib/index.mjs";
 
 
 const { TABLE_NAME, INDEX_NAME } = process.env;

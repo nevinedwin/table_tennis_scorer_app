@@ -39,7 +39,8 @@ export type AuthState = {
     user: User | null;
     error: any;
     isLoginStarts: boolean;
-    token: string;
+    token: string | null;
+    userId: string | null;
 };
 
 export type AuthAction =

@@ -9,12 +9,12 @@ const awsVal = {
         apiGateWay: {
             NAME: "apiGateway",
             REGION: "ap-south-1",
-            URL: "https://gvg0fum6s2.execute-api.ap-south-1.amazonaws.com/local/api",
+            URL: "https://c0tysipgw1.execute-api.ap-south-1.amazonaws.com/local/api",
         },
         cognito: {
             REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_CDY2OGUyB",
-            APP_CLIENT_ID: "6hj6i8ugfg5g3sf1fhm69eua9e",
+            USER_POOL_ID: "ap-south-1_bgs5oU1ey",
+            APP_CLIENT_ID: "u1frjan09lav55q8ff82v7rvl",
             DOMAIN: "ttapp-website-local.auth.ap-south-1.amazoncognito.com",
             SIGN_IN_URL: "http://localhost:5173/",
             SIGN_OUT_URL: "http://localhost:5173/",

@@ -1,4 +1,4 @@
-module.exports.quickSort = (arr, key, asc = true) => {
+export const quickSort = (arr, key, asc = true) => {
     if (arr.length < 2) {
         return arr
     }

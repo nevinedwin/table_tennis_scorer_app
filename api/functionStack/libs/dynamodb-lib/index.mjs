@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -8,4 +8,4 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * @param {Object} params 
  * @returns null;
  */
-export const dynamoDBOperation = (action, params)=> dynamoDb[action](params).promise();
+export const dynamoDBOperation = (action, params) => dynamoDb[action](params).promise();

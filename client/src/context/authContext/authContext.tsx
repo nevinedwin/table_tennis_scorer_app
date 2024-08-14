@@ -1,6 +1,8 @@
-import { createContext, ReactNode, useContext, useMemo, useReducer } from "react";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
 import { AUTH_ACTIONS, AuthAction, AuthState } from "./authContextTypes";
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
+import { Hub } from "aws-amplify/utils";
+import { getCurrentUser } from "@aws-amplify/auth";
 
 const { userIdKey } = localStorageKeys;
 
@@ -29,20 +31,47 @@ const intialState: AuthState = {
     user: null,
     error: false,
     isLoginStarts: false,
-    token: ""
+    token: null,
+    userId: null
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     const [state, dispatch] = useReducer(authReducer, intialState);
-    
+
+    useEffect(() => {
+        const unsubscribe = Hub.listen("auth", ({ payload }) => {
+            switch (payload.event) {
+                case "signInWithRedirect":
+                    getUser();
+                    break;
+                case "signInWithRedirect_failure":
+                    break;
+                case "customOAuthState":
+                    break;
+            }
+        });
+        
+        return unsubscribe;
+    }, []);
+
+    const getUser = async (): Promise<void> => {
+        try {
+            const currentUser = await getCurrentUser();
+            console.log("currentUser", currentUser);
+        } catch (error) {
+            console.error(error);
+            console.log("Not signed in");
+        }
+    };
 
     const memoizedValue = useMemo(() => ({
         state: {
             user: state.user,
             error: state.error,
             isLoginStarts: state.isLoginStarts,
-            token: state.token
+            token: state.token,
+            userId: state.userId
         },
         dispatch
     }), [state.user, state.error]);

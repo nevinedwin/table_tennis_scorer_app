@@ -88,6 +88,5 @@ Resources:
         TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
         TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
-        IndexName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete

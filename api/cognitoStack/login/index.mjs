@@ -1,18 +1,6 @@
-// const { PostLoginRepository } = require("./repository");
-// const { PostLoginService } = require("./service");
-const { ROLES } = require("libs/roleValidator/lambdaPolicies.js");
-
-
-const { TABLE_NAME } = process.env;
-
 
 export async function handler(event) {
     try {
-
-        const superAdmins = ["nevin.e@inapp.com", "abhijeeth@inapp.com", "ben.ss@inapp.com"];
-
-        // const repository = new PostLoginRepository(TABLE_NAME);
-        // const service = new PostLoginService(repository);
 
         console.log(`event: ${JSON.stringify(event)}`);
 

@@ -10,7 +10,7 @@ Parameters:
     Type: String
 
 Resources:
-  TTAppTable:
+  TTAppDynamoTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub "${StackNamePrefix}-ttApp-table-${StageName}"
@@ -20,35 +20,22 @@ Resources:
           AttributeType: S
         - AttributeName: details
           AttributeType: S
-        - AttributeName: role
-          AttributeType: S
-      GlobalSecondaryIndexes:
-        - IndexName: !Sub "${StackNamePrefix}-roleBasedFetch-${StageName}"
-          KeySchema:
-            - AttributeName: role
-              KeyType: HASH
-            - AttributeName: details
-              KeyType: RANGE
-          Projection:
-            ProjectionType: ALL
       KeySchema:
         - AttributeName: id
           KeyType: HASH
         - AttributeName: details
           KeyType: RANGE
 
+
 Outputs:
   TTAppTable:
     Description: "TT App dynamoDb table"
-    Value: !Ref TTAppTable
+    Value: !Ref TTAppDynamoTable
     Export:
       Name: !Sub "${StackNamePrefix}-TTAppTable"
   TTAppTableArn:
     Description: "TT App table ARN"
-    Value: !GetAtt TTAppTable.Arn
+    Value: !GetAtt TTAppDynamoTable.Arn
   TTAppTableName:
     Description: "TTAppTable table name"
-    Value: !Sub "${StackNamePrefix}-TTAppTable-table-${StageName}"
-  TTAppTableIndexName:
-    Description: "TT App table global secondary index name"
-    Value: !Sub "${StackNamePrefix}-roleBasedFetch-${StageName}"
+    Value: !Sub "${StackNamePrefix}-ttApp-table-${StageName}"

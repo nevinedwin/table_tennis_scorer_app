@@ -22,7 +22,7 @@ function App(): JSX.Element {
             </GlobalStateProvider>
           </Router>
         </AuthProvider>
-      {env === "dev" && <ReactQueryDevtools position='bottom-right' initialIsOpen={false} />}
+      {env === "local" && <ReactQueryDevtools position='bottom-right' initialIsOpen={false} />}
     </QueryClientProvider>
   );
 };

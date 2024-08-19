@@ -7,7 +7,13 @@ export default {
   theme: {
     extend: {
       boxShadow: {
-        'custom-secondary' : '0 0px 4px #bebebe'
+        'custom-secondary': '0 0px 4px #bebebe'
+      },
+      transitionTimingFunction: {
+        'custom': "cubic-bezier(0.645, 0.045, 0.355, 1)"
+      },
+      transitionProperty: {
+        'bg-border': 'background-color, border-color'
       },
       keyframes: {
         wave: {
@@ -24,6 +30,9 @@ export default {
         wave: 'wave 15s ease-in-out infinite',
         'background-wave': 'background-wave 10s ease-in-out infinite',
       },
+      spacing: {
+        '2': '0.5rem',
+      },
       colors: {
         dark: '#2B2D42',
         light: '#FFFFFF',
@@ -39,10 +48,10 @@ export default {
           light: '#5a5b67',
           dark: "#222439"
         },
-        bordersColor: '#d0d5e1',
+        borderColor: '#333',
       },
       fontFamily: {
-        sans: ['Helvetica Neue', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
+        roboto: ['Roboto', 'sans-serif'],
       },
       fontSize: {
         'xs': ['10px', '14px'],
@@ -54,6 +63,8 @@ export default {
         '2lg': ['16px', '24px'],
         'xl': ['17px', '26px'],
         'xxl': ['20px', '30px'],
+        '4xl': ['50px', '65px'],
+        '5xl': ['80px', '100px']
       },
       screens: {
         'xs': { 'min': '479px' },
@@ -66,5 +77,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.word-spacing-2': {
+          'word-spacing': '0.5rem',
+        },
+      });
+    },
+  ],
 }

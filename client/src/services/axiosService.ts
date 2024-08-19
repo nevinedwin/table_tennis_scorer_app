@@ -65,8 +65,6 @@ class ApiService {
 
             let response: AxiosResponse<T>;
 
-            console.log(url, config);
-
             switch (method) {
                 case 'get':
                     response = await axios.get<T>(url, config);

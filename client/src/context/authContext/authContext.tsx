@@ -17,7 +17,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
-            console.log("object", action.payload);
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
             ManageLocalStorage.delete(userIdKey);
@@ -72,8 +71,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
-        // debugger
-        console.log("useEffect2", { userId, state });
 
         if (userId && !state.isLoginStarts) {
             fetchUser(userId);
@@ -82,13 +79,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     }, [fetchUserFlag])
 
-    // debugger
-    useEffect(() => {
-
-        // debugger
-        console.log("useEffect3", state);
-
-    }, [state])
 
     const getUser = async (): Promise<void> => {
         try {

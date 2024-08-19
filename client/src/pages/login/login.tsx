@@ -4,7 +4,7 @@ import GoogleLoginButton from '../../components/loginComponent/googleAuth';
 const LoginPage: React.FC = () => {
 
   return (
-    <div className="relative h-screen w-full overflow-hidden font-roboto">
+    <div className="relative h-screen w-full overflow-hidden">
       <div className="absolute inset-0 z-0 animate-background-wave">
         <div className="absolute inset-0 bg-pattern opacity-50"></div>
       </div>

@@ -1,77 +1,44 @@
 import React from 'react'
 import inAppLogo from '../../assets/InApp Logo - Vector (RGB).svg';
 import { useAuth } from '../../context/authContext/authContext';
-import { AUTH_ACTIONS, UserRole } from '../../context/authContext/authContextTypes';
+import { AUTH_ACTIONS } from '../../context/authContext/authContextTypes';
 import { signOut } from '@aws-amplify/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { navbarList } from './navlist';
 
-
-const navbarList = {
-
-    [UserRole.USER]: [
-        {
-            key: "predictionBoard",
-            value: "Prediction Ranking"
-        },
-        {
-            key: "history",
-            value: "History"
-        },
-        {
-            key: "scoreboard",
-            value: "Scoreboard"
-        }
-    ],
-    [UserRole.ADMIN]: [
-        {
-            key: "predictionBoard",
-            value: "Prediction Ranking"
-        },
-        {
-            key: "history",
-            value: "History"
-        },
-        {
-            key: "scoreboard",
-            value: "Scoreboard"
-        }
-    ],
-    [UserRole.SUPER_ADMIN]: [
-        {
-            key: "predictionBoard",
-            value: "Prediction Ranking"
-        },
-        {
-            key: "history",
-            value: "History"
-        },
-        {
-            key: "scoreboard",
-            value: "Scoreboard"
-        }
-    ],
-}
 
 const Navbar: React.FC = () => {
 
 
     const { state: { user }, dispatch } = useAuth();
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const handleSignout = () => {
         signOut();
         dispatch({ type: AUTH_ACTIONS.LOGOUT });
     };
 
+    const handelNavigation = (endpoint: string) => {
+        navigate(endpoint);
+    };
+
 
     return (
-        <div className='w-full h-full py-4 px-12 flex justify-between items-center text-white text-xl'>
+        <div className='w-full h-full py-4 px-4 lg:px-12 flex justify-between items-center text-white text-xl'>
             {/* left side */}
-            <div className='flex-1 h-full flex items-center justify-start gap-10'>
+            <div className='flex-2 h-full flex items-center justify-start gap-10'>
                 <div className='w-max-[200px] w-[150px] h-max-[100px] h-[60px]'>
                     <img src={inAppLogo} alt="" className='w-full h-full object-cover' />
                 </div>
-                <ul className='flex justify-between gap-10'>
+                <ul className='hidden lg:flex justify-between gap-10'>
                     {user && navbarList[user.role] && navbarList[user.role].map((eachItem, index) => (
-                        <li key={index} className='p-1 uppercase opacity-50 transition-opacity duration-200 ease-custom cursor-pointer hover:opacity-100 font-medium'>
+                        <li key={index}
+                            onClick={() => handelNavigation(eachItem.key)}
+                            className={`
+                            p-1 uppercase ${location.pathname === eachItem.key ? 'opacity-100' : 'opacity-50'} transition-opacity duration-200 ease-custom cursor-pointer hover:opacity-100 font-medium
+                        `}>
                             <p>{eachItem.value}</p>
                         </li>
                     ))}

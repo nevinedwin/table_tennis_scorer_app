@@ -1,4 +1,5 @@
 import React from 'react'
+import Hoc from '../../components/hoc/hoc'
 
 const PredictionScoreBoard: React.FC = () => {
   return (
@@ -6,4 +7,4 @@ const PredictionScoreBoard: React.FC = () => {
   )
 }
 
-export default PredictionScoreBoard
+export default Hoc(PredictionScoreBoard)

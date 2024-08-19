@@ -51,7 +51,7 @@ export default {
         borderColor: '#333',
       },
       fontFamily: {
-        roboto: ['Roboto', 'sans-serif'],
+        sans: ['Roboto', 'sans-serif'],
       },
       fontSize: {
         'xs': ['10px', '14px'],

@@ -8,11 +8,15 @@ import Footer from "../components/footer/footer";
 const Login = lazy(() => import("../pages/login/login"));
 const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));
 const PredictionScoreBoard = lazy(() => import("../pages/predictionScoreBoard/predictionScoreBoard"));
+const Options = lazy(() => import("../pages/options/options"));
+const Scoreboard = lazy(() => import("../pages/scoreboard/scoreboard"));
 
 export const ROUTES = {
     LOGIN: "/login",
     DASHBOARD: "/dashboard",
-    PREDICTION_SCOREBOARD: "/prediction_scores"
+    PREDICTION_SCOREBOARD: "/prediction_scores",
+    OPTIONS: "/options",
+    SCOREBOARD: "/scoreboard"
 }
 
 const AppRouter: React.FC = () => {
@@ -30,9 +34,15 @@ const AppRouter: React.FC = () => {
                 <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.USER, UserRole.SUPER_ADMIN]} />}>
                     <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                     <Route path={ROUTES.PREDICTION_SCOREBOARD} element={<PredictionScoreBoard />} />
+                    <Route path={ROUTES.SCOREBOARD} element={<Scoreboard />} />
 
                     {/* admin route */}
                     <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
+                    </Route>
+
+                    {/* super admin route */}
+                    <Route element={<ProtectedRoute allowedRoles={[UserRole.SUPER_ADMIN]} />}>
+                        <Route path={ROUTES.OPTIONS} element={<Options />} />
                     </Route>
 
                     <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />

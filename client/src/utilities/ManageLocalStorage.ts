@@ -31,7 +31,6 @@ const ManageLocalStorage = {
         try {
             return JSON.parse(item);
         } catch (error) {
-            console.error(`${ERROR_MESSAGES.JSON_PARSE}: ${error}`)
             return item;
         }
 

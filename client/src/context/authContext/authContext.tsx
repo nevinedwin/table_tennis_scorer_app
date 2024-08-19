@@ -1,8 +1,9 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer } from "react";
-import { AUTH_ACTIONS, AuthAction, AuthState } from "./authContextTypes";
+import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { AUTH_ACTIONS, AuthAction, AuthState, CurrentUserType } from "./authContextTypes";
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 import { Hub } from "aws-amplify/utils";
-import { getCurrentUser } from "@aws-amplify/auth";
+import { fetchAuthSession, getCurrentUser, signOut } from "@aws-amplify/auth";
+import { fetchSingleUser } from "../../services/userService";
 
 const { userIdKey } = localStorageKeys;
 
@@ -11,15 +12,16 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         case AUTH_ACTIONS.LOGIN_STARTS:
             return { ...state, isLoginStarts: action.payload };
         case AUTH_ACTIONS.LOGIN_SUCCESS:
-            // ManageLocalStorage.set(userIdKey, { id: action.payload.userId, token: action.payload.token });
-            return { ...state, token: action.payload, isLoginStarts: false };
+            ManageLocalStorage.set(userIdKey, action.payload);
+            return { ...state, token: action.payload.token, userId: action.payload.userId, isLoginStarts: false };
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
+            console.log("object", action.payload);
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
             ManageLocalStorage.delete(userIdKey);
-            return { ...state, user: null };
+            return { ...state, user: null, userId: null, isLoginStarts: false, token: null };
         default:
             return state;
     };
@@ -38,6 +40,7 @@ const intialState: AuthState = {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     const [state, dispatch] = useReducer(authReducer, intialState);
+    const [fetchUserFlag, setFetchUserFlag] = useState(false);
 
     useEffect(() => {
         const unsubscribe = Hub.listen("auth", ({ payload }) => {
@@ -51,18 +54,66 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     break;
             }
         });
-        
+
         return unsubscribe;
     }, []);
 
+    useEffect(() => {
+
+        async function fetchUser(userId: string) {
+            try {
+                const data = await fetchSingleUser(userId);
+                dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
+            } catch (error) {
+                // error showing
+                console.log(error);
+            };
+        };
+
+        const userId = (ManageLocalStorage.get(userIdKey) as any)?.userId as string || null;
+
+        // debugger
+        console.log({ userId, state });
+
+        if (userId && !state.isLoginStarts) {
+            fetchUser(userId);
+            setFetchUserFlag(false);
+        };
+
+    }, [fetchUserFlag])
+
+    // debugger
+    useEffect(() => {
+
+        // debugger
+        console.log(state);
+    }, [state])
+
     const getUser = async (): Promise<void> => {
         try {
-            const currentUser = await getCurrentUser();
-            console.log("currentUser", currentUser);
+            const session = await fetchAuthSession()
+            const idToken = session?.tokens?.idToken?.toString() || "";
+
+
+            const currentUser: CurrentUserType = await getCurrentUser();
+
+            const { userId } = currentUser;
+
+            if (userId && session) {
+
+                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token: idToken, userId } });
+            } else {
+
+                signOut();
+                dispatch({ type: AUTH_ACTIONS.LOGOUT });
+            };
+
+            setFetchUserFlag(true);
+
         } catch (error) {
-            console.error(error);
+            // error showing
             console.log("Not signed in");
-        }
+        };
     };
 
     const memoizedValue = useMemo(() => ({

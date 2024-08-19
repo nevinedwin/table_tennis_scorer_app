@@ -13,20 +13,14 @@ export enum AUTH_ACTIONS {
     LOGOUT = "logout"
 };
 
-type Name = {
-    fname: string;
-    lname: string;
-}
-
 export interface User {
     teamId?: string,
     role: UserRole,
     userId: string;
-    displayName: Name;
+    displayName: string;
     email: string;
-    image: string;
-    predictionWinScore: number;
-    predictionLoseScore: number;
+    predictionsWin: number;
+    predictionsLose: number;
     totalPredictions: number;
 }
 
@@ -45,13 +39,22 @@ export type AuthState = {
 
 export type AuthAction =
     | { type: AUTH_ACTIONS.LOGIN_STARTS, payload: boolean }
-    | { type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: string }
+    | { type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: LOGIN_SUCCESS_TYPE }
     | { type: AUTH_ACTIONS.LOGOUT }
     | { type: AUTH_ACTIONS.LOGIN_FAILURE, payload: any }
     | { type: AUTH_ACTIONS.FETCH_USER, payload: User }
 
+export type LOGIN_SUCCESS_TYPE = {
+    token: string,
+    userId: string
+}
 
 export interface IuserIdKey {
     id: string;
     token: string;
+};
+
+export type CurrentUserType = {
+    username: string;
+    userId: string
 };

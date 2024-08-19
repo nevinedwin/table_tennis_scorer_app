@@ -1,14 +1,23 @@
+// import GetAWSConfig from '../config';
 import api from './axiosService.js';
 
-const endpoints = {
-    FETCH_USER: "auth/user"
+// const config = GetAWSConfig();
+
+const userEndpoints = {
+    test: "test",
+    fetchSingUser: "user/get"
 }
 
+export const fetchSingleUser = async (id: string): Promise<any> => {
+    
+    try {
 
-export const fetchUser = async (id?: string) => {
-    if(id){
-        return api.get(`${endpoints.FETCH_USER}/${id}`)
+        const data = await api.get(`${userEndpoints.fetchSingUser}/${id}`)
+
+        return data;
+
+    } catch (error) {
+        console.log(error);
+        return error;
     }
-}; 
-
-
+}

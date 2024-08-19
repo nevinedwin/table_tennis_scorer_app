@@ -15,7 +15,7 @@ const GoogleLoginButton: React.FC = () => {
             signIn()
         } catch (error) {
             console.log(error);
-        }
+        };
     };
 
 
@@ -30,6 +30,7 @@ const GoogleLoginButton: React.FC = () => {
                 Sign in with Google
             </button>
             {signInError && <div className={`text-[14px] text-primary`}>{signInError}</div>}
+
             <button onClick={()=>signOut()}
             className="flex justify-center items-center bg-primary hover:bg-primary-light text-light font-medium rounded-lg py-2 px-4 w-full animate-bounce"
             

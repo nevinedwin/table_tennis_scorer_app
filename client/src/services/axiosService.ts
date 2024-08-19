@@ -25,6 +25,7 @@ class ApiService {
     };
 
 
+
     private async request<T>(
         method: 'get' | 'post' | 'put',
         endpoint: string,
@@ -40,10 +41,12 @@ class ApiService {
             };
 
             if (this.token) {
-                config.headers.Authorization = `Bearer ${this.token}`;
+                config.headers.Authorization = this.token;
             };
 
             let response: AxiosResponse<T>;
+
+            console.log(url, config);
 
             switch (method) {
                 case 'get':

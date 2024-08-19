@@ -87,6 +87,22 @@ Resources:
         TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
         TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
         TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
+        TTAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
+
+Outputs:
+
+  TTAppApiURL:
+    Description: Api Gateway base url
+    Value: !GetAtt FunctionStack.Outputs.TTAppApiURL
+  
+  UserPoolId:
+    Description: User pool ID
+    Value: !GetAtt CognitoStack.Outputs.UserPoolId
+  
+  UserPoolClientId:
+    Description: User pool Client ID
+    Value: !GetAtt CognitoStack.Outputs.UserPoolClientId
+

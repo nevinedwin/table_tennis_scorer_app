@@ -1,65 +1,67 @@
-import { validateAccess } from "libs/roleValidator/roleValidator";
-import { UserRepository } from "./repository";
-import { UserService } from "./service";
-import { LAMBDA } from "libs/roleValidator/lambdaPolicies";
+import { failure, success } from 'libs/response-lib/index.mjs';
+import { validateAccess } from 'libs/roleValidator/roleValidator.mjs';
+import { LAMBDA } from 'libs/roleValidator/lambdaPolicies.mjs';
+import { UserService } from './service.mjs';
+import { UserRepository } from './repository.mjs';
 
-import { failure, unAuthorized } from "libs/response-lib/index.mjs";
 
-
-const { TABLE_NAME, INDEX_NAME } = process.env;
+const { TABLE_NAME, INDEX_NAME } = process.env
 
 export const main = async (event) => {
 
+    let response = null;
+    let isAuthorized = false;
 
     const repo = new UserRepository(TABLE_NAME, INDEX_NAME);
     const service = new UserService(repo);
 
-    let [response, isAuthorized] = [{}, false];
 
     try {
 
         console.log(`Event: ${JSON.stringify(event)}`);
 
-
         const { 'custom:role': role, sub: userId } = event && event.requestContext.authorizer.claims;
         const action = event.pathParameters.action ?? 0;
-
-        console.log(object);
 
         let data;
 
         switch (event.httpMethod) {
+            case "GET":
 
-            case 'GET':
-                break;
+                if (action === "get") {
 
-            case 'POST':
+                    isAuthorized = validateAccess(role, LAMBDA.USERS.GET_USER);
 
-                data = JSON.parse(event.body);
+                    if (isAuthorized) {
+                        response = await service.getUser(event);
+                    };
 
-                if (!data) {
-
-                    return failure("Body is Empty")
-                }
-                else if (action === "get") {
-                    isAuthorized = validateAccess(role, LAMBDA.USERS.GET_USER)
                 } else {
-
                     response = failure("Invalid Endpoint");
                 };
+                break;
+
+            case "POST":
+
+                data = event.body ? JSON.parse(event.body) : null;
+
+                if (!data) {
+                    response = failure("Body is Empty");
+                } else {
+                    response = failure("Invalid Endpoint");
+                };
+                break;
+            default:
+                response = failure("invalid httpMethod");
         };
 
-        if (!isAuthorized) {
-
-            response = unAuthorized({ status: false, error: "User is not Authorized to perform this Action" });
+        if (!response && !isAuthorized) {
+            response = failure("UnAuthorized to perform this api call");
         };
-
 
     } catch (error) {
-        console.log(`error: ${JSON.stringify(error)}`);
-
-        response = failure(error)
-
+        console.log(`Error: ${JSON.stringify(error)}`);
+        response = failure(error);
     };
 
     return response;

@@ -12,6 +12,7 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref TableName
+        INDEX_NAME: !Ref TTAppTableIndex
 
 Parameters:
   StageName:
@@ -26,6 +27,8 @@ Parameters:
     Type: String
   StackNamePrefix:
     Type: String
+  TTAppTableIndex:
+    Type: String
 
 Resources:
   TTAppApiGateway:
@@ -34,8 +37,8 @@ Resources:
       Name: !Sub "ttapp-api-${StageName}"
       StageName: !Ref StageName
       Cors:
-        AllowMethods: "'GET,POST,PUT'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-KeyContent-Type,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+        AllowMethods: "'GET,POST,PUT,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
         AllowOrigin: "'*'"
       Auth:
         AddDefaultAuthorizerToCorsPreflight: false
@@ -44,6 +47,22 @@ Resources:
             UserPoolArn: !Ref UserPoolArn
         DefaultAuthorizer: TTAppCognitoAuthorizer
   
+  # --------------Test Function -----------#
+  TestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${StackNamePrefix}test-lamdba
+      Handler: index.main
+      CodeUri: testTemplate
+      Events:
+        ApiTrigger:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: GET
+            RestApiId: !Ref TTAppApiGateway
+
+  # ---------- user Function ---------#
   UserApiFunctionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -69,6 +88,12 @@ Resources:
                 Resource:
                   - !Ref TTAppTableArn
                   - !Sub ${TTAppTableArn}/index/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
 
   UserApiFunction:
     Type: AWS::Serverless::Function
@@ -81,12 +106,24 @@ Resources:
         UserApi:
           Type: Api
           Properties:
-            Path: /api/auth/user/{action}
+            Path: /user/{action}/{id}
             Method: GET
             RestApiId: !Ref TTAppApiGateway
         UserApiPOST:
           Type: Api
           Properties:
-            Path: /api/auth/user/{action}
+            Path: /user/{action}
             Method: POST
             RestApiId: !Ref TTAppApiGateway
+  
+  UserApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${UserApiFunction}
+      RetentionInDays: 90
+
+Outputs:
+  TTAppApiURL:
+    Value: !Sub https://${TTAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api

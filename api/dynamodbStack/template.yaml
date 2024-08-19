@@ -20,12 +20,22 @@ Resources:
           AttributeType: S
         - AttributeName: details
           AttributeType: S
+        - AttributeName: role
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
         - AttributeName: details
           KeyType: RANGE
-
+      GlobalSecondaryIndexes:
+        - IndexName: !Sub ${StackNamePrefix}-basedOnRole-${StageName}
+          Projection:
+              ProjectionType: ALL
+          KeySchema:
+            - KeyType: HASH
+              AttributeName: role
+            - KeyType: RANGE
+              AttributeName: id
 
 Outputs:
   TTAppTable:
@@ -39,3 +49,6 @@ Outputs:
   TTAppTableName:
     Description: "TTAppTable table name"
     Value: !Sub "${StackNamePrefix}-ttApp-table-${StageName}"
+  TTAppTableIndexName:
+    Description: "TTApp Table GSI Index Name"
+    Value: !Sub  "${StackNamePrefix}-basedOnRole-${StageName}"

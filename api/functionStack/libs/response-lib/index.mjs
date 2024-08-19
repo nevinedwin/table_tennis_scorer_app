@@ -22,7 +22,7 @@ export const buildResponse = (statusCode, body) => {
  * @returns Object
  */
 export const success = (body) => {
-  return this.buildResponse(200, body);
+  return buildResponse(200, body);
 };
 
 /**
@@ -32,7 +32,7 @@ export const success = (body) => {
  */
 export const failure = (body) => {
   body = body || { status: false, error: "Invalid Request" };
-  return this.buildResponse(500, body);
+  return buildResponse(500, body);
 };
 
 /**
@@ -42,7 +42,7 @@ export const failure = (body) => {
  */
 export const badRequest = (body) => {
   body = body || { status: false, error: "Bad Request" };
-  return this.buildResponse(400, body);
+  return buildResponse(400, body);
 };
 
 /**
@@ -52,7 +52,7 @@ export const badRequest = (body) => {
  */
 export const notFound = (body) => {
   body = body || { status: false, error: "Not Found" };
-  return this.buildResponse(404, body);
+  return buildResponse(404, body);
 };
 
 export const unAuthorized = (body) => {

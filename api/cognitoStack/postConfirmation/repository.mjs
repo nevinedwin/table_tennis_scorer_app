@@ -50,15 +50,17 @@ export class PostSignUpRepository {
             const params = {
                 TableName: this.tableName,
                 Item: {
-                    id,
-                    details: `user#${role}`,
+                    id: `USER#${id}`,
+                    details: "details",
                     email,
+                    userId: id,
                     displayName: name,
                     role,
                     totalPredictions: 0,
-                    predictionWinScore: 0,
-                    predictionLoseScore: 0,
-                    teamId: null
+                    predictionsWin: 0,
+                    predictionsLose: 0,
+                    teamId: null,
+                    sf: `${id} ${email} ${name} ${role}`
                 },
             };
 

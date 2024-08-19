@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/f4de5af9af703224cea1d292d81265dc.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e7342fdcfbdc68f274afafed8df4763d.template
       Parameters:
         StageName:
           Ref: StageName
@@ -50,7 +50,7 @@ Resources:
   DynamoDbTableStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/5f9d64b12e240d2f2ba0efbbcc99d9af.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/cf18b0017f5011e7762f0961359229ef.template
       Parameters:
         StageName:
           Ref: StageName
@@ -66,7 +66,7 @@ Resources:
   CognitoStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e7adfe6f0937da6ca132e73769188652.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/686e5c79942cf9abccace85372c900b5.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/87228a0f4124b0dd204a394f143e1350.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/26758d429378f40aebd7a671d8a0af76.template
       Parameters:
         StageName:
           Ref: StageName
@@ -123,6 +123,10 @@ Resources:
           Fn::GetAtt:
           - DynamoDbTableStack
           - Outputs.TTAppTableArn
+        TTAppTableIndex:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableIndexName
         StackNamePrefix:
           Fn::FindInMap:
           - StackNamePrefix
@@ -132,3 +136,22 @@ Resources:
     DeletionPolicy: Delete
     Metadata:
       SamResourceId: FunctionStack
+Outputs:
+  TTAppApiURL:
+    Description: Api Gateway base url
+    Value:
+      Fn::GetAtt:
+      - FunctionStack
+      - Outputs.TTAppApiURL
+  UserPoolId:
+    Description: User pool ID
+    Value:
+      Fn::GetAtt:
+      - CognitoStack
+      - Outputs.UserPoolId
+  UserPoolClientId:
+    Description: User pool Client ID
+    Value:
+      Fn::GetAtt:
+      - CognitoStack
+      - Outputs.UserPoolClientId

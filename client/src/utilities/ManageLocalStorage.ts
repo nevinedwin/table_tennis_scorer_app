@@ -7,7 +7,8 @@ const ERROR_MESSAGES = {
 };
 
 export const localStorageKeys = {
-    userIdKey: "cognitovalue"
+    userIdKey: "CognitoIdentityServiceProvider.localAppConfigutationForUserId",
+    token: "CognitoIdentityServiceProvider.localAppConfigutationForToken"
 };
 
 

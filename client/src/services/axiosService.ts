@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import GetAWSConfig from "../config.js";
 import ManageLocalStorage, { localStorageKeys } from "../utilities/ManageLocalStorage.js";
+import { fetchAuthSession } from "@aws-amplify/auth";
 
 
 const config = GetAWSConfig();
-const { userIdKey } = localStorageKeys;
+const { token } = localStorageKeys;
 
 
 interface ConfigType {
@@ -17,11 +18,28 @@ interface ConfigType {
 class ApiService {
 
     private baseUrl: string;
-    private token: string;
 
     constructor() {
         this.baseUrl = config.apiGateWay.URL;
-        this.token = (ManageLocalStorage.get(userIdKey) as any)?.token as string || "";
+
+    };
+
+    private async getToken() {
+        try {
+
+            let idToken = ManageLocalStorage.get(token) as string || null;
+
+            if (!idToken) {
+                const session = await fetchAuthSession()
+                idToken = session?.tokens?.idToken?.toString() || "";
+                ManageLocalStorage.set(token, idToken);
+            };
+
+            return idToken;
+
+        } catch (error) {
+            return null;
+        };
     };
 
 
@@ -34,14 +52,15 @@ class ApiService {
         try {
 
             const url = `${this.baseUrl}/${endpoint}`;
+            const token = await this.getToken();
             const config: ConfigType = {
                 headers: {
                     "Content-Type": "application/json",
                 }
             };
 
-            if (this.token) {
-                config.headers.Authorization = this.token;
+            if (token) {
+                config.headers.Authorization = token;
             };
 
             let response: AxiosResponse<T>;

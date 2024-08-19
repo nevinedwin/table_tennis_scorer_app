@@ -2,10 +2,10 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useReducer, u
 import { AUTH_ACTIONS, AuthAction, AuthState, CurrentUserType } from "./authContextTypes";
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 import { Hub } from "aws-amplify/utils";
-import { fetchAuthSession, getCurrentUser, signOut } from "@aws-amplify/auth";
+import { getCurrentUser, signOut } from "@aws-amplify/auth";
 import { fetchSingleUser } from "../../services/userService";
 
-const { userIdKey } = localStorageKeys;
+const { userIdKey, token } = localStorageKeys;
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
@@ -13,7 +13,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return { ...state, isLoginStarts: action.payload };
         case AUTH_ACTIONS.LOGIN_SUCCESS:
             ManageLocalStorage.set(userIdKey, action.payload);
-            return { ...state, token: action.payload.token, userId: action.payload.userId, isLoginStarts: false };
+            return { ...state, userId: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
@@ -21,7 +21,8 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
             ManageLocalStorage.delete(userIdKey);
-            return { ...state, user: null, userId: null, isLoginStarts: false, token: null };
+            ManageLocalStorage.delete(token);
+            return { ...state, user: null, userId: null, isLoginStarts: false };
         default:
             return state;
     };
@@ -33,7 +34,6 @@ const intialState: AuthState = {
     user: null,
     error: false,
     isLoginStarts: false,
-    token: null,
     userId: null
 };
 
@@ -70,10 +70,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             };
         };
 
-        const userId = (ManageLocalStorage.get(userIdKey) as any)?.userId as string || null;
+        const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
         // debugger
-        console.log({ userId, state });
+        console.log("useEffect2", { userId, state });
 
         if (userId && !state.isLoginStarts) {
             fetchUser(userId);
@@ -86,22 +86,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     useEffect(() => {
 
         // debugger
-        console.log(state);
+        console.log("useEffect3", state);
+
     }, [state])
 
     const getUser = async (): Promise<void> => {
         try {
-            const session = await fetchAuthSession()
-            const idToken = session?.tokens?.idToken?.toString() || "";
-
 
             const currentUser: CurrentUserType = await getCurrentUser();
 
             const { userId } = currentUser;
 
-            if (userId && session) {
+            if (userId) {
 
-                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: { token: idToken, userId } });
+                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userId });
             } else {
 
                 signOut();
@@ -121,7 +119,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             user: state.user,
             error: state.error,
             isLoginStarts: state.isLoginStarts,
-            token: state.token,
             userId: state.userId
         },
         dispatch

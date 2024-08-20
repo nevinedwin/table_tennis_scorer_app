@@ -10,3 +10,9 @@ export const formatTime = (date: Date): string => {
     const options: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" };
     return date.toLocaleTimeString("en-IN", options);
 };
+
+export function validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@inapp\.com$/;
+    return emailRegex.test(email);
+};
+

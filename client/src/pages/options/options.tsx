@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { memo } from 'react'
 import Hoc from '../../components/hoc/hoc'
 import Accordion from '../../components/accordian/accordian'
 
 const Options: React.FC = () => {
     return (
         <div className='w-full'>
-            <Accordion/>
+            <Accordion />
         </div>
     )
 }
 
-export default Hoc(Options)
+export default Hoc(memo(Options))

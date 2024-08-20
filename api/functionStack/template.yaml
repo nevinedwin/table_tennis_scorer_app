@@ -124,6 +124,69 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${UserApiFunction}
       RetentionInDays: 90
 
+
+  # ---------- team Function ---------#
+  TeamApiFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${StackNamePrefix}-TeamApiFunctionRolePolicy-${StageName}
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !Ref TTAppTableArn
+                  - !Sub ${TTAppTableArn}/index/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+
+  TeamApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${StackNamePrefix}-TeamApiFunction-${StageName}"
+      Handler: index.main
+      CodeUri: team
+      Role: !GetAtt TeamApiFunctionRole.Arn
+      Events:
+        UserApi:
+          Type: Api
+          Properties:
+            Path: /team/{action}/{id}
+            Method: GET
+            RestApiId: !Ref TTAppApiGateway
+        UserApiPOST:
+          Type: Api
+          Properties:
+            Path: /team/{action}
+            Method: POST
+            RestApiId: !Ref TTAppApiGateway
+  
+  TeamApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${TeamApiFunction}
+      RetentionInDays: 90
+
 Outputs:
   TTAppApiURL:
     Value: !Sub https://${TTAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api

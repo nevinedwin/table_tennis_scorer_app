@@ -54,9 +54,9 @@ const AppRouter: React.FC = () => {
                 <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
 
             </Routes>
-            {user && <div className="block lg:hidden">
+            {/* {user && <div className="block lg:hidden">
                 <Footer />
-            </div>}
+            </div>} */}
         </Suspense>
     );
 };

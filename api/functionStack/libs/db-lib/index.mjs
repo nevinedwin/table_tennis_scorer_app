@@ -63,7 +63,7 @@ export const query = async (params, returnFullResp = true) => {
     const result = await dynamoDBOperation("query", params);
     if (returnFullResp) return [null, result];
     console.log(`db querying completed`);
-    return [null, result?.Item || result];
+    return [null, result?.Items || result];
   } catch (error) {
     console.log(`error: ${error}`);
     return [error];

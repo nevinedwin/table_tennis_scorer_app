@@ -8,8 +8,12 @@ export const ROLES = {
 export const LAMBDA = {
     USERS: {
         LIST_USERS: "listUsers",
-        GET_USER: "getUsers",
+        GET_USER: "getUsers"
     },
+    TEAM: {
+        CREATE: "createTeam",
+        LIST: "listTeam"
+    }
 };
 
 export const lambdaPolicies = {
@@ -17,8 +21,11 @@ export const lambdaPolicies = {
         LAMBDA.USERS.GET_USER,
     ],
     [ROLES.SUPER_ADMIN]: [
+        LAMBDA.TEAM.CREATE,
+        LAMBDA.TEAM.LIST,
     ],
     [ROLES.ADMIN]: [
+        LAMBDA.TEAM.LIST,
     ],
     [ROLES.USER]: [
     ],

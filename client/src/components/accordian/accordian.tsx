@@ -1,5 +1,4 @@
 import React, { memo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { items } from './accordianItems';
 
 interface AccordionItemProps {
@@ -12,32 +11,28 @@ interface AccordionItemProps {
         list: {
             name: string
             url: string
-        },
-        edit: {
-            name: string
-            url: string
         }
     };
+    setComponent: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AccordionItem: React.FC<AccordionItemProps> = ({ title, content }) => {
+const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, setComponent }) => {
 
-    const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
 
 
     const handelNavigate = (url: string): void => {
-        navigate(url)
+        setComponent(url);
     };
 
 
     return (
-        <div className="border-b border-borderColor bg-black w-full hover:bg-borderColor cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
+        <div className="border-b border-borderColor bg-black w-full cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
             <button
-                className="h-24 flex justify-between items-center w-full py-4 px-6 text-left  focus:outline-none"
+                className=" h-18 flex justify-between items-center w-full py-4 px-6 text-left  focus:outline-none"
             >
-                <span className="font-bold text-3xl">{title}</span>
+                <span className="font-bold text-xl text-center">{title}</span>
                 <svg
                     className={`w-6 h-6 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`}
                     fill="none"
@@ -47,13 +42,12 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
-            <div className={`overflow-hidden transition-all duration-300 ease-custom ${isOpen ? 'max-h-40' : 'max-h-0'}`}>
+            <div className={`overflow-hidden transition-all duration-300 ease-custom ${isOpen ? 'max-h-60' : 'max-h-0'}`}>
                 <div className="py-4 px-6">
                     <div className="text-white">
-                        <div className='flex justify-start items-center gap-11'>
-                            {content.create && <button onClick={() => handelNavigate(content.create.url)} className='bg-white text-black p-3 w-40 font-medium rounded-md' >{content.create.name}</button>}
-                            {content.list && <button onClick={() => handelNavigate(content.list.url)} className='bg-white text-black p-3 w-40 font-medium rounded-md' >{content.list.name}</button>}
-                            {content.edit && <button onClick={() => handelNavigate(content.edit.url)} className='bg-white text-black p-3 w-40 font-medium rounded-md' >{content.edit.name}</button>}
+                        <div className='flex flex-col justify-start items-center gap-2'>
+                            {content.create && <button onClick={() => handelNavigate(content.create.url)} className=' text-white border-[1px] hover:bg-white hover:text-black border-borderColor p-3 w-80 font-medium rounded-md' >{content.create.name}</button>}
+                            {content.list && <button onClick={() => handelNavigate(content.list.url)} className=' text-white border-[1px] border-borderColor hover:bg-white hover:text-black p-3 w-80 font-medium rounded-md' >{content.list.name}</button>}
                         </div>
                     </div>
                 </div>
@@ -62,12 +56,18 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content }) => {
     );
 };
 
-const Accordion: React.FC = () => {
+
+type AccordianPropTypes = {
+    component: string;
+    setComponent: React.Dispatch<React.SetStateAction<string>>;
+};
+
+const Accordion: React.FC<AccordianPropTypes> = ({ setComponent }) => {
 
     return (
-        <div className="w-full bg-white shadow-md rounded-md">
+        <div className="w-full shadow-md rounded-md border-[1px] border-borderColor">
             {items.map((item, index) => (
-                <AccordionItem key={index} title={item.title} content={item.content} />
+                <AccordionItem key={index} title={item.title} content={item.content} setComponent={setComponent}/>
             ))}
         </div>
     );

@@ -115,4 +115,4 @@ const CreateTeam: React.FC = () => {
     )
 }
 
-export default Hoc(memo(CreateTeam));
+export default memo(CreateTeam);

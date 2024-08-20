@@ -2,18 +2,26 @@ import { ROUTES } from "../../routes/appRouter";
 
 export const items = [
     {
-        title: 'Do Team Actions Here', content: {
+        title: 'Team', content: {
             create: {
                 name: "Create Team",
-                url: ROUTES.CREATE_TEAM
+                url: "create_team"
             },
             list: {
                 name: "List Team",
-                url: "/list_team"
+                url: "list_team"
+            }
+        }
+    },
+    {
+        title: 'Match', content: {
+            create: {
+                name: "Create Match",
+                url: "create_match"
             },
-            edit: {
-                name: "Edit",
-                url: "/edit_team"
+            list: {
+                name: "List Matches",
+                url: "list_team"
             }
         }
     },

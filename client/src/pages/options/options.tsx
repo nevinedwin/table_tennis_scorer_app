@@ -1,9 +1,12 @@
 import React from 'react'
 import Hoc from '../../components/hoc/hoc'
+import Accordion from '../../components/accordian/accordian'
 
 const Options: React.FC = () => {
     return (
-        <div>Options</div>
+        <div className='w-full'>
+            <Accordion/>
+        </div>
     )
 }
 

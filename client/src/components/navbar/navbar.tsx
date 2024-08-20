@@ -5,6 +5,7 @@ import { AUTH_ACTIONS } from '../../context/authContext/authContextTypes';
 import { signOut } from '@aws-amplify/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navbarList } from './navlist';
+import StyledButton from '../button/button';
 
 
 const Navbar: React.FC = () => {
@@ -47,13 +48,7 @@ const Navbar: React.FC = () => {
 
             {/* right side */}
             <div className='flex-1 flex justify-end items-center'>
-                <button
-                    onClick={handleSignout}
-                    className={`bg-white w-[150px] p-2 text-black uppercase font-semibold rounded-md transition-bg-border duration-300 ease-custom text-center
-                    hover:bg-black hover:text-white hover:border-white border-[1px]
-                `}>
-                    Logout
-                </button>
+                <StyledButton title='Logout' handleClick={handleSignout} />
             </div>
         </div>
     )

@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import GetAWSConfig from "../config.js";
 import ManageLocalStorage, { localStorageKeys } from "../utilities/ManageLocalStorage.js";
 import { fetchAuthSession } from "@aws-amplify/auth";
+import { jwtDecode } from 'jwt-decode';
 
 
 const config = GetAWSConfig();
@@ -28,6 +29,15 @@ class ApiService {
         try {
 
             let idToken = ManageLocalStorage.get(token) as string || null;
+
+            // check the token expiry
+            if (idToken) {
+                const decodedToken = jwtDecode(idToken);
+                const currentTime = Date.now()
+                if (decodedToken.exp && decodedToken.exp < currentTime) {
+                    idToken = null;
+                };
+            };
 
             if (!idToken) {
                 const session = await fetchAuthSession()

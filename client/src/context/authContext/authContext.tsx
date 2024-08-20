@@ -71,7 +71,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
-
         if (userId && !state.isLoginStarts) {
             fetchUser(userId);
             setFetchUserFlag(false);

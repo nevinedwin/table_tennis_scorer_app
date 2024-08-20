@@ -9,7 +9,7 @@ const Hoc = <P extends object>(Component: React.ComponentType<P>): React.FC<P> =
                 <div className="h-[90px] border-b-[1px] border-b-borderColor">
                     <Navbar />
                 </div>
-                <div className=''>
+                <div className='w-full h-full'>
                     <Component {...props} />
                 </div>
             </div>

@@ -10,13 +10,15 @@ const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));
 const PredictionScoreBoard = lazy(() => import("../pages/predictionScoreBoard/predictionScoreBoard"));
 const Options = lazy(() => import("../pages/options/options"));
 const Scoreboard = lazy(() => import("../pages/scoreboard/scoreboard"));
+const CreateTeam = lazy(() => import("../pages/team/create"));
 
 export const ROUTES = {
     LOGIN: "/login",
     DASHBOARD: "/dashboard",
     PREDICTION_SCOREBOARD: "/prediction_scores",
     OPTIONS: "/options",
-    SCOREBOARD: "/scoreboard"
+    SCOREBOARD: "/scoreboard",
+    CREATE_TEAM: "/create_team"
 }
 
 const AppRouter: React.FC = () => {
@@ -43,6 +45,7 @@ const AppRouter: React.FC = () => {
                     {/* super admin route */}
                     <Route element={<ProtectedRoute allowedRoles={[UserRole.SUPER_ADMIN]} />}>
                         <Route path={ROUTES.OPTIONS} element={<Options />} />
+                        <Route path={ROUTES.CREATE_TEAM} element={<CreateTeam />} />
                     </Route>
 
                     <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />

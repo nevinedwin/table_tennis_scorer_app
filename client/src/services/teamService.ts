@@ -4,6 +4,7 @@ import api from './axiosService.js';
 export const endpoints = {
     CREATE: "team/create",
     LIST: "team/list",
+    EDIT: "team/update"
 }
 
 
@@ -29,6 +30,16 @@ export const createTeam = async (data: TeamType) => {
 // list team
 export const ListTeam = async () => {
     const res: any = await api.get(endpoints.LIST);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+
+// list team
+export const editTeam = async (data: TeamType) => {
+    const res: any = await api.post(endpoints.EDIT, data);
     if (res?.response?.status === 500) {
         throw res.response.data
     }

@@ -13,9 +13,10 @@ type TeamFormPropType = {
     isbuttonClicked: boolean;
     setButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
     isSuccess: boolean;
+    buttonTitle?: string;
 };
 
-const TeamForm: React.FC<TeamFormPropType> = ({ teamdata, setTeamData, handleCreate, isError, errorData, setButtonClicked, isSuccess }) => {
+const TeamForm: React.FC<TeamFormPropType> = ({ teamdata, setTeamData, handleCreate, isError, errorData, setButtonClicked, isSuccess, buttonTitle = 'Create Team' }) => {
 
 
     return (
@@ -39,11 +40,11 @@ const TeamForm: React.FC<TeamFormPropType> = ({ teamdata, setTeamData, handleCre
             {isError &&
                 <p className='text-primary text-2md text-center pt-8'>{errorData}</p>
             }
-             {isSuccess &&
+            {isSuccess &&
                 <p className='text-green text-2md text-center pt-8'>Successfully created</p>
             }
             <div className={`mt-10 flex justify-center items-center w-full`}>
-                <StyledButton handleClick={handleCreate} title='Create Team' isError={isError} setButtonClicked={setButtonClicked} />
+                <StyledButton handleClick={handleCreate} title={buttonTitle} isError={isError} setButtonClicked={setButtonClicked} />
             </div>
         </div>
     )

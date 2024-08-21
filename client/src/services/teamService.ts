@@ -49,8 +49,8 @@ export const editTeam = async (data: TeamType) => {
 
 
 // list team
-export const deleteTeam = async (data: TeamType) => {
-    const res: any = await api.post(endpoints.DELETE, data);
+export const deleteTeam = async (data: string) => {
+    const res: any = await api.post(endpoints.DELETE, { id: data });
     if (res?.response?.status === 500) {
         throw res.response.data
     }

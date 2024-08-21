@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import ProtectedRoute from "./protectedRoute";
 import { UserRole } from "../context/authContext/authContextTypes";
 import { useAuth } from "../context/authContext/authContext";
+import ErrorBoundary from "../components/errorBoundary/errorBoundary";
 
 const Login = lazy(() => import("../pages/login/login"));
 const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));
@@ -24,35 +25,37 @@ const AppRouter: React.FC = () => {
 
     return (
         <Suspense fallback={<div>Loading....</div>}>
-            <Routes>
-                {/* public routes */}
-                <Route path={ROUTES.LOGIN} element={user ? <Navigate to={ROUTES.DASHBOARD} replace /> : <Login />} />
+            <ErrorBoundary fallback={<div>Something went wrong. Please try again later.</div>}>
+                <Routes>
+                    {/* public routes */}
+                    <Route path={ROUTES.LOGIN} element={user ? <Navigate to={ROUTES.DASHBOARD} replace /> : <Login />} />
 
 
-                {/* user and admin routes */}
-                <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.USER, UserRole.SUPER_ADMIN]} />}>
-                    <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
-                    <Route path={ROUTES.PREDICTION_SCOREBOARD} element={<PredictionScoreBoard />} />
-                    <Route path={ROUTES.SCOREBOARD} element={<Scoreboard />} />
+                    {/* user and admin routes */}
+                    <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.USER, UserRole.SUPER_ADMIN]} />}>
+                        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+                        <Route path={ROUTES.PREDICTION_SCOREBOARD} element={<PredictionScoreBoard />} />
+                        <Route path={ROUTES.SCOREBOARD} element={<Scoreboard />} />
 
-                    {/* admin route */}
-                    <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
+                        {/* admin route */}
+                        <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
+                        </Route>
+
+                        {/* super admin route */}
+                        <Route element={<ProtectedRoute allowedRoles={[UserRole.SUPER_ADMIN]} />}>
+                            <Route path={ROUTES.OPTIONS} element={<Options />} />
+                        </Route>
+
+                        <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
                     </Route>
 
-                    {/* super admin route */}
-                    <Route element={<ProtectedRoute allowedRoles={[UserRole.SUPER_ADMIN]} />}>
-                        <Route path={ROUTES.OPTIONS} element={<Options />} />
-                    </Route>
+                    <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
 
-                    <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-                </Route>
-
-                <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
-
-            </Routes>
-            {/* {user && <div className="block lg:hidden">
+                </Routes>
+                {/* {user && <div className="block lg:hidden">
                 <Footer />
             </div>} */}
+            </ErrorBoundary>
         </Suspense>
     );
 };

@@ -13,7 +13,8 @@ export const LAMBDA = {
     TEAM: {
         CREATE: "createTeam",
         LIST: "listTeam",
-        UPDATE: "updateTeam"
+        UPDATE: "updateTeam",
+        DELETE: "deleteTeam"
     }
 };
 
@@ -24,7 +25,8 @@ export const lambdaPolicies = {
     [ROLES.SUPER_ADMIN]: [
         LAMBDA.TEAM.CREATE,
         LAMBDA.TEAM.LIST,
-        LAMBDA.TEAM.UPDATE
+        LAMBDA.TEAM.UPDATE,
+        LAMBDA.TEAM.DELETE,
     ],
     [ROLES.ADMIN]: [
         LAMBDA.TEAM.LIST,

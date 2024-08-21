@@ -104,4 +104,27 @@ export class TeamService {
         };
     };
 
+
+    async delete(data) {
+        try {
+
+            //debugger
+            console.log(`data: ${JSON.stringify(data)}`);
+
+            const { id } = data;
+
+            // delete the prev data
+            const [delErr, delSucc] = await this.repository.deleteTeam(id);
+
+            if (delErr) throw delErr;
+
+            return success({ status: true, data: `Deleted Successfully!. ${delSucc}` });
+
+        } catch (error) {
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+        };
+    };
+
 }

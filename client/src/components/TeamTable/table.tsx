@@ -60,7 +60,8 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
             <table className='w-full border-spacing-y-4 border-separate text-xl'>
                 <thead>
                     <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold text-xxl'>
-                        <th className='pl-4 text-start'>Team Name</th>
+                        <th className='pl-4 text-center'></th>
+                        <th className='pl-8 text-start'>Team Name</th>
                         <th className='text-start'>Player's Name</th>
                         <th className='pr-4 text-start'>M</th>
                         <th className='pr-4 text-start'>W</th>
@@ -77,7 +78,8 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
                     {currentData.length ?
                         currentData.map((eachItem, index) => (
                             <tr className='border border-borderColor h-20 bg-borderColor text-white' key={index}>
-                                <td className='pl-4'>{eachItem.teamName}</td>
+                                <td className='pl-4 text-center'>{((currentPage - 1) * itemsPerPage) + (index + 1)}</td>
+                                <td className='pl-8'>{eachItem.teamName}</td>
                                 <td>
                                     <span>{eachItem.player1Name}</span><br />
                                     <span>{eachItem.player2Name}</span>

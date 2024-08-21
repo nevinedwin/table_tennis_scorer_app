@@ -61,6 +61,15 @@ export const main = async (event) => {
                         response = await service.update(data);
                     };
 
+                } else if (action === "delete") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.TEAM.DELETE);
+
+                    if (isAuthorized) {
+
+                        response = await service.delete(data);
+                    };
+
                 } else {
                     response = failure("Invalid Endpoint");
                 };

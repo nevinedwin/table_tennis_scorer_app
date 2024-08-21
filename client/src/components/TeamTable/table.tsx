@@ -57,7 +57,7 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
                     }}
                 />
             </div>
-            <table className='w-full border-spacing-y-4 border-separate text-xl'>
+            <table className='w-full border-spacing-y-4 border-separate text-xl cursor-default'>
                 <thead>
                     <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold text-xxl'>
                         <th className='pl-4 text-center'></th>

@@ -27,19 +27,6 @@ export const main = async (event) => {
 
         switch (event.httpMethod) {
             case "GET":
-
-                if (action === "list") {
-
-                    isAuthorized = validateAccess(role, LAMBDA.TEAM.LIST);
-
-                    if (isAuthorized) {
-
-                        response = await service.list();
-                    };
-
-                } else {
-                    response = failure("Invalid Endpoint");
-                };
                 break;
 
             case "POST":
@@ -56,8 +43,25 @@ export const main = async (event) => {
                     if (isAuthorized) {
                         response = await service.create(data, userId);
                     };
-                }
-                else {
+                } else if (action === "list") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.TEAM.LIST);
+
+                    if (isAuthorized) {
+
+                        response = await service.list(data);
+                    };
+
+                } else if (action === "update") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.TEAM.UPDATE);
+
+                    if (isAuthorized) {
+
+                        response = await service.update(data);
+                    };
+
+                } else {
                     response = failure("Invalid Endpoint");
                 };
                 break;

@@ -148,6 +148,7 @@ Resources:
                   - dynamodb:GetItem
                   - dynamodb:Query
                   - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
                 Resource:
                   - !Ref TTAppTableArn
                   - !Sub ${TTAppTableArn}/index/*

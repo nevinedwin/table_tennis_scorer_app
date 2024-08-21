@@ -5,11 +5,12 @@ import { editTeam, TeamType } from '../../services/teamService';
 import { validateEmail } from '../../utilities/common';
 
 type EditPropType = {
-    id: string
+    data: Record<string, any>;
+    setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 
-const EditTeam: React.FC<EditPropType> = ({ id }) => {
+const EditTeam: React.FC<EditPropType> = ({ data, setIsEdit }) => {
 
     const initalTeamData = {
         teamName: "",
@@ -19,7 +20,7 @@ const EditTeam: React.FC<EditPropType> = ({ id }) => {
         player2Name: ""
     };
 
-    const [teamData, setTeamData] = useState<Partial<TeamType>>(initalTeamData);
+    const [teamData, setTeamData] = useState<Partial<TeamType>>(data);
     const [isError, setIsError] = useState<boolean>(false);
     const [error, setError] = useState<string>("")
     const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
@@ -74,11 +75,6 @@ const EditTeam: React.FC<EditPropType> = ({ id }) => {
     }, []);
 
 
-    useEffect(()=>{
-        // fetch Data
-    }, [])
-
-
     const handleCreate = async () => {
 
         setIsButtonClicked(true);
@@ -91,10 +87,11 @@ const EditTeam: React.FC<EditPropType> = ({ id }) => {
                     setIsSuccess(true);
                 };
 
-                setTeamData(initalTeamData);
                 setIsButtonClicked(false);
                 setTimeout(() => {
                     setIsSuccess(false);
+                    setIsEdit(false);
+                    setTeamData(initalTeamData);
                 }, 1000)
 
             } catch (err: any) {

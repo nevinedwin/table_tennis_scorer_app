@@ -24,7 +24,7 @@ export class TeamService {
 
             if (findingErr) throw findingErr;
 
-            if (isAleaready) throw `The Player ${data.player1Email} already exsits in another team` ;
+            if (isAleaready) throw `The Player ${data.player1Email} already exsits in another team`;
 
 
             const [findingErr2, isAleaready2] = await this.repository.findPlayerAlreadyInTeam(data.player2Email);
@@ -48,6 +48,60 @@ export class TeamService {
 
             return failure(error)
         }
+    };
+
+
+    async list() {
+        try {
+
+            // query all users
+            const [err, users] = await this.repository.listUser();
+
+            if (err) throw err;
+
+            const sortedData = this.repository.quickSortTeam(users.Items);
+
+            //debugger
+            console.log(`sortedData: ${JSON.stringify(sortedData)}`);
+
+            return success(sortedData);
+
+        } catch (error) {
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+        };
+    };
+
+
+    async update(data) {
+        try {
+
+            //debugger
+            console.log(`data: ${JSON.stringify(data)}`);
+
+            const { id } = data;
+
+            // delete the prev data
+            const [delErr, delSucc] = await this.repository.deleteTeam(id)
+
+            if (delErr) throw delErr;
+
+            //debugger
+            console.log(`delSucc: ${JSON.stringify(delSucc)}`);
+
+            const [writeErr, writeSucc] = await this.repository.create(data);
+
+            if (writeErr) throw writeErr;
+
+            return success(writeSucc);
+
+        } catch (error) {
+
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+
+        };
     };
 
 }

@@ -1,4 +1,4 @@
-import { get, post, query } from 'libs/db-lib/index.mjs'
+import { get, post, query, del } from 'libs/db-lib/index.mjs'
 import { v4 as uuidV4 } from 'uuid';
 
 
@@ -44,13 +44,13 @@ export class TeamRepository {
             // debugger
             console.log(`Data: ${JSON.stringify(data)}`);
 
-            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName } = data;
+            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName, id = null } = data;
 
             const params = {
                 TableName: this.tableName,
                 Item: {
-                    id: uuidV4(),
-                    details: `${teamName}#${player1Email}#${player2Email}`,
+                    id: id || uuidV4(),
+                    details: `details`,
                     role: "TEAM",
                     player1Name,
                     player2Name,
@@ -84,28 +84,20 @@ export class TeamRepository {
     async findPlayerAlreadyInTeam(playerEmail) {
         try {
 
-            const params = {
-                TableName: this.tableName,
-                IndexName: this.indexName,
-                KeyConditionExpression: "#role = :role",
-                FilterExpression: "contains(details, :email)",
-                ExpressionAttributeNames: {
-                    "#role": "role"
-                },
-                ExpressionAttributeValues: {
-                    ":email": playerEmail,
-                    ":role": "TEAM"
-                }
-            };
+            let isPresent = false;
 
-            const [err, resp] = await query(params);
+            const [err, userList] = await this.listUser();
 
             if (err) throw err;
 
-            let isPresent = false;
-            if (resp.Items.length) {
+            const user = userList.Items;
 
-                isPresent = true
+            if (user.length) {
+                const userPresent = user.find(eachData => eachData.player1Email === playerEmail || eachData.player2Email === playerEmail);
+
+                if (userPresent) {
+                    isPresent = true;
+                };
             };
 
             return [null, isPresent];
@@ -114,6 +106,96 @@ export class TeamRepository {
 
             // debugger
             console.log(`Error in repository: ${JSON.stringify(error)}`);
+
+            return [error, null];
+        };
+    };
+
+
+    async listUser() {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                IndexName: this.indexName,
+                KeyConditionExpression: `#role = :role`,
+                ExpressionAttributeNames: {
+                    "#role": "role"
+                },
+                ExpressionAttributeValues: {
+                    ":role": "TEAM"
+                }
+            };
+
+            //debugger
+            console.log(`params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await query(params);
+
+            if (err) return err;
+
+            //debugger
+            console.log(`users: ${JSON.stringify(succ)}`);
+
+            return [null, succ];
+
+        } catch (error) {
+            console.log(`Error in Repo: ${JSON.stringify(error)}`);
+            return [error, null];
+        };
+    };
+
+
+    quickSortTeam(arr) {
+        if (arr.length <= 1) {
+            return arr;
+        };
+
+        let pivot = arr[arr.length - 1];
+        let left = [];
+        let right = [];
+
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i]?.teamName.localeCompare(pivot?.teamName) < 0) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i])
+            }
+        };
+
+
+        return [...this.quickSortTeam(left), pivot, ...this.quickSortTeam(right)];
+    };
+
+
+    async deleteTeam(id) {
+
+        try {
+
+            //debugger
+            console.log(`id: ${JSON.stringify(id)}`);
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: "details"
+                }
+            };
+
+            //debugger
+            console.log(`params: ${JSON.stringify(params)}`);
+
+            const [err, resp] = await del(params);
+
+            if (err) throw err;
+
+            //debugger
+            console.log(`resp: ${JSON.stringify(resp)}`);
+
+            return [null, resp];
+
+        } catch (error) {
 
             return [error, null];
         };

@@ -25,10 +25,15 @@ export default {
           '50%': { transform: 'translateX(-10%) translateY(10%)' },
           '100%': { transform: 'translateX(0) translateY(0)' },
         },
+        'line-move': {
+          '0%': { left: '-100%' },
+          '100%': { left: '100%' },
+        },
       },
       animation: {
         wave: 'wave 15s ease-in-out infinite',
         'background-wave': 'background-wave 10s ease-in-out infinite',
+        'line-move': 'line-move 1.5s linear infinite',
       },
       spacing: {
         '2': '0.5rem',

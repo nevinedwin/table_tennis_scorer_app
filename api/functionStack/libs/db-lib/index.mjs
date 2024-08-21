@@ -84,4 +84,16 @@ export const put = async (params, end = false) => {
   }
 };
 
+export const del = async (params, end = false) => {
+  try {
+    console.log(`db delete initiated`);
+    const deleteResp = await dynamoDBOperation("delete", params);
+    if (end) return success({ status: true, message: "updated successfully" });
+    console.log(`db delete completed`);
+    return [null, { status: true, data: deleteResp }];
+  } catch (error) {
+    console.log(`error: ${JSON.stringify(error)}`);
+    return [error];
+  }
+};
 

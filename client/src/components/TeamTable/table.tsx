@@ -7,11 +7,12 @@ import Pagination from './pagination'; // Import the Pagination component
 
 type TablePropTypes = {
     data: Record<string, any>[];
-    handleEdit: (id: string) => void;
+    handleEdit: (data: Record<string, any>) => void;
     handleDelete: (id: string) => void;
+    isLoading: boolean;
 };
 
-const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete }) => {
+const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoading }) => {
     const { state: { user } } = useAuth();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -56,9 +57,9 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete }) => 
                     }}
                 />
             </div>
-            <table className='w-full border-spacing-y-4 border-separate'>
+            <table className='w-full border-spacing-y-4 border-separate text-xl'>
                 <thead>
-                    <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold'>
+                    <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold text-xxl'>
                         <th className='pl-4 text-start'>Team Name</th>
                         <th className='text-start'>Player's Name</th>
                         <th className='pr-4 text-start'>M</th>
@@ -87,10 +88,10 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete }) => 
                                 {user?.role === UserRole.SUPER_ADMIN &&
                                     <>
                                         <td className='pl-8'>
-                                            <FontAwesomeIcon icon={faEdit} className='cursor-pointer text-xl p-4' onClick={() => handleEdit(eachItem.teamId)} />
+                                            <FontAwesomeIcon icon={faEdit} className='cursor-pointer text-xl p-4' onClick={() => handleEdit(eachItem)} />
                                         </td>
                                         <td>
-                                            <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleDelete(eachItem.teamId)} />
+                                            <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleDelete(eachItem.id)} />
                                         </td>
                                     </>
                                 }
@@ -98,7 +99,21 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete }) => 
                         ))
                         :
                         <tr>
-                            <td className=''>No Data</td>
+                            {isLoading ?
+                                <td colSpan={7} className='text-center'>
+                                    <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+                                        <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
+                                    </div>
+                                </td>
+                                :
+                                <td colSpan={7} className="text-center">
+                                    <div className="flex items-center justify-center h-40">
+                                        <div className=" rounded-lg shadow-lg">
+                                            <p className="text-white text-xxl font-semibold animate-pulse">No Data Available</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>

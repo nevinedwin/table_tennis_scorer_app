@@ -4,7 +4,8 @@ import api from './axiosService.js';
 export const endpoints = {
     CREATE: "team/create",
     LIST: "team/list",
-    EDIT: "team/update"
+    EDIT: "team/update",
+    DELETE: "team/delete"
 }
 
 
@@ -28,8 +29,8 @@ export const createTeam = async (data: TeamType) => {
 
 
 // list team
-export const ListTeam = async () => {
-    const res: any = await api.get(endpoints.LIST);
+export const listTeam = async () => {
+    const res: any = await api.post(endpoints.LIST, {});
     if (res?.response?.status === 500) {
         throw res.response.data
     }
@@ -40,6 +41,16 @@ export const ListTeam = async () => {
 // list team
 export const editTeam = async (data: TeamType) => {
     const res: any = await api.post(endpoints.EDIT, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+
+// list team
+export const deleteTeam = async (data: TeamType) => {
+    const res: any = await api.post(endpoints.DELETE, data);
     if (res?.response?.status === 500) {
         throw res.response.data
     }

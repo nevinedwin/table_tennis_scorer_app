@@ -1,5 +1,3 @@
-import { ROUTES } from "../../routes/appRouter";
-
 export const items = [
     {
         title: 'Team', content: {

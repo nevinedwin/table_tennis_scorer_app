@@ -5,9 +5,10 @@ type InputElementPropType = {
     value?: string,
     setData: (data: (prev: Record<string, any>) => Record<string, any>) => void;
     name: string;
+    type?: any;
 }
 
-const InputElement: React.FC<InputElementPropType> = ({ placeholder, name, setData, value }) => {
+const InputElement: React.FC<InputElementPropType> = ({ placeholder, name, setData, value, type = "text" }) => {
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +23,7 @@ const InputElement: React.FC<InputElementPropType> = ({ placeholder, name, setDa
     return (
         <div className='flex items-center justify-center w-full gap-2'>
             <input id=''
-                type="text"
+                type={type}
                 placeholder={placeholder}
                 value={value}
                 name={name}

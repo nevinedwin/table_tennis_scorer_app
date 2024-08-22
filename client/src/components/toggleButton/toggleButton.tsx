@@ -1,32 +1,44 @@
 import React, { useState } from 'react';
+import { MatchType } from '../../services/matchService';
 
-const ToggleButton: React.FC = () => {
-    const [isToggled, setIsToggled] = useState(false);
+
+type ToggelButtonPropTypes = {
+    isFalseState: string;
+    isTruthState: string;
+    toggle: boolean;
+    setToggle: React.Dispatch<React.SetStateAction<Partial<MatchType>>>;
+    name: string
+}
+
+const ToggleButton: React.FC<ToggelButtonPropTypes> = ({ isFalseState, isTruthState, setToggle, toggle = false, name }) => {
 
     const handleToggle = () => {
-        setIsToggled(!isToggled);
+        setToggle(prev => ({
+            ...prev,
+            [name]: !toggle
+        }));
     };
 
     return (
         <label className="flex items-center cursor-pointer">
-            <div className="mr-3 text-secondary dark:text-backgroundLight  font-medium">All</div>
+            <div className="mr-3 text-white  font-xl">{isFalseState}</div>
             <div className="relative">
                 <input
                     type="checkbox"
                     className="sr-only"
-                    checked={isToggled}
+                    checked={toggle}
                     onChange={handleToggle}
                 />
                 <div
-                    className={`block w-14 h-8 border-[1px] rounded-full ${isToggled ? 'bg-primary' : 'bg-backgroundLightColor border-primary'
+                    className={`block w-14 h-8 border-[1px] rounded-full ${toggle ? 'bg-white' : 'bg-black border-white'
                         }`}
                 ></div>
                 <div
-                    className={`absolute left-1 top-1 ${isToggled ? 'bg-backgroundLightColor' : 'bg-primary'} w-6 h-6 rounded-full transition-transform duration-300 ease-in-out ${isToggled ? 'transform translate-x-6' : ''
+                    className={`absolute left-1 top-1 ${toggle ? 'bg-black' : 'bg-white'} w-6 h-6 rounded-full transition-transform duration-300 ease-in-out ${toggle ? 'transform translate-x-6' : ''
                         }`}
                 ></div>
             </div>
-            <div className="ml-3 text-secondary dark:text-backgroundLight font-medium">Live</div>
+            <div className="ml-3 text-white font-xl">{isTruthState}</div>
         </label>
     );
 };

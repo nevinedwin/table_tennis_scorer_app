@@ -15,6 +15,9 @@ export const LAMBDA = {
         LIST: "listTeam",
         UPDATE: "updateTeam",
         DELETE: "deleteTeam"
+    },
+    MATCH: {
+        CREATE: "createMatch"
     }
 };
 
@@ -27,6 +30,7 @@ export const lambdaPolicies = {
         LAMBDA.TEAM.LIST,
         LAMBDA.TEAM.UPDATE,
         LAMBDA.TEAM.DELETE,
+        LAMBDA.MATCH.CREATE
     ],
     [ROLES.ADMIN]: [
         LAMBDA.TEAM.LIST,

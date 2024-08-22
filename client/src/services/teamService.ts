@@ -10,6 +10,7 @@ export const endpoints = {
 
 
 export type TeamType = {
+    id?: string;
     teamName: string;
     player1Name: string;
     player2Name: string;

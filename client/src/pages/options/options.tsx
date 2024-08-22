@@ -3,6 +3,7 @@ import Hoc from '../../components/hoc/hoc'
 import Accordion from '../../components/accordian/accordian'
 import Create from '../team/create'
 import ListTeam from '../team/list'
+import CreateMatch from '../match/create'
 
 const Options: React.FC = () => {
 
@@ -18,6 +19,7 @@ const Options: React.FC = () => {
                 <div className='w-[90%] border-l-[1px] border-borderColor h-full'>
                     {component === "create_team" && <Create />}
                     {component === "list_team" && <ListTeam />}
+                    {component === "create_match" && <CreateMatch />}
                 </div>
             </div>
         </div>

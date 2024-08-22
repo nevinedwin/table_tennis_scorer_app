@@ -188,6 +188,69 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${TeamApiFunction}
       RetentionInDays: 90
 
+  # ---------- Match Function ---------#
+  MatchApiFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${StackNamePrefix}-MatchApiFunctionRolePolicy-${StageName}
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  - !Ref TTAppTableArn
+                  - !Sub ${TTAppTableArn}/index/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+
+  MatchApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${StackNamePrefix}-MatchApiFunction-${StageName}"
+      Handler: index.main
+      CodeUri: match
+      Role: !GetAtt MatchApiFunctionRole.Arn
+      Events:
+        UserApi:
+          Type: Api
+          Properties:
+            Path: /match/{action}/{id}
+            Method: GET
+            RestApiId: !Ref TTAppApiGateway
+        UserApiPOST:
+          Type: Api
+          Properties:
+            Path: /match/{action}
+            Method: POST
+            RestApiId: !Ref TTAppApiGateway
+  
+  MatchApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${MatchApiFunction}
+      RetentionInDays: 90
+
 Outputs:
   TTAppApiURL:
     Value: !Sub https://${TTAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api

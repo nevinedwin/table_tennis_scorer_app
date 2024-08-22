@@ -19,7 +19,7 @@ export const items = [
             },
             list: {
                 name: "List Matches",
-                url: "list_team"
+                url: "list_match"
             }
         }
     },

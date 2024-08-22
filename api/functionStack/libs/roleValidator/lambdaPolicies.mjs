@@ -17,13 +17,15 @@ export const LAMBDA = {
         DELETE: "deleteTeam"
     },
     MATCH: {
-        CREATE: "createMatch"
+        CREATE: "createMatch",
+        LIST: "listMatch"
     }
 };
 
 export const lambdaPolicies = {
     all: [
         LAMBDA.USERS.GET_USER,
+        LAMBDA.MATCH.LIST,
     ],
     [ROLES.SUPER_ADMIN]: [
         LAMBDA.TEAM.CREATE,

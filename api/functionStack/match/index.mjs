@@ -43,7 +43,15 @@ export const main = async (event) => {
                         response = await service.create(data)
                     }
 
-                } else {
+                } else if (action === "list") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.LIST)
+
+                    if (isAuthorized) {
+                        response = await service.list()
+                    }
+
+                }
+                else {
                     response = failure("Invalid Endpoint");
 
                 };

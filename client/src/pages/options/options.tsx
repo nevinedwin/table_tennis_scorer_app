@@ -4,6 +4,7 @@ import Accordion from '../../components/accordian/accordian'
 import Create from '../team/create'
 import ListTeam from '../team/list'
 import CreateMatch from '../match/create'
+import ListMatches from '../match/list'
 
 const Options: React.FC = () => {
 
@@ -20,6 +21,7 @@ const Options: React.FC = () => {
                     {component === "create_team" && <Create />}
                     {component === "list_team" && <ListTeam />}
                     {component === "create_match" && <CreateMatch />}
+                    {component === "list_match" && <ListMatches />}
                 </div>
             </div>
         </div>

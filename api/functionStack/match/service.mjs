@@ -78,6 +78,85 @@ export class MatchService {
             console.log(`Error in service: ${JSON.stringify(error)}`);
             return failure(error);
         }
+    };
+
+
+    async get(event) {
+
+        try {
+
+            const id = event?.pathParameters?.id ?? 0;
+
+            console.log(`id: ${id}`);
+
+            if (!id) return failure("Match Id is required");
+
+            const [fetchErr, fetchSucc] = await this.repository.fetchMatch(id);
+
+            if (fetchErr | !fetchSucc) throw fetchErr;
+
+            // debugger
+            console.log(`fetchSuccess: ${JSON.stringify(fetchSucc)}`);
+
+            return success(fetchSucc?.Items[0] || {});
+
+        } catch (error) {
+
+            // debugger
+            console.log(`Error: ${JSON.stringify(error)}`);
+
+            return failure(error);
+
+        };
+    };
+
+
+    async editMatch(data) {
+        try {
+            const [udpateErr, updateData] = await this.repository.createMatch(data);
+
+            if (udpateErr) throw udpateErr;
+
+            return success(updateData);
+
+        } catch (error) {
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+        };
+    };
+
+    async deleteMatch(data) {
+        try {
+
+            console.log({data});
+
+            const { id } = data;
+
+            const [delErr, delSucc] = await this.repository.deleteMatch(id);
+
+            if (delErr) throw delErr;
+
+            const [set1Err] = await this.repository.deleteSets(id, 1);
+            if(set1Err) throw set1Err;
+            //debugger
+            console.log(`dadv:`);
+            
+            const [set2Err] = await this.repository.deleteSets(id, 2);
+            if(set2Err) throw set2Err;
+            console.log("object");
+
+            const [set3Err] = await this.repository.deleteSets(id, 3);
+            if(set3Err) throw set3Err;
+            console.log("objectds");
+
+            return success("Successfully Deleted");
+
+        } catch (error) {
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+        }
     }
 
 };

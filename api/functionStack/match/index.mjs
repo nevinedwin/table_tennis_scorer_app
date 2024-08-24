@@ -27,6 +27,17 @@ export const main = async (event) => {
 
         switch (event.httpMethod) {
             case "GET":
+
+                if (action === "get") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.GET)
+
+                    if (isAuthorized) {
+                        response = await service.get(event)
+                    }
+                } else {
+                    response = failure("Invalid Endpoint");
+                };
+
                 break;
 
             case "POST":
@@ -50,8 +61,21 @@ export const main = async (event) => {
                         response = await service.list()
                     }
 
-                }
-                else {
+                } else if (action === "update") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.UPDATE)
+
+                    if (isAuthorized) {
+                        response = await service.editMatch(data)
+                    }
+
+                } else if (action === "delete") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.DELETE)
+
+                    if (isAuthorized) {
+                        response = await service.deleteMatch(data)
+                    }
+
+                } else {
                     response = failure("Invalid Endpoint");
 
                 };

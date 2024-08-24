@@ -11,6 +11,7 @@ const CreateMatch: React.FC = () => {
     const [isButtonClicked, setIsButtonClicked] = useState<boolean>(false)
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
+    const [forSearchInput, setForSearchInput] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -68,9 +69,10 @@ const CreateMatch: React.FC = () => {
 
                 setMatchData({});
                 setIsButtonClicked(false);
+                setForSearchInput(true);
                 setTimeout(() => {
                     setIsSuccess(false);
-                }, 800)
+                }, 2000)
 
             } catch (err: any) {
                 setIsError(true)
@@ -93,6 +95,8 @@ const CreateMatch: React.FC = () => {
                     isbuttonClicked={isButtonClicked}
                     setButtonClicked={setIsButtonClicked}
                     isSuccess={isSuccess}
+                    forSearchInput={forSearchInput}
+                    setForSearchInput={setForSearchInput}
                 />
             </div>
         </div>

@@ -9,15 +9,12 @@ const userEndpoints = {
 }
 
 export const fetchSingleUser = async (id: string): Promise<any> => {
-    
-    try {
 
-        const data = await api.get(`${userEndpoints.fetchSingUser}/${id}`)
+        const data: any = await api.get(`${userEndpoints.fetchSingUser}/${id}`)
 
-        return data;
+        if(data && Object.keys(data).length){
+            return data;
+        }
 
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
+        throw data;
 }

@@ -27,6 +27,16 @@ export const main = async (event) => {
 
         switch (event.httpMethod) {
             case "GET":
+
+                if (action === "get") {
+                    isAuthorized = validateAccess(role, LAMBDA.TEAM.GET)
+
+                    if (isAuthorized) {
+                        response = await service.get(event)
+                    }
+                } else {
+                    response = failure("Invalid Endpoint");
+                };
                 break;
 
             case "POST":

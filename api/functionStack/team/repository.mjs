@@ -201,4 +201,33 @@ export class TeamRepository {
         };
     };
 
+    async fetchTeam(id) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: "details"
+                }
+            };
+
+            // debugger
+            console.log(`fetch params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await get(params);
+
+
+            if (err || !succ) throw err;
+
+            return [null, succ];
+
+        } catch (error) {
+
+            return [error, null];
+        };
+
+    };
+
+
 };

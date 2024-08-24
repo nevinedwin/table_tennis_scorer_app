@@ -5,7 +5,9 @@ export const endpoints = {
     CREATE: "match/create",
     LIST: "match/list",
     EDIT: "match/update",
-    DELETE: "match/delete"
+    DELETE: "match/delete",
+    GET: "match/get",
+    UPDATE: "match/update",
 }
 
 export enum MatchStatus {
@@ -30,8 +32,36 @@ export type MatchType = {
     team2Voting: number;
     totalVoting: number;
     matchNumber: string;
-    date: Date;
+    date: string;
 };
+
+export type MatchListType = {
+    matchId: string;
+    matchNumber: string;
+    date: string;
+    team1Id: string;
+    team1Name: string;
+    team1Player1Name: string;
+    team1Player2Name: string;
+    team1Set1Score: number;
+    team1Set2Score: number;
+    team1Set3Score: number;
+    team1SetScore: number;
+    team1Voting: number;
+    team2Id: string;
+    team2Name: string;
+    team2Player1Name: string;
+    team2Player2Name: string;
+    team2Set1Score: number;
+    team2Set2Score: number;
+    team2Set3Score: number;
+    team2SetScore: number;
+    team2Voting: number;
+    votingStarted: boolean;
+    totalVoting: number;
+    matchResult: string;
+    matchStatus: string;
+}
 
 // create match
 export const createMatch = async (data: MatchType) => {
@@ -41,3 +71,43 @@ export const createMatch = async (data: MatchType) => {
     }
     return res;
 };
+
+// create match
+export const listMatch = async () => {
+    const res: any = await api.post(endpoints.LIST, {});
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+// get match
+export const getMatch = async (id: string) => {
+    const res: any = await api.get(`${endpoints.GET}/${id}`);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+
+// edit match
+export const editMatch = async (data: MatchType) => {
+    const res: any = await api.post(endpoints.UPDATE, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+// delete match
+export const deleteMatch = async (data: string) => {
+    const res: any = await api.post(endpoints.DELETE, {id: data});
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+
+

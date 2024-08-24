@@ -65,7 +65,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
             } catch (error) {
                 // error showing
-                console.log(error);
+                console.log("dsvsdvsdv",error);
+                dispatch({type: AUTH_ACTIONS.LOGOUT});
             };
         };
 

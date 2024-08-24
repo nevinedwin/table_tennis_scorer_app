@@ -1,18 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { listTeam, TeamType } from '../../services/teamService';
+import { getTeam, listTeam, TeamType } from '../../services/teamService';
 
 type SearchInputPropType = {
+    value?: string;
     placeholder: string,
-    value?: string,
     setData: (data: (prev: Record<string, any>) => Record<string, any>) => void;
     name: string;
+    isButtonClicked: boolean;
+    setForSearchInput: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SearchInput: React.FC<SearchInputPropType> = ({ placeholder, name, setData, value = "" }) => {
+const SearchInput: React.FC<SearchInputPropType> = ({ placeholder, name, setData, value = "", isButtonClicked = false, setForSearchInput }) => {
     const [onFocus, setOnFocus] = useState<boolean>(false);
     const [teamList, setTeamList] = useState<TeamType[]>([]);
     const [insideValue, setInsideValue] = useState<string>("");
     const dropdownRef = useRef<HTMLDivElement>(null); // To handle clicks outside
+
+    useEffect(() => {
+        if (value) {
+            getTeamData(value)
+        }
+    }, [value])
+
+    useEffect(() => {
+        if (isButtonClicked) {
+            setInsideValue("")
+            setForSearchInput(false);
+        };
+
+    }, [isButtonClicked])
+
+    async function getTeamData(id: string) {
+        try {
+            const resp = await getTeam(id);
+            setInsideValue(resp.teamName);
+        } catch (error) {
+            console.log(error);
+        };
+    };
 
     useEffect(() => {
         async function fetchTeam() {

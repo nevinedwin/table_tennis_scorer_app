@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import InputElement from '../inputElement/inputElement'
 import StyledButton from '../button/button'
 import { MatchType } from '../../services/matchService';
@@ -16,11 +16,15 @@ type MatchFormPropType = {
     isError: boolean;
     isbuttonClicked: boolean;
     setButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+    setForSearchInput: React.Dispatch<React.SetStateAction<boolean>>;
     isSuccess: boolean;
     buttonTitle?: string;
+    forSearchInput:boolean;
 };
 
-const MatchForm: React.FC<MatchFormPropType> = ({ matchData, setMatchData, handleCreate, isSuccess, isError, errorData, buttonTitle = "Create Match", setButtonClicked }) => {
+const MatchForm: React.FC<MatchFormPropType> = ({ matchData, setMatchData, handleCreate, isSuccess, isError, errorData, buttonTitle = "Create Match", setButtonClicked , forSearchInput, setForSearchInput}) => {
+
+
     return (
         <div className='w-full rounded-md p-8 mt-8 border-[1px] border-borderColor'>
 
@@ -34,7 +38,7 @@ const MatchForm: React.FC<MatchFormPropType> = ({ matchData, setMatchData, handl
                 <div className='flex-1 flex justify-center items-center flex-col'>
                     <p className='text-xl mb-2'>Voting</p>
                     <div className='flex items-center justify-center'>
-                        <ToggleButton isFalseState='OFF' isTruthState='ON' name='votingStarted' setToggle={setMatchData} toggle={matchData?.votingStarted || false}/>
+                        <ToggleButton isFalseState='OFF' isTruthState='ON' name='votingStarted' setToggle={setMatchData} toggle={matchData?.votingStarted || false} />
                     </div>
                 </div>
             </div>
@@ -42,18 +46,18 @@ const MatchForm: React.FC<MatchFormPropType> = ({ matchData, setMatchData, handl
             <p className='mt-8 mb-2'>Playing Teams</p>
             <div className='flex items-center justify-between'>
                 <div className='flex-1 mr-3'>
-                    <SearchInput placeholder='Team 1' name='team1Id' setData={setMatchData} value={matchData.team1Id} />
+                    <SearchInput placeholder='Team 1' name='team1Id' setData={setMatchData} value={matchData.team1Id} isButtonClicked={forSearchInput} setForSearchInput={setForSearchInput}/>
                 </div>
                 <div>vs</div>
                 <div className='flex-1 ml-3'>
-                    <SearchInput placeholder='Team 2' name='team2Id' setData={setMatchData} value={matchData.team2Id} />
+                    <SearchInput placeholder='Team 2' name='team2Id' setData={setMatchData} value={matchData.team2Id} isButtonClicked={forSearchInput} setForSearchInput={setForSearchInput}/>
                 </div>
             </div>
 
             <p className='text-xl mb-2 mt-8'>Schedule Match</p>
             <div className='flex items-center justify-between'>
                 <div className='flex-1 mr-3'>
-                    <CalendarInput selectedDate={matchData?.date || null} setSelectedDate={setMatchData} name='date' />
+                    <CalendarInput selectedDate={matchData?.date ? new Date(matchData.date) : null} setSelectedDate={setMatchData} name='date' />
                 </div>
             </div>
 
@@ -70,4 +74,4 @@ const MatchForm: React.FC<MatchFormPropType> = ({ matchData, setMatchData, handl
     )
 }
 
-export default MatchForm
+export default memo(MatchForm)

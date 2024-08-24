@@ -127,4 +127,29 @@ export class TeamService {
         };
     };
 
+
+    async get(event) {
+        try {
+            const id = event?.pathParameters?.id ?? 0;
+
+            console.log(`id: ${id}`);
+
+            if (!id) return failure("Match Id is required");
+
+            const [fetchErr, fetchSucc] = await this.repository.fetchTeam(id);
+
+            if (fetchErr | !fetchSucc) throw fetchErr;
+
+            // debugger
+            console.log(`fetchSuccess: ${JSON.stringify(fetchSucc)}`);
+
+            return success(fetchSucc?.Item || {});
+
+        } catch (error) {
+            // debugger
+            console.log(`Error: ${JSON.stringify(error)}`);
+
+            return failure(error);
+        }
+    };
 }

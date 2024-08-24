@@ -1,4 +1,4 @@
-import { get, post, query } from 'libs/db-lib/index.mjs';
+import { get, post, query, del } from 'libs/db-lib/index.mjs';
 import { v4 as uuidV4 } from 'uuid';
 
 const MatchStatus = {
@@ -43,7 +43,7 @@ export class MatchRepository {
                 TableName: this.tableName,
                 Item: {
                     id: matchId,
-                    details: `match#${date}`,
+                    details: `match`,
                     date,
                     team1Id,
                     team2Id,
@@ -240,7 +240,7 @@ export class MatchRepository {
 
             //debugger
             console.log(`team2: ${JSON.stringify(team2)}`);
-            
+
             //debugger
             console.log(`matchSet: ${JSON.stringify(matchSet)}`);
 
@@ -280,6 +280,94 @@ export class MatchRepository {
         })
 
         return combineData;
+    }
+
+
+    async fetchMatch(id) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                KeyConditionExpression: `#id = :id AND begins_with(#details, :details)`,
+                ExpressionAttributeNames: {
+                    "#id": "id",
+                    "#details": "details"
+                },
+                ExpressionAttributeValues: {
+                    ":id": id,
+                    ":details": "match"
+                }
+            };
+
+            // debugger
+            console.log(`fetch params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await query(params);
+
+
+            if (err || !succ) throw err;
+
+            return [null, succ];
+
+        } catch (error) {
+
+            return [error, null];
+        };
+
+    };
+
+
+    async deleteMatch(id) {
+        try {
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: "match"
+                }
+            };
+
+            console.log({params});
+
+            const [err, deleteSucc] = await del(params);
+
+            console.log({err});
+
+            if (err) throw err;
+
+            //debugger
+            console.log(`del: ${JSON.stringify(del)}`);
+
+            return [null, deleteSucc]
+
+        } catch (error) {
+            return [error, null];
+        }
+    };
+
+    async deleteSets(id, setNumber) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: `set#${setNumber}`
+                }
+            };
+
+            const [err, succ] = await del(params);
+
+            //debugger
+            console.log(`succ: ${JSON.stringify(succ)}`);
+
+            if (err) throw err;
+
+            return [null, succ];
+
+        } catch (error) {
+            return [error, null];
+        }
     }
 
 };

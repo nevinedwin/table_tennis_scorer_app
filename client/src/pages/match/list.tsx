@@ -1,14 +1,18 @@
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
+import MatchTable from '../../components/matchTable/matchTable';
+import { deleteMatch, listMatch, MatchListType, MatchType } from '../../services/matchService';
+import { quickSort } from '../../utilities/common';
+import EditMatch from './edit';
 
 const ListMatches: React.FC = () => {
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
-    const [editData, setEditData] = useState<Record<string, any>>({});
+    const [editData, setEditData] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [teamList, setTeamList] = useState<Record<string, any>[]>([]);
+    const [matchList, setMatchList] = useState<Partial<MatchListType[]>>([]);
     const [isDelete, setIsDelete] = useState<boolean>(false);
 
     useEffect(() => {
@@ -18,18 +22,63 @@ const ListMatches: React.FC = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (!isDelete) {
+            getList();
+        };
+    }, [isEdit, isDelete]);
+
+
+    const getList = async () => {
+
+        try {
+            setIsLoading(true);
+            const data = await listMatch();
+
+            const sortedData = quickSort(data as MatchListType[], "matchNumber");
+            setMatchList(sortedData)
+            setIsLoading(false)
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    const handleEdit = (data: string) => {
+        setIsEdit(true);
+        setEditData(data);
+    };
+
+    const handleDelete = async (id: string) => {
+        try {
+
+            setIsDelete(true);
+            await deleteMatch(id);
+            setIsDelete(false);
+
+        } catch (error) {
+            console.log(error);
+        };
+    };
+
+
+    const handlePoll = () => {
+
+    }
+
     return (
         <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
             {isEdit ?
                 <>
                     <FontAwesomeIcon icon={faArrowLeft} className='text-2xl cursor-pointer p-4' onClick={() => setIsEdit(false)} />
-                    {/* <Edit data={editData} setIsEdit={setIsEdit} /> */}
+                    <EditMatch data={editData} setIsEdit={setIsEdit} />
                 </>
                 :
                 <>
-                    <h1 className='text-3xl font-bold text-center py-8'>Team List</h1>
-                    <div className='w-[70%] m-auto h-full'>
-                        {/* <Table data={teamList} handleEdit={handleEdit} handleDelete={handleDelete} isLoading={isLoading} /> */}
+                    <h1 className='text-3xl font-bold text-center py-8'>Matches</h1>
+                    <div className='w-[90%] m-auto h-full'>
+                        <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handlePoll={handlePoll}/>
                     </div>
                 </>
             }

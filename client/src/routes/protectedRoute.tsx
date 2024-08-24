@@ -9,15 +9,15 @@ interface ProtectedRouteProps {
     allowedRoles: UserRole[]
 };
 
-const { userIdKey } = localStorageKeys;
+const { token } = localStorageKeys;
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
-    const userId = ManageLocalStorage.get(userIdKey) as string
+    const IdToken = ManageLocalStorage.get(token) as string
 
     const { state: { user } } = useAuth();
 
-    if (!userId) return <Navigate to="/login" replace />;
+    if (!IdToken) return <Navigate to="/login" replace />;
 
     if (user && !allowedRoles.includes(user.role)) return <Navigate to="/unauthorized" replace />
 

@@ -14,11 +14,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return { ...state, isLoginStarts: action.payload };
         case AUTH_ACTIONS.LOGIN_SUCCESS:
             ManageLocalStorage.set(userIdKey, action.payload);
-            return { ...state, userId: action.payload, isLoginStarts: false };
+            return { ...state, userId: action.payload };
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
-            return { ...state, user: action.payload };
+            return { ...state, user: action.payload};
         case AUTH_ACTIONS.LOGOUT:
             ManageLocalStorage.delete(userIdKey);
             ManageLocalStorage.delete(token);
@@ -39,8 +39,8 @@ const intialState: AuthState = {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
-    const { onConnect} = useSocket();
-    
+    const { onConnect } = useSocket();
+
     const [state, dispatch] = useReducer(authReducer, intialState);
     const [fetchUserFlag, setFetchUserFlag] = useState(false);
 
@@ -66,6 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             try {
                 const data = await fetchSingleUser(userId);
                 dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
+                // dispatch({ type: AUTH_ACTIONS.LOGIN_STARTS, payload: false });
             } catch (error) {
                 // error showing
                 console.log("dsvsdvsdv", error);

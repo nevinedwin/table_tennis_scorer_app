@@ -7,7 +7,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { navbarList } from './navlist';
 import StyledButton from '../button/button';
 import { useSocket } from '../../context/websocketContext/websocketContext';
+import ManageLocalStorage, { localStorageKeys } from '../../utilities/ManageLocalStorage';
 
+const {isLoading: isLoadingKey} = localStorageKeys;
 
 const Navbar: React.FC = () => {
 
@@ -21,6 +23,7 @@ const Navbar: React.FC = () => {
     const handleSignout = () => {
         signOut();
         onDisconnect();
+        ManageLocalStorage.delete(isLoadingKey);
         dispatch({ type: AUTH_ACTIONS.LOGOUT });
     };
 

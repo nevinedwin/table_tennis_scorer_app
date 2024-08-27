@@ -3,14 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useAuth } from '../../context/authContext/authContext';
 import { signIn } from '../../services/loginServices';
+import ManageLocalStorage, { localStorageKeys } from '../../utilities/ManageLocalStorage';
 
+const { isLoading: isLoadingKey } = localStorageKeys;
 
-const GoogleLoginButton: React.FC = () => {
+type GoogleLoginButtonTypeProp = {
+    isLoading?: any;
+};
+
+const GoogleLoginButton: React.FC<GoogleLoginButtonTypeProp> = ({ isLoading }) => {
 
     const { state: { error: signInError } } = useAuth()
 
     const handleLogin = () => {
         try {
+            ManageLocalStorage.set(isLoadingKey, 'true');
             signIn()
         } catch (error) {
             console.log(error);
@@ -23,9 +30,10 @@ const GoogleLoginButton: React.FC = () => {
         <>
             <button
                 onClick={handleLogin}
-                className={`flex h-full justify-center items-center bg-primary text-light font-medium rounded-lg py-2 px-4 w-full text-xl
-                        transition-bg-border duration-300 ease-custom
-                        hover:bg-black hover:border-white hover:border-[1px]
+                className={`flex h-full justify-center items-center  font-medium rounded-lg py-2 px-4 w-full text-xl
+                        ${isLoading ? `bg-gray-500 cursor-default` : `bg-primary text-light transition-bg-border duration-300 ease-custom
+                        hover:bg-black hover:border-white hover:border-[1px]`}
+                        
                      `}>
                 <FontAwesomeIcon icon={faGoogle} className="mr-2 text-2xl" />
                 Sign in with Google

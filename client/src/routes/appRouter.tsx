@@ -1,9 +1,10 @@
-import React, { lazy, Suspense } from "react"
+import React, { lazy, Suspense, useEffect, useState } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import ProtectedRoute from "./protectedRoute";
 import { UserRole } from "../context/authContext/authContextTypes";
 import { useAuth } from "../context/authContext/authContext";
 import ErrorBoundary from "../components/errorBoundary/errorBoundary";
+import { fetchAuthSession, JWT } from "@aws-amplify/auth";
 
 const Login = lazy(() => import("../pages/login/login"));
 const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));

@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import GoogleLoginButton from '../../components/loginComponent/googleAuth';
+import { useAuth } from '../../context/authContext/authContext';
+import ManageLocalStorage, { localStorageKeys } from '../../utilities/ManageLocalStorage';
+
+const { isLoading: isLoadingKey } = localStorageKeys;
 
 const LoginPage: React.FC = () => {
 
+  const { state: { user } } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      ManageLocalStorage.delete(isLoadingKey);
+    }
+  }, [user])
+
+  const isLoading = ManageLocalStorage.get(isLoadingKey);
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
+      {isLoading && <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+        <div className="absolute top-0 left-0 w-full h-full bg-primary animate-line-move"></div>
+      </div>}
       <div className="absolute inset-0 z-0 animate-background-wave">
         <div className="absolute inset-0 bg-pattern opacity-50"></div>
       </div>
@@ -22,7 +39,7 @@ const LoginPage: React.FC = () => {
           </p> */}
           <div className='flex items-center justify-center mt-8'>
             <div className='w-[400px] h-[50px]'>
-              <GoogleLoginButton />
+              <GoogleLoginButton isLoading={isLoading}/>
             </div>
           </div>
         </div>

@@ -25,7 +25,6 @@ const Dashboard: React.FC = () => {
             const data: MatchListType[] = await listMatch();
             const soreted = quickSort(data, 'matchNumber');
             const filtered = filterData(soreted);
-            console.log(filtered);
             setMatches(filtered.slice(0, 4));
             setLoading(false);
         } catch (error) {

@@ -118,10 +118,6 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
     }, [matches])
 
-
-
-
-
     const getVoteUser = async (matchId: string) => {
         try {
             const resp = await getVote({ matchId })
@@ -149,10 +145,8 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
         try {
             if (!isVoted) {
 
-                const resp = await addVote({ teamId, matchId });
-                if (resp) {
-                    await getFullMatchData(matchId)
-                };
+                await addVote({ teamId, matchId });
+                await getFullMatchData(matchId)
             };
 
         } catch (error) {

@@ -69,7 +69,8 @@ export default {
         'xl': ['17px', '26px'],
         'xxl': ['20px', '30px'],
         '4xl': ['50px', '65px'],
-        '5xl': ['80px', '100px']
+        '5xl': ['80px', '100px'],
+        '10xl':['180px', '200px']
       },
       screens: {
         'xs': { 'min': '479px' },

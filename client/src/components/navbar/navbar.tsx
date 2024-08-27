@@ -6,18 +6,21 @@ import { signOut } from '@aws-amplify/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navbarList } from './navlist';
 import StyledButton from '../button/button';
+import { useSocket } from '../../context/websocketContext/websocketContext';
 
 
 const Navbar: React.FC = () => {
 
 
     const { state: { user }, dispatch } = useAuth();
+    const { onDisconnect } = useSocket()
 
     const location = useLocation();
     const navigate = useNavigate();
 
     const handleSignout = () => {
         signOut();
+        onDisconnect();
         dispatch({ type: AUTH_ACTIONS.LOGOUT });
     };
 

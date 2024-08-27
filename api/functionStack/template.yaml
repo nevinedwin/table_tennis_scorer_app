@@ -13,6 +13,8 @@ Globals:
       Variables:
         TABLE_NAME: !Ref TableName
         INDEX_NAME: !Ref TTAppTableIndex
+        WEBSOCKET_URL: !Ref WebSocketUrl
+        WEBSOCKET_POST_URL: !Ref WebSocketPostUrl
 
 Parameters:
   StageName:
@@ -28,6 +30,10 @@ Parameters:
   StackNamePrefix:
     Type: String
   TTAppTableIndex:
+    Type: String
+  WebSocketUrl:
+    Type: String
+  WebSocketPostUrl:
     Type: String
 
 Resources:

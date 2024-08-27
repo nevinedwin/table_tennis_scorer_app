@@ -5,7 +5,7 @@ import { UserService } from './service.mjs';
 import { UserRepository } from './repository.mjs';
 
 
-const { TABLE_NAME, INDEX_NAME } = process.env
+const { TABLE_NAME, INDEX_NAME, WEBSOCKET_URL } = process.env
 
 export const main = async (event) => {
 
@@ -34,6 +34,14 @@ export const main = async (event) => {
 
                     if (isAuthorized) {
                         response = await service.getUser(event);
+                    };
+
+                } else if (action === "socketUrl") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.USERS.SOCKET_URL);
+
+                    if (isAuthorized) {
+                        response = success({status: true, socketUrl: WEBSOCKET_URL});
                     };
 
                 } else {

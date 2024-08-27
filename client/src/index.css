@@ -4,6 +4,7 @@
 
 #root {
   /* width: 100vw; */
+  @apply transition-all duration-300 ease-custom overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900;
 }
 
 body {

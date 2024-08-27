@@ -75,6 +75,27 @@ export const main = async (event) => {
                         response = await service.deleteMatch(data)
                     }
 
+                } else if (action === "addVote") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.ADDVOTE)
+
+                    if (isAuthorized) {
+                        response = await service.addVote(data, userId)
+                    }
+
+                } else if (action === "getVote") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.GETVOTE)
+
+                    if (isAuthorized) {
+                        response = await service.getVote(data, userId)
+                    }
+
+                } else if (action === "getFullMatch") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.GETFULLMATCH)
+
+                    if (isAuthorized) {
+                        response = await service.getFullMatch(data)
+                    }
+
                 } else {
                     response = failure("Invalid Endpoint");
 

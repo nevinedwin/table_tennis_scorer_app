@@ -3,19 +3,22 @@ import { GlobalStateProvider } from './context/globalStateContext/globalStateCon
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRouter from './routes/appRouter';
 import 'react-calendar/dist/Calendar.css';
+import { WebSocketProvider } from './context/websocketContext/websocketContext';
 
 
 
 function App(): JSX.Element {
 
   return (
-        <AuthProvider>
-          <Router>
-            <GlobalStateProvider>
-              <AppRouter />
-            </GlobalStateProvider>
-          </Router>
-        </AuthProvider>
+    <WebSocketProvider>
+      <AuthProvider>
+        <Router>
+          <GlobalStateProvider>
+            <AppRouter />
+          </GlobalStateProvider>
+        </Router>
+      </AuthProvider>
+    </WebSocketProvider>
   );
 };
 

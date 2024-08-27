@@ -3,7 +3,8 @@ import { AUTH_ACTIONS, AuthAction, AuthState, CurrentUserType } from "./authCont
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 import { Hub } from "aws-amplify/utils";
 import { getCurrentUser, signOut } from "@aws-amplify/auth";
-import { fetchSingleUser } from "../../services/userService";
+import { fetchSingleUser, getSocketUrl } from "../../services/userService";
+import { useSocket } from "../websocketContext/websocketContext";
 
 const { userIdKey, token } = localStorageKeys;
 
@@ -38,6 +39,8 @@ const intialState: AuthState = {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
+    const { onConnect} = useSocket();
+    
     const [state, dispatch] = useReducer(authReducer, intialState);
     const [fetchUserFlag, setFetchUserFlag] = useState(false);
 
@@ -65,8 +68,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
             } catch (error) {
                 // error showing
-                console.log("dsvsdvsdv",error);
-                dispatch({type: AUTH_ACTIONS.LOGOUT});
+                console.log("dsvsdvsdv", error);
+                dispatch({ type: AUTH_ACTIONS.LOGOUT });
             };
         };
 
@@ -90,6 +93,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (userId) {
 
                 dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userId });
+
+                const socketData: any = await getSocketUrl();
+
+                if (socketData.socketUrl) {
+                    onConnect(socketData.socketUrl);
+                }
             } else {
 
                 signOut();

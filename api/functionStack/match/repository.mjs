@@ -1,4 +1,4 @@
-import { get, post, query, del } from 'libs/db-lib/index.mjs';
+import { get, post, query, del, put } from 'libs/db-lib/index.mjs';
 import { v4 as uuidV4 } from 'uuid';
 
 const MatchStatus = {
@@ -8,6 +8,12 @@ const MatchStatus = {
     Cancelled: "Cancelled"
 };
 
+
+const PredictionCorrectStatus = {
+    Correct: "CORRECT",
+    Wrong: "WRONG",
+    Pending: "PENDING"
+};
 
 export class MatchRepository {
 
@@ -242,7 +248,10 @@ export class MatchRepository {
             console.log(`team2: ${JSON.stringify(team2)}`);
 
             //debugger
-            console.log(`matchSet: ${JSON.stringify(matchSet)}`);
+            // console.log(`matchSet: ${JSON.stringify(matchSet)}`);
+
+            console.log(match.team1Voting);
+            console.log(match.team2Voting);
 
 
             const returnValue = {
@@ -327,11 +336,11 @@ export class MatchRepository {
                 }
             };
 
-            console.log({params});
+            console.log({ params });
 
             const [err, deleteSucc] = await del(params);
 
-            console.log({err});
+            console.log({ err });
 
             if (err) throw err;
 
@@ -364,6 +373,183 @@ export class MatchRepository {
             if (err) throw err;
 
             return [null, succ];
+
+        } catch (error) {
+            return [error, null];
+        }
+    };
+
+
+    async getMatch(id) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: "match"
+                }
+            }
+
+            const [err, resp] = await get(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null];
+        }
+    };
+
+    async getUserBasedVoting(userId, matchId) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: userId,
+                    details: matchId
+                }
+            };
+
+            const [err, resp] = await get(params);
+
+            console.log("object", JSON.stringify(resp));
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null];
+        };
+    };
+
+    async updateMatchBasedOnVote(matchId, teamNumber) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: matchId,
+                    details: "match"
+                },
+                UpdateExpression: `ADD #votingTeam :incrementValue, #totalVoting :incrementValue`,
+                ExpressionAttributeNames: {
+                    "#votingTeam": `team${teamNumber}Voting`,
+                    "#totalVoting": `totalVoting`
+                },
+                ExpressionAttributeValues: {
+                    ":incrementValue": 1
+                },
+                ReturnValues: 'UPDATED_NEW'
+            };
+
+            const [err, resp] = await put(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null];
+        };
+    };
+
+
+    async createUserVote(userId, matchId, teamId) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Item: {
+                    id: userId,
+                    details: matchId,
+                    role: 'VOTE',
+                    votedTeamId: teamId,
+                    isPredictionCorrect: PredictionCorrectStatus.Pending
+                }
+            };
+
+            const [err, resp] = await post(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null]
+        }
+    };
+
+    async fetchTeam(id) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id,
+                    details: "details"
+                }
+            };
+
+            // debugger
+            console.log(`fetch params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await get(params);
+
+
+            if (err || !succ) throw err;
+
+            return [null, succ];
+
+        } catch (error) {
+
+            return [error, null];
+        };
+
+    };
+
+    async getMatch(matchId) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: matchId,
+                    details: "match"
+                }
+            };
+
+            const [err, resp] = await get(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null];
+        }
+    };
+
+
+    async getMatchSet(matchId, setNumber) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: matchId,
+                    details: `set#${setNumber}`
+                }
+            };
+
+            const [err, resp] = await get(params);
+
+            if (err) throw err;
+
+            return [null, resp];
 
         } catch (error) {
             return [error, null];

@@ -101,6 +101,7 @@ const EditMatch: React.FC<EditMatchPropTypes> = ({ data, setIsEdit }) => {
         }
     };
 
+
     return (
         <div className={`h-full w-full m-auto max-w-[750px] transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
             <div className='flex flex-col items-center justify-center pt-20'>
@@ -117,6 +118,7 @@ const EditMatch: React.FC<EditMatchPropTypes> = ({ data, setIsEdit }) => {
                     isSuccess={isSuccess}
                     forSearchInput={forSearchInput}
                     setForSearchInput={setForSearchInput}
+                    buttonTitle='Edit Match'
                 />
             </div>
         </div>

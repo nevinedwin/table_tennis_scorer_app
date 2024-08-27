@@ -36,6 +36,8 @@ Resources:
               AttributeName: role
             - KeyType: RANGE
               AttributeName: id
+      StreamSpecification:
+        StreamViewType: "NEW_AND_OLD_IMAGES"
 
 Outputs:
   TTAppTable:

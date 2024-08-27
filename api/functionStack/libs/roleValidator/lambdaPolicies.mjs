@@ -8,7 +8,8 @@ export const ROLES = {
 export const LAMBDA = {
     USERS: {
         LIST_USERS: "listUsers",
-        GET_USER: "getUsers"
+        GET_USER: "getUsers",
+        SOCKET_URL: "socketUrl"
     },
     TEAM: {
         CREATE: "createTeam",
@@ -22,16 +23,23 @@ export const LAMBDA = {
         LIST: "listMatch",
         GET: "getMatch",
         UPDATE: "updateMatch",
-        DELETE: "deleteMatch"
+        DELETE: "deleteMatch",
+        ADDVOTE: "addVote",
+        GETVOTE: "getVote",
+        GETFULLMATCH: "getFullMatch"
     }
 };
 
 export const lambdaPolicies = {
     all: [
         LAMBDA.USERS.GET_USER,
+        LAMBDA.USERS.SOCKET_URL,
         LAMBDA.MATCH.LIST,
         LAMBDA.MATCH.GET,
         LAMBDA.TEAM.GET,
+        LAMBDA.MATCH.ADDVOTE,
+        LAMBDA.MATCH.GETVOTE,
+        LAMBDA.MATCH.GETFULLMATCH
     ],
     [ROLES.SUPER_ADMIN]: [
         LAMBDA.TEAM.CREATE,

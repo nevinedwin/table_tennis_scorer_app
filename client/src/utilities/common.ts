@@ -57,4 +57,13 @@ export function quickSort<T extends Record<K, any>, K extends keyof T>(arr: T[],
     }
 
     return [...quickSort(left, key), pivot, ...quickSort(right, key)];
-}
+};
+
+export const findPercentage = (total: number, given: number, down: boolean) => {
+    const data = (given * 100) / total;
+
+
+    if (down) return Math.floor(data);
+
+    return Math.ceil(data);
+};

@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/1628063bfb434f86d111d84f10ced248.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/c54042181cfbf6345b1de38c3e1efd17.template
       Parameters:
         StageName:
           Ref: StageName
@@ -50,7 +50,7 @@ Resources:
   DynamoDbTableStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/cf18b0017f5011e7762f0961359229ef.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/d0c28ae052876b66caccc155ac2a9a54.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/93f8cb67af0b022156769f02cffb479b.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/d199ed190b8d483f02c15facec27945e.template
       Parameters:
         StageName:
           Ref: StageName
@@ -132,10 +132,58 @@ Resources:
           - StackNamePrefix
           - Ref: StageName
           - Name
+        WebSocketUrl:
+          Fn::GetAtt:
+          - SocketStack
+          - Outputs.TTAppWebSocketGatewayEndpoint
+        WebSocketPostUrl:
+          Fn::GetAtt:
+          - SocketStack
+          - Outputs.TTAppWebSocketGatewayPOSTEndpoint
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
       SamResourceId: FunctionStack
+  SocketStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/f19169dbb5af81752e257f76c84f399d.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        UserPoolId:
+          Fn::GetAtt:
+          - CognitoStack
+          - Outputs.UserPoolId
+        UserPoolClientId:
+          Fn::GetAtt:
+          - CognitoStack
+          - Outputs.UserPoolClientId
+        TTAppLayer:
+          Fn::GetAtt:
+          - LambdaLayerStack
+          - Outputs.TTAppLayer
+        TableName:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableName
+        TTAppTableArn:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableArn
+        TTAppTableIndex:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppTableIndexName
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      SamResourceId: SocketStack
 Outputs:
   TTAppApiURL:
     Description: Api Gateway base url

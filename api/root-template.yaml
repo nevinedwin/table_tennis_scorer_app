@@ -89,6 +89,24 @@ Resources:
         TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
         TTAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        WebSocketUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayEndpoint
+        WebSocketPostUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayPOSTEndpoint
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+
+  SocketStack:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./socketStack/template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        UserPoolId: !GetAtt CognitoStack.Outputs.UserPoolId
+        UserPoolClientId: !GetAtt CognitoStack.Outputs.UserPoolClientId
+        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
+        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
+        TTAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 

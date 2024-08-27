@@ -1,0 +1,246 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTAppTable Application Socket"
+
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 900
+    MemorySize: 1024
+    Layers:
+      - !Ref TTAppLayer
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref TableName
+        INDEX_NAME: !Ref TTAppTableIndex
+        USERPOOL_ID: !Ref UserPoolId
+        USERPOOL_CLIENT_ID: !Ref UserPoolClientId
+
+Parameters:
+  StageName:
+    Type: String
+  TTAppLayer:
+    Type: String
+  TableName:
+    Type: String
+  TTAppTableArn:
+    Type: String
+  UserPoolId:
+    Type: String
+  UserPoolClientId:
+    Type: String
+  StackNamePrefix:
+    Type: String
+  TTAppTableIndex:
+    Type: String
+
+Resources:
+
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.main
+      CodeUri: authorizer
+      FunctionName: !Sub "${StackNamePrefix}-AuthorizerFunction-${StageName}"
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogStreams
+              Resource: "*"
+
+  AuthorizerFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AuthorizerFunction}
+      RetentionInDays: 90
+
+  SocketFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.main
+      CodeUri: socket
+      FunctionName: !Sub ${StackNamePrefix}-SocketFunction-${StageName}
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - execute-api:ManageConnections
+                - execute-api:Invoke
+              Resource:
+                - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${TTAppWebSocketGateway}/*
+            - Effect: Allow
+              Action:
+                - dynamodb:Query
+                - dynamodb:UpdateItem
+              Resource:
+                - !Ref TTAppTableArn
+                - !Sub ${TTAppTableArn}/index/*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogStreams
+              Resource: "*"
+
+  SocketFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SocketFunction}
+      RetentionInDays: 90
+  
+  TTAppWebSocketGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub ${StackNamePrefix}-TTAppWebSocket-${StageName}
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: request.body.action
+
+  LambdaAuthorizer:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      Name: LambdaAuth
+      ApiId: !Ref TTAppWebSocketGateway
+      AuthorizerType: REQUEST
+      AuthorizerUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerFunction.Arn}/invocations
+      IdentitySource:
+        - route.request.querystring.token
+  
+  ApiIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref TTAppWebSocketGateway
+      Description: Socket Lambda Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SocketFunction.Arn}/invocations
+      IntegrationMethod: POST
+  
+  TTAppWebSocketGatewayCloudWatchRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'
+  
+  TTAppWebSocketGatewayAccount:
+    Type: 'AWS::ApiGateway::Account'
+    Properties:
+      CloudWatchRoleArn: !GetAtt TTAppWebSocketGatewayCloudWatchRole.Arn
+  
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TTAppWebSocketGateway
+      RouteKey: "$connect"
+      AuthorizationType: CUSTOM
+      OperationName: ConnectRoute
+      AuthorizerId: !Ref LambdaAuthorizer
+      Target: !Sub integrations/${ApiIntegration}
+  
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TTAppWebSocketGateway
+      RouteKey: "$disconnect"
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Sub integrations/${ApiIntegration}
+  
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref TTAppWebSocketGateway
+      RouteKey: "$default"
+      AuthorizationType: NONE
+      OperationName: DefaultRoute
+      Target: !Sub integrations/${ApiIntegration}
+  
+  DefaultRouteResponse:
+    Type: AWS::ApiGatewayV2::RouteResponse
+    Properties:
+      RouteId: !Ref DefaultRoute
+      ApiId: !Ref TTAppWebSocketGateway
+      RouteResponseKey: $default
+  
+  DeploymentGateway:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - ConnectRoute
+      - DisconnectRoute
+      - DefaultRoute
+    Properties:
+      ApiId: !Ref TTAppWebSocketGateway
+  
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn:
+      - TTAppWebSocketGatewayAccount
+    Properties:
+      StageName: !Ref StageName
+      Description: !Ref StageName
+      DeploymentId: !Ref DeploymentGateway
+      DefaultRouteSettings:
+        DetailedMetricsEnabled: false
+      AccessLogSettings:
+        DestinationArn: !GetAtt TTAppWebSocketGatewayLogGroup.Arn
+        Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.routeKey $context.protocol" $context.status $context.responseLength $context.requestId $context.integrationErrorMessage
+      ApiId: !Ref TTAppWebSocketGateway
+  
+  TTAppWebSocketGatewayLogGroup:
+    DependsOn: TTAppWebSocketGateway
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/apigateway/${StackNamePrefix}-TTAppWebSocket-${StageName}
+      RetentionInDays: 90
+  
+
+  AuthorizerFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TTAppWebSocketGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AuthorizerFunction
+      Principal: apigateway.amazonaws.com
+  
+
+  HandlerFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - TTAppWebSocketGateway
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SocketFunction
+      Principal: apigateway.amazonaws.com
+
+
+Outputs:
+  TTAppWebSocketGateway:
+    Description: "Websocket gateway api-id"
+    Value: !Ref TTAppWebSocketGateway
+  TTAppWebSocketGatewayEndpoint:
+    Description: "The WSS Protocol URI to connect to"
+    Value: !Sub ${TTAppWebSocketGateway.ApiEndpoint}/${StageName}
+  TTAppWebSocketGatewayPOSTEndpoint:
+    Description: "Post endpoint for Sockets"
+    Value: !Sub https://${TTAppWebSocketGateway}.execute-api.${AWS::Region}.amazonaws.com/${StageName}

@@ -8,6 +8,9 @@ export const endpoints = {
     DELETE: "match/delete",
     GET: "match/get",
     UPDATE: "match/update",
+    ADDVOTE: "match/addVote",
+    GETVOTE: "match/getVote",
+    GETFULLMATCH: "match/getFullMatch",
 }
 
 export enum MatchStatus {
@@ -102,12 +105,42 @@ export const editMatch = async (data: MatchType) => {
 
 // delete match
 export const deleteMatch = async (data: string) => {
-    const res: any = await api.post(endpoints.DELETE, {id: data});
+    const res: any = await api.post(endpoints.DELETE, { id: data });
     if (res?.response?.status === 500) {
         throw res.response.data
     }
     return res;
 };
+
+
+// add vote
+export const addVote = async (data: any) => {
+    const res: any = await api.post(endpoints.ADDVOTE, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+// get Vote
+export const getVote = async (data: any) => {
+    const res: any = await api.post(endpoints.GETVOTE, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
+
+// get Vote
+export const getFullMatch = async (data: any) => {
+    const res: any = await api.post(endpoints.GETFULLMATCH, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
+
 
 
 

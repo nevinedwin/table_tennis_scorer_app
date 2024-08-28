@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MatchType } from '../../services/matchService';
 
 
@@ -7,17 +7,21 @@ type ToggelButtonPropTypes = {
     isTruthState: string;
     toggle: boolean;
     setToggle: React.Dispatch<React.SetStateAction<Partial<MatchType>>> | React.Dispatch<React.SetStateAction<any>>;
-    name: string
+    name: string;
+    id?: string;
+    toggledId?: string;
 }
 
-const ToggleButton: React.FC<ToggelButtonPropTypes> = ({ isFalseState, isTruthState, setToggle, toggle = false, name }) => {
+const ToggleButton: React.FC<ToggelButtonPropTypes> = ({ isFalseState, isTruthState, setToggle, toggle = false, name, id, toggledId }) => {
 
     const handleToggle = () => {
         setToggle(prev => ({
             ...prev,
-            [name]: !toggle
+            [name]: !toggle,
+            ...(id && { id })
         }));
     };
+    console.log({toggledId, id});
 
     return (
         <label className="flex items-center cursor-pointer">
@@ -26,7 +30,7 @@ const ToggleButton: React.FC<ToggelButtonPropTypes> = ({ isFalseState, isTruthSt
                 <input
                     type="checkbox"
                     className="sr-only"
-                    checked={toggle}
+                    checked={toggledId === id ? toggle : false}
                     onChange={handleToggle}
                 />
                 <div

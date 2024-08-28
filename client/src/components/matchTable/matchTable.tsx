@@ -4,7 +4,7 @@ import { MatchListType, MatchStatus } from '../../services/matchService';
 import Pagination from '../TeamTable/pagination';
 import { UserRole } from '../../context/authContext/authContextTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faSquarePollVertical, faTableTennis, faTrash, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatTime } from '../../utilities/common';
 import ToggleButton from '../toggleButton/toggleButton';
 
@@ -30,11 +30,11 @@ const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
 };
 
 
-const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDelete, handleEdit, handlePoll }) => {
+const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDelete, handleEdit }) => {
     const { state: { user } } = useAuth();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [toggleState, setToggleState] = useState<{ toggleState: boolean }>({ toggleState: false })
+    const [toggleState, setToggleState] = useState<{ toggleState: boolean }>({ toggleState: false });
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -80,8 +80,6 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
     const totalPages = searchTerm ? Math.ceil(filteredData.length / itemsPerPage) : Math.ceil(filteredData.length / itemsPerPage);
     const currentData = searchTerm ? filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    console.log({currentData});
-
     return (
         <div className={`transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
             <div className='flex justify-between items-center'>
@@ -97,7 +95,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                         }}
                     />
                 </div>
-                <ToggleButton isFalseState='Upcomming' isTruthState='Finished' name='toggleState' setToggle={setToggleState} toggle={toggleState.toggleState} />
+                <ToggleButton isFalseState='Upcoming' isTruthState='Finished' name='toggleState' setToggle={setToggleState} toggle={toggleState.toggleState} />
             </div>
             <table className='w-full border-spacing-y-4 border-separate text-xl cursor-default'>
                 <colgroup>
@@ -112,6 +110,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                     <col width="10%"></col>
                     {user?.role === UserRole.SUPER_ADMIN &&
                         <>
+                            <col width="5%"></col>
                             <col width="5%"></col>
                             <col width="5%"></col>
                         </>

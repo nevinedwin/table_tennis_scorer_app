@@ -103,6 +103,13 @@ export const main = async (event) => {
                         response = await service.playGame(data, TABLE_NAME)
                     }
 
+                } else if (action === "updateSingle") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.UPDATE_SINGLE)
+
+                    if (isAuthorized) {
+                        response = await service.updateSingle(data)
+                    }
+
                 } else {
                     response = failure("Invalid Endpoint");
 

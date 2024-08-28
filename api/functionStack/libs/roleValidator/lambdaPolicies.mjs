@@ -27,7 +27,8 @@ export const LAMBDA = {
         ADDVOTE: "addVote",
         GETVOTE: "getVote",
         GETFULLMATCH: "getFullMatch",
-        PLAYGAME: "playGame"
+        PLAYGAME: "playGame",
+        UPDATE_SINGLE: "updateSingle"
     }
 };
 
@@ -51,9 +52,11 @@ export const lambdaPolicies = {
         LAMBDA.MATCH.UPDATE,
         LAMBDA.MATCH.DELETE,
         LAMBDA.MATCH.PLAYGAME,
+        LAMBDA.MATCH.UPDATE_SINGLE,
     ],
     [ROLES.ADMIN]: [
         LAMBDA.TEAM.LIST,
+        LAMBDA.MATCH.UPDATE_SINGLE,
         LAMBDA.MATCH.PLAYGAME,
     ],
     [ROLES.USER]: [

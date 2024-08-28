@@ -35,6 +35,8 @@ Parameters:
     Type: String
   WebSocketPostUrl:
     Type: String
+  TTAppDynamoStreamARN:
+    Type: String
 
 Resources:
   TTAppApiGateway:
@@ -256,6 +258,76 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/lambda/${MatchApiFunction}
       RetentionInDays: 90
+  
+  # ---------- For Streaming Function ------------- #
+  SocketStreamingFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub ${StackNamePrefix}-SocketStreamingFunctionRolePolicy-${StageName}
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  - !Ref TTAppTableArn
+                  - !Sub ${TTAppTableArn}/index/*
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: "Allow"
+                Action:
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
+                Resource: !Ref TTAppDynamoStreamARN
+              - Effect: Allow
+                Action:
+                  - execute-api:ManageConnections
+                Resource:
+                  - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*/POST/@connections/*
+
+  SocketStreamingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${StackNamePrefix}-SocketStreamingFunction-${StageName}"
+      Handler: index.main
+      CodeUri: socket
+      Role: !GetAtt SocketStreamingFunctionRole.Arn
+      Events:
+        DBStreamLive:
+          Type: DynamoDB
+          Properties:
+            Stream: !Ref TTAppDynamoStreamARN
+            StartingPosition: LATEST
+            BatchSize: 1
+  
+  SocketStreamingFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SocketStreamingFunction}
+      RetentionInDays: 90
+
 
 Outputs:
   TTAppApiURL:

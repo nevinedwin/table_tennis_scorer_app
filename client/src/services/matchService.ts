@@ -11,6 +11,7 @@ export const endpoints = {
     ADDVOTE: "match/addVote",
     GETVOTE: "match/getVote",
     GETFULLMATCH: "match/getFullMatch",
+    UPDATESINGLE: "match/updateSingle"
 }
 
 export enum MatchStatus {
@@ -142,6 +143,15 @@ export const getFullMatch = async (data: any) => {
     return res;
 };
 
+
+// update Single
+export const updateMatchSingle = async (data: any) => {
+    const res: any = await api.post(endpoints.UPDATESINGLE, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+};
 
 
 

@@ -54,3 +54,8 @@ Outputs:
   TTAppTableIndexName:
     Description: "TTApp Table GSI Index Name"
     Value: !Sub  "${StackNamePrefix}-basedOnRole-${StageName}"
+  TTAppDynamoStreamARN:
+    Description: "TTAppDynamoStreamARN"
+    Value: !GetAtt TTAppDynamoTable.StreamArn
+    Export:
+      Name: !Sub "${AWS::StackName}-TTAppDynamoStreamARN"

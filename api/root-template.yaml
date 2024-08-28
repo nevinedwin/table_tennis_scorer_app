@@ -91,6 +91,7 @@ Resources:
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
         WebSocketUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayEndpoint
         WebSocketPostUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayPOSTEndpoint
+        TTAppDynamoStreamARN: !GetAtt DynamoDbTableStack.Outputs.TTAppDynamoStreamARN
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 

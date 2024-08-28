@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/a4571950ae80630b5f053c694f77ef2e.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2f43e221e16f17b87f97bf9c7f1057c0.template
       Parameters:
         StageName:
           Ref: StageName
@@ -50,7 +50,7 @@ Resources:
   DynamoDbTableStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/d0c28ae052876b66caccc155ac2a9a54.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/8067c784799401f1fedcb5e196e3c579.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/008d0a47610b5c51747e302d01387ec4.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/5585dc69ccb6965f762590e61f36a6c8.template
       Parameters:
         StageName:
           Ref: StageName
@@ -140,6 +140,10 @@ Resources:
           Fn::GetAtt:
           - SocketStack
           - Outputs.TTAppWebSocketGatewayPOSTEndpoint
+        TTAppDynamoStreamARN:
+          Fn::GetAtt:
+          - DynamoDbTableStack
+          - Outputs.TTAppDynamoStreamARN
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:

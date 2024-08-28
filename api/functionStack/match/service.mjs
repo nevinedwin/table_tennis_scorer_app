@@ -367,4 +367,25 @@ export class MatchService {
         };
     };
 
+
+    async updateSingle(data) {
+        try {
+
+            const { matchId, updateKey, updateValue } = data;
+
+            if (!matchId || !updateKey || !updateValue) throw "Match Id | updateKey | updateVlaue is required";
+
+            const [updateErr, updateResp] = await this.repository.updateSingle(data);
+
+            if (updateErr) throw updateErr;
+
+            return success(updateResp);
+
+        } catch (error) {
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+            return failure(error);
+        };
+    };
+
 };

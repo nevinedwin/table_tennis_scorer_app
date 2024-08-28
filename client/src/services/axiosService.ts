@@ -90,9 +90,14 @@ class ApiService {
             };
 
             return response.data;
-        } catch (error) {
-            console.log("object");
-            throw error;
+        } catch (error: any) {
+            if (error.response) {
+                throw error.response.data;  // Passes the response data up
+            } else if (error.request) {
+                throw new Error("No response received from the server.");
+            } else {
+                throw new Error(error.message);
+            }
         };
     };
 

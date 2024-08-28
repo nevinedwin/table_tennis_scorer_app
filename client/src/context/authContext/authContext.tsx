@@ -18,7 +18,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return { ...state, error: action.payload, isLoginStarts: false };
         case AUTH_ACTIONS.FETCH_USER:
-            return { ...state, user: action.payload};
+            return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
             ManageLocalStorage.delete(userIdKey);
             ManageLocalStorage.delete(token);
@@ -74,11 +74,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             };
         };
 
+        async function fetchSocket(){
+            try {
+                const socketData: any = await getSocketUrl();
+                if (socketData.socketUrl) {
+                    onConnect(socketData.socketUrl);
+                }
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
         if (userId && !state.isLoginStarts) {
             fetchUser(userId);
             setFetchUserFlag(false);
+            fetchSocket();
+
         };
 
     }, [fetchUserFlag])

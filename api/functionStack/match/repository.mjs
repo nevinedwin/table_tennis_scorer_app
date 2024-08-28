@@ -562,6 +562,35 @@ export class MatchRepository {
         } catch (error) {
             return [error, null];
         }
-    }
+    };
+
+
+    async updateSingle({matchId, updateKey, updateValue}) {
+        try {
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: matchId,
+                    details: "match"
+                },
+                UpdateExpression: `SET #updateKey = :updateValue`,
+                ExpressionAttributeNames: {
+                    "#updateKey": updateKey,
+                },
+                ExpressionAttributeValues: {
+                    ":updateValue": updateValue
+                },
+                ReturnValues: 'UPDATED_NEW'
+            };
+
+            const [err, resp] = await put(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+        } catch (error) {
+            return [error, null];
+        };
+    };
 
 };

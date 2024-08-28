@@ -64,6 +64,7 @@ export type MatchListType = {
     totalVoting: number;
     matchResult: string;
     matchStatus: string;
+    winner: string;
 }
 
 // create match

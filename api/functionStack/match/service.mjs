@@ -1,4 +1,5 @@
 import { failure, success } from "libs/response-lib/index.mjs";
+import { TableTennisGame } from "./TTGameLogic.mjs";
 
 export class MatchService {
 
@@ -316,6 +317,12 @@ export class MatchService {
                 totalVoting: match.totalVoting || 0,
                 matchResult: match?.matchResult || null,
                 matchStatus: match?.matchStatus || null,
+                undoHistory: match?.undoHistory || null,
+                winner: match?.winner || null,
+                currentSet: match?.currentSet || null,
+                set1winner: matchSet["1"]?.winner || null,
+                set2winner: matchSet["2"]?.winner || null,
+                set3winner: matchSet["3"]?.winner || null,
             }
 
 
@@ -326,6 +333,37 @@ export class MatchService {
             console.log(`Error in Service: ${JSON.stringify(error)}`);
 
             return failure(error);
+        };
+    };
+
+
+    async playGame(data, TABLE_NAME) {
+
+        try {
+            const { matchId, teamId, action } = data;
+
+            if (!matchId && !teamId && !action) throw "matchId, teamId and action is required";
+
+            const game = new TableTennisGame(this.repository, matchId, TABLE_NAME);
+            await game.initialize();
+
+            let response;
+
+            if (action === "score") {
+                response = await game.scorePoint(teamId);
+            } else if (action === "undo") {
+                response = await game.undoLastAction();
+            } else {
+                throw "Invalid Action Type";
+            };
+
+            return success(response);
+        } catch (error) {
+
+            //debugger
+            console.log(`Error in service: ${JSON.stringify(error)}`);
+
+            failure(error);
         };
     };
 

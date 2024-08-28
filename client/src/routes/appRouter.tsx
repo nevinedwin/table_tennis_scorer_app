@@ -1,23 +1,24 @@
-import React, { lazy, Suspense, useEffect, useState } from "react"
+import React, { lazy, Suspense} from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import ProtectedRoute from "./protectedRoute";
 import { UserRole } from "../context/authContext/authContextTypes";
 import { useAuth } from "../context/authContext/authContext";
 import ErrorBoundary from "../components/errorBoundary/errorBoundary";
-import { fetchAuthSession, JWT } from "@aws-amplify/auth";
 
 const Login = lazy(() => import("../pages/login/login"));
 const Dashboard = lazy(() => import("../pages/dashboard/dashboard"));
 const PredictionScoreBoard = lazy(() => import("../pages/predictionScoreBoard/predictionScoreBoard"));
 const Options = lazy(() => import("../pages/options/options"));
 const Scoreboard = lazy(() => import("../pages/scoreboard/scoreboard"));
+const Matches = lazy(() => import("../pages/matches/matches"));
 
 export const ROUTES = {
     LOGIN: "/login",
     DASHBOARD: "/dashboard",
     PREDICTION_SCOREBOARD: "/prediction_scores",
     OPTIONS: "/options",
-    SCOREBOARD: "/scoreboard"
+    SCOREBOARD: "/scoreboard",
+    MATCHES: "/matches"
 }
 
 const AppRouter: React.FC = () => {
@@ -37,6 +38,7 @@ const AppRouter: React.FC = () => {
                         <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
                         <Route path={ROUTES.PREDICTION_SCOREBOARD} element={<PredictionScoreBoard />} />
                         <Route path={ROUTES.SCOREBOARD} element={<Scoreboard />} />
+                        <Route path={ROUTES.MATCHES} element={<Matches />} />
 
                         {/* admin route */}
                         <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>

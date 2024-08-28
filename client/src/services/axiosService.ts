@@ -91,6 +91,7 @@ class ApiService {
 
             return response.data;
         } catch (error) {
+            console.log("object");
             throw error;
         };
     };

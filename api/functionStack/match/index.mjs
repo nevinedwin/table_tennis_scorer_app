@@ -96,6 +96,13 @@ export const main = async (event) => {
                         response = await service.getFullMatch(data)
                     }
 
+                } else if (action === "playGame") {
+                    isAuthorized = validateAccess(role, LAMBDA.MATCH.PLAYGAME)
+
+                    if (isAuthorized) {
+                        response = await service.playGame(data, TABLE_NAME)
+                    }
+
                 } else {
                     response = failure("Invalid Endpoint");
 

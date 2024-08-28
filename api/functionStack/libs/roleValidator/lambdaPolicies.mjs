@@ -26,7 +26,8 @@ export const LAMBDA = {
         DELETE: "deleteMatch",
         ADDVOTE: "addVote",
         GETVOTE: "getVote",
-        GETFULLMATCH: "getFullMatch"
+        GETFULLMATCH: "getFullMatch",
+        PLAYGAME: "playGame"
     }
 };
 
@@ -39,19 +40,21 @@ export const lambdaPolicies = {
         LAMBDA.TEAM.GET,
         LAMBDA.MATCH.ADDVOTE,
         LAMBDA.MATCH.GETVOTE,
-        LAMBDA.MATCH.GETFULLMATCH
+        LAMBDA.MATCH.GETFULLMATCH,
+        LAMBDA.TEAM.LIST,
     ],
     [ROLES.SUPER_ADMIN]: [
         LAMBDA.TEAM.CREATE,
-        LAMBDA.TEAM.LIST,
         LAMBDA.TEAM.UPDATE,
         LAMBDA.TEAM.DELETE,
         LAMBDA.MATCH.CREATE,
         LAMBDA.MATCH.UPDATE,
         LAMBDA.MATCH.DELETE,
+        LAMBDA.MATCH.PLAYGAME,
     ],
     [ROLES.ADMIN]: [
         LAMBDA.TEAM.LIST,
+        LAMBDA.MATCH.PLAYGAME,
     ],
     [ROLES.USER]: [
     ],

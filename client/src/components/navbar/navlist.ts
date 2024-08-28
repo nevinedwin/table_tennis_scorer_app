@@ -10,8 +10,8 @@ const commonNavItems = [
         value: "Prediction Ranking"
     },
     {
-        key: "/history",
-        value: "History"
+        key: "/matches",
+        value: "Matches"
     },
     {
         key: "/scoreboard",

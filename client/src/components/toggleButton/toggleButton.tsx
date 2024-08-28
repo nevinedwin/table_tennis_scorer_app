@@ -6,7 +6,7 @@ type ToggelButtonPropTypes = {
     isFalseState: string;
     isTruthState: string;
     toggle: boolean;
-    setToggle: React.Dispatch<React.SetStateAction<Partial<MatchType>>>;
+    setToggle: React.Dispatch<React.SetStateAction<Partial<MatchType>>> | React.Dispatch<React.SetStateAction<any>>;
     name: string
 }
 

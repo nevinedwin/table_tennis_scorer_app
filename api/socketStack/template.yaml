@@ -81,6 +81,7 @@ Resources:
               Action:
                 - dynamodb:Query
                 - dynamodb:UpdateItem
+                - dynamodb:PutItem
               Resource:
                 - !Ref TTAppTableArn
                 - !Sub ${TTAppTableArn}/index/*

@@ -1,4 +1,5 @@
-import { put } from 'libs/db-lib/index.mjs'
+import { post } from 'libs/db-lib/index.mjs';
+import { failure, success } from "libs/response-lib/index.mjs";
 
 const { TABLE_NAME } = process.env;
 
@@ -8,35 +9,26 @@ const updateUserConnection = async (authorizer, routeKey, connectionId = "") => 
     try {
 
 
-        const { sub } = authorizer;
+        const { id } = authorizer;
 
         const mod = Date.now();
 
         // "connectionIds" key for connection Id 
-        const updateParams = {
+        const createParams = {
             TableName: TABLE_NAME,
-            Key: {
-                id: sub,
-                details: `connection`,
-            },
-            UpdateExpression:
-                "set #connectionId = :connectionId,  #mdt = :modDate, #role = :role",
-            ExpressionAttributeNames: {
-                "#connectionId": "connectionId",
-                "#mdt": "mdt",
-                "#role": "role"
-            },
-            ExpressionAttributeValues: {
-                ":connectionId": routeKey === "connect" ? connectionId : "",
-                ":modDate": mod,
-                ":role": "SOCKET"
-            },
+            Item: {
+                id,
+                details: "connection",
+                mdt: mod,
+                role: "SOCKET",
+                connectionId: routeKey === "connect" ? connectionId : "",
+            }
         };
 
         // debugger
-        console.log(`UpdateParams: ${JSON.stringify(updateParams)}`);
+        console.log(`createParams: ${JSON.stringify(createParams)}`);
 
-        const [err, updateResp] = await put(updateParams);
+        const [err, updateResp] = await post(createParams);
 
         if (err) throw err;
 

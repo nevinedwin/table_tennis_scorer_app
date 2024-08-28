@@ -56,13 +56,15 @@ export class MatchRepository {
                     team1SetScore,
                     team2SetScore,
                     matchStatus,
-                    matchResult,
                     votingStarted,
                     team1Voting,
                     team2Voting,
                     totalVoting,
                     matchNumber,
                     role: "MATCH",
+                    currentSet: 1,
+                    undoHistory: [],
+                    winner: null,
                     sf: `${matchId} ${date} ${team1Id} ${team2Id} ${team1SetScore} ${team2SetScore} ${team1Voting} ${team2Voting} ${matchStatus} ${matchResult}`
                 }
             };
@@ -93,7 +95,7 @@ export class MatchRepository {
                     details: `set#${setNumber}`,
                     team1Score: 0,
                     team2Score: 0,
-                    setResult: null,
+                    winner: null,
                     setNumber,
                     role: "MATCH#SET"
                 }
@@ -280,6 +282,12 @@ export class MatchRepository {
                 totalVoting: match.totalVoting || 0,
                 matchResult: match?.matchResult || null,
                 matchStatus: match?.matchStatus || null,
+                undoHistory: match?.undoHistory || null,
+                winner: match?.winner || null,
+                currentSet: match?.currentSet || null,
+                set1winner: matchSet["1"]?.winner || null,
+                set2winner: matchSet["2"]?.winner || null,
+                set3winner: matchSet["3"]?.winner || null
             };
 
             //debugger

@@ -13,6 +13,7 @@ const ListTeam: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [teamList, setTeamList] = useState<Record<string, any>[]>([]);
     const [isDelete, setIsDelete] = useState<boolean>(false);
+    const [isError, setIsErr] = useState<any>("");
 
     useEffect(() => {
         setIsVisible(true);
@@ -35,8 +36,12 @@ const ListTeam: React.FC = () => {
             setTeamList(data)
             setIsLoading(false)
 
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            console.log("cdacdsvsd",error);
+            setIsErr(error?.response?.data || "");
+        }finally{
+            console.log("object");
+            setIsLoading(false);
         }
     }
 

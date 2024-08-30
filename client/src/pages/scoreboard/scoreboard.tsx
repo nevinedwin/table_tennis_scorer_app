@@ -66,17 +66,17 @@ const Scoreboard: React.FC = () => {
 
   return (
     <div>
-      <div className='flex p-4 lg:p-10 justify-center items-center text-2xl lg:text-3xl font-bold'>
+      <div className='flex p-4 lg:p-10 justify-center items-center text-xxl lg:text-3xl font-bold'>
         <p>Team Scoreboard</p>
       </div>
-      <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"} flex flex-col lg:flex-row lg:justify-around lg:items-start`}>
-        <div className='lg:max-w-[30%] pb-6'>
+      <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"} flex flex-col xl:flex-row xl:justify-around xl:items-start`}>
+        <div className='xl:w-[30%] pb-6'>
           <PoolTable data={teamAList} isLoading={isLoading} pool={'A'} />
         </div>
-        <div className='lg:max-w-[30%] pb-6'>
+        <div className='xl:w-[30%] pb-6'>
           <PoolTable data={teamBList} isLoading={isLoading} pool={'B'} />
         </div>
-        <div className='lg:max-w-[30%]'>
+        <div className='xl:w-[30%]'>
           <PoolTable data={teamCList} isLoading={isLoading} pool={'c'} />
         </div>
       </div>

@@ -76,7 +76,7 @@ const Matches: React.FC = () => {
         </>
         :
         <>
-          <h1 className='text-3xl font-bold text-center py-8'>Matches</h1>
+          <h1 className='text-xxl lg:text-3xl font-bold text-center py-8'>Matches</h1>
           <div className='w-[90%] m-auto h-full'>
             <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handlePoll={handlePoll} />
           </div>

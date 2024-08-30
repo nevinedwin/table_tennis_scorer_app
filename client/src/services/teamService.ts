@@ -17,6 +17,11 @@ export type TeamType = {
     player2Name: string;
     player1Email: string;
     player2Email: string;
+    point?:number;
+    matchPlayed?:number;
+    matchWon?:number;
+    matchLose?:number;
+    pool?: string;
 };
 
 

@@ -41,7 +41,7 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
 
     // Calculate the current data to display based on pagination
     const totalPages = searchTerm ? Math.ceil(filteredData.length / itemsPerPage) : Math.ceil(data.length / itemsPerPage);
-    const currentData = searchTerm ? filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const currentData = searchTerm ? filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <div className={`transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>

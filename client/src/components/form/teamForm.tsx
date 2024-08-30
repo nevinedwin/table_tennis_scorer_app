@@ -25,6 +25,11 @@ const TeamForm: React.FC<TeamFormPropType> = ({ teamdata, setTeamData, handleCre
                 <p className='text-2md uppercase'>Team Name</p>
                 <InputElement placeholder='Type your tame name here' value={teamdata.teamName} setData={setTeamData} name="teamName" />
             </div>
+            <div className='pt-4 flex items-start justify-center flex-col w-full gap-2'>
+                <p className='text-2md uppercase'>Pool</p>
+                <InputElement placeholder='Type the pool where team exists' value={teamdata?.pool as string} setData={setTeamData} name="pool" />
+            </div>
+            
             {/* player details */}
             <div className='flex flex-col justify-center items-start mt-8 gap-3'>
                 <p className='text-2md uppercase'>Player Details</p>

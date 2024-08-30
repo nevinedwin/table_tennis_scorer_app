@@ -6,7 +6,7 @@ export const formatDate = (date: string): string => {
 
     const day = String(dateString.getUTCDate()).padStart(2, '0');
     const month = String(dateString.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const year = String(dateString.getUTCFullYear()).slice(-2);
+    const year = String(dateString.getUTCFullYear())?.slice(-2);
 
     const formattedDate = `${day}/${month}/${year}`;
 
@@ -67,3 +67,40 @@ export const findPercentage = (total: number, given: number, down: boolean) => {
 
     return Math.ceil(data);
 };
+
+
+
+export function quickSortList<T>(arr: T[], left = 0, right = arr.length - 1) {
+    console.log("arr", arr);
+    
+    if (left >= right) return arr;
+
+
+    const pivotIndex = partition(arr, left, right);
+    quickSortList(arr, left, pivotIndex - 1);
+    quickSortList(arr, pivotIndex + 1, right);
+
+    return arr;
+}
+
+function partition<T>(arr: T[], left: number, right: number) {
+    const pivot = arr[right];
+    let i = left;
+
+    for (let j = left; j < right; j++) {
+        if (compare(arr[j], pivot) <= 0) {
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            i++;
+        }
+    }
+
+    [arr[i], arr[right]] = [arr[right], arr[i]];
+    return i;
+}
+
+function compare(a: any, b: any) {
+    if (a.point !== b.point) {
+        return b.point - a.point; // Descending order based on matchWon
+    }
+    return a.teamName.localeCompare(b.teamName); // Ascending order based on teamName
+}

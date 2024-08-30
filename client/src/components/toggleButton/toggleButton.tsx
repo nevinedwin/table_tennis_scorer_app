@@ -21,7 +21,6 @@ const ToggleButton: React.FC<ToggelButtonPropTypes> = ({ isFalseState, isTruthSt
             ...(id && { id })
         }));
     };
-    console.log({toggledId, id});
 
     return (
         <label className="flex items-center cursor-pointer">

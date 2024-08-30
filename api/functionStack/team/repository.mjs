@@ -44,7 +44,7 @@ export class TeamRepository {
             // debugger
             console.log(`Data: ${JSON.stringify(data)}`);
 
-            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName, id = null } = data;
+            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName, id = null, pool } = data;
 
             const params = {
                 TableName: this.tableName,
@@ -61,6 +61,8 @@ export class TeamRepository {
                     matchWon: 0,
                     matchLose: 0,
                     matchPlayed: 0,
+                    point:0,
+                    pool,
                     sf: `${player1Email} ${player2Email} ${player1Name} ${player2Name} ${teamName} ${createdBy}`
                 }
             };

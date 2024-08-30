@@ -24,7 +24,7 @@ type LogoForPlayerPropTypes = {
 const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
     return (
         <div className='w-[25px] h-[25px] p-1 rounded-full border-secondary-dark border-2 text-center text-white flex justify-center items-center'>
-            <p className='text-sm uppercase font-bold'>{letter.slice(0, 2)}</p>
+            <p className='text-sm uppercase font-bold'>{letter?.slice(0, 2)}</p>
         </div>
     )
 };
@@ -47,7 +47,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
             setIsVisible(false);
         };
     }, []);
-
+    
 
     // Filtered data based on search term
     const filteredData = useMemo(() => {
@@ -60,14 +60,14 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
         };
 
         return passdata.filter(item =>
-            item?.team1Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.team1Player1Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.team1Player2Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.team2Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.team2Player1Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.team2Player2Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team1Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team1Player1Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team1Player2Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team2Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team2Player1Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.team2Player2Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             formatDate(item?.date as string).includes(searchTerm) ||
-            item?.matchStatus.toLowerCase().includes(searchTerm.toLowerCase())
+            item?.matchStatus?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
 
@@ -78,7 +78,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
 
     // Calculate the current data to display based on pagination
     const totalPages = searchTerm ? Math.ceil(filteredData.length / itemsPerPage) : Math.ceil(filteredData.length / itemsPerPage);
-    const currentData = searchTerm ? filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const currentData = searchTerm ? filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : filteredData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <div className={`transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>

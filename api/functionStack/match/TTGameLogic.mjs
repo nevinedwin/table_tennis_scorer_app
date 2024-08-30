@@ -39,6 +39,14 @@ export class TableTennisGame {
         this.set1winner = null;
         this.set2winner = null;
         this.set3winner = null;
+        this.team1Point = 0;
+        this.team2Point = 0;
+        this.team1MatchPlayed = 0;
+        this.team1MatchLose = 0;
+        this.team1MatchWon = 0;
+        this.team2MatchPlayed = 0;
+        this.team2MatchLose = 0;
+        this.team2MatchWon = 0;
     }
 
     async initialize() {
@@ -68,9 +76,16 @@ export class TableTennisGame {
             this.set2winner = matchData.set2winner;
             this.set3winner = matchData.set3winner;
             this.currentSet = matchData.currentSet;
-        }
-
-    }
+            this.team1Point = matchData.team1Point;
+            this.team2Point = matchData.team2Point;
+            this.team1MatchPlayed = matchData.team1MatchPlayed;
+            this.team2MatchPlayed = matchData.team2MatchPlayed;
+            this.team1Won = matchData.team1Won;
+            this.team2Won = matchData.team2Won;
+            this.team1Lose = matchData.team1Lose;
+            this.team2Lose = matchData.team2Lose;
+        };
+    };
 
 
     async scorePoint(teamId) {
@@ -124,8 +139,16 @@ export class TableTennisGame {
 
             if (this.team1SetScore >= 2) {
                 this.winner = this.team1Id;
+                this.team1Point += 2;
+                this.team1MatchPlayed += 1;
+                this.team1MatchWon += 1;
+                this.team2MatchLose += 1;
             } else if (this.team2SetScore >= 2) {
                 this.winner = this.team2Id;
+                this.team2Point += 2;
+                this.team2MatchPlayed += 1;
+                this.team2MatchWon += 1;
+                this.team1MatchLose += 1;
             };
         };
 
@@ -161,6 +184,14 @@ export class TableTennisGame {
         this.set2winner = lastAction.set2winner;
         this.set3winner = lastAction.set3winner;
         this.currentSet = lastAction.currentSet;
+        this.team1Point = lastAction.team1Point;
+        this.team2Point = lastAction.team2Point;
+        this.team1MatchPlayed = lastAction.team1MatchPlayed;
+        this.team2MatchPlayed = lastAction.team2MatchPlayed;
+        this.team1Won = lastAction.team1Won;
+        this.team2Won = lastAction.team2Won;
+        this.team1Lose = lastAction.team1Lose;
+        this.team2Lose = lastAction.team2Lose;
 
         await this.saveMatchData();
         return this.getMatchState();
@@ -228,7 +259,15 @@ export class TableTennisGame {
             set1winner: this.set1winner,
             set2winner: this.set2winner,
             set3winner: this.set3winner,
-            currentSet: this.currentSet
+            currentSet: this.currentSet,
+            team1Point: this.team1Point,
+            team2Point: this.team2Point,
+            team1MatchPlayed: this.team1MatchPlayed,
+            team2MatchPlayed: this.team2MatchPlayed,
+            team1Won: this.team1Won,
+            team2Won: this.team2Won,
+            team1Lose: this.team1Lose,
+            team2Lose: this.team2Lose,
         })
     };
 
@@ -306,7 +345,15 @@ export class TableTennisGame {
             set1winner: matchSet["1"]?.winner || null,
             set2winner: matchSet["2"]?.winner || null,
             set3winner: matchSet["3"]?.winner || null,
-        }
+            team1Point: team1Data?.point || 0,
+            team2Point: team2Data?.point || 0,
+            team1MatchPlayed: team1Data?.matchPlayed || 0,
+            team1MatchWon: team1Data?.matchWon || 0,
+            team1MatchLose: team1Data?.matchLose || 0,
+            team2MatchPlayed: team2Data?.matchPlayed || 0,
+            team2MatchWon: team2Data?.matchWon || 0,
+            team2MatchLose: team2Data?.matchLose || 0
+        };
 
         return returnData;
     };
@@ -378,16 +425,18 @@ export class TableTennisGame {
                     id: this.team1Id,
                     details: "details",
                 },
-                UpdateExpression: `ADD #matchWon :matchWon, #matchLose :matchLose, #matchPlayed :matchPlayed`,
+                UpdateExpression: `SET #matchWon = :matchWon, #matchLose = :matchLose, #matchPlayed = :matchPlayed, #point = :point`,
                 ExpressionAttributeNames: {
                     "#matchWon": "matchWon",
                     "#matchLose": "matchLose",
-                    "#matchPlayed": "matchPlayed"
+                    "#matchPlayed": "matchPlayed",
+                    "#point": "point"
                 },
                 ExpressionAttributeValues: {
-                    ":matchWon": this.winner === this.team1Id ? 1 : 0,
-                    ":matchLose": this.winner === this.team1Id ? 0 : 1,
-                    ":matchPlayed": 1
+                    ":matchWon": this.team1MatchWon,
+                    ":matchLose": this.team1MatchLose,
+                    ":matchPlayed": this.team1MatchPlayed,
+                    ":point": this.team1Point
                 }
             };
 
@@ -407,16 +456,18 @@ export class TableTennisGame {
                     id: this.team2Id,
                     details: "details",
                 },
-                UpdateExpression: `ADD #matchWon :matchWon, #matchLose :matchLose, #matchPlayed :matchPlayed`,
+                UpdateExpression: `SET #matchWon = :matchWon, #matchLose = :matchLose, #matchPlayed = :matchPlayed, #point = :point`,
                 ExpressionAttributeNames: {
                     "#matchWon": "matchWon",
                     "#matchLose": "matchLose",
-                    "#matchPlayed": "matchPlayed"
+                    "#matchPlayed": "matchPlayed",
+                    "#point": "point"
                 },
                 ExpressionAttributeValues: {
-                    ":matchWon": this.winner === this.team2Id ? 1 : 0,
-                    ":matchLose": this.winner === this.team2Id ? 0 : 1,
-                    ":matchPlayed": 1
+                    ":matchWon": this.team2MatchWon,
+                    ":matchLose": this.team2MatchLose,
+                    ":matchPlayed": this.team2MatchPlayed,
+                    ":point": this.team2Point
                 }
             };
 
@@ -459,6 +510,14 @@ export class TableTennisGame {
             set2winner: this.set2winner,
             set3winner: this.set3winner,
             currentSet: this.currentSet,
+            team1Point: this.team1Point,
+            team2Point: this.team2Point,
+            team1MatchPlayed: this.team1MatchPlayed,
+            team2MatchPlayed: this.team2MatchPlayed,
+            team1Won: this.team1Won,
+            team2Won: this.team2Won,
+            team1Lose: this.team1Lose,
+            team2Lose: this.team2Lose
         };
     }
 }

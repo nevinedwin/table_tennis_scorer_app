@@ -17,7 +17,7 @@ type EachSectionPropTypes = {
 const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
     return (
         <div className='w-[25px] h-[25px] p-1 rounded-full border-borderColor border-2 text-center text-white flex justify-center items-center'>
-            <p className='text-sm uppercase font-bold'>{letter.slice(0, 2)}</p>
+            <p className='text-sm uppercase font-bold'>{letter?.slice(0, 2)}</p>
         </div>
     )
 };
@@ -30,7 +30,7 @@ const EachSection: React.FC<EachSectionPropTypes> = ({ player1Name, teamName, pl
             <div className='flex-2'>
                 <div
                     className={`w-[60px] h-[60px] rounded-full border-borderColor border text-center text-white flex justify-center items-center`}>
-                    <p className='text-3xl uppercase font-bold'>{teamName.slice(0, 2)}</p>
+                    <p className='text-3xl uppercase font-bold'>{teamName?.slice(0, 2)}</p>
                 </div>
             </div>
             <div className='mt-3 w-[150px] overflow-hidden whitespace-nowrap text-ellipsis text-center text-xxl'>
@@ -183,7 +183,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                          hover:${isVoted ? 'bg-black' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
                          flex items-center justify-center font-bold cursor-pointer uppercase min-w-[10%]`}>
                             <p>
-                                {isVoted ? `${findPercentage(totaVoting, team1Votting, false)}%` : team1Name.slice(0, 2)}
+                                {isVoted ? `${findPercentage(totaVoting, team1Votting, false)}%` : team1Name?.slice(0, 2)}
                             </p>
                         </div>
                         <div
@@ -194,7 +194,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                         hover:${isVoted ? 'bg-black' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
                         flex items-center justify-center font-bold cursor-pointer uppercase min-w-[10%]`}>
                             <p>
-                                {isVoted ? `${findPercentage(totaVoting, team2Votting, true)}%` : team2Name.slice(0, 2)}
+                                {isVoted ? `${findPercentage(totaVoting, team2Votting, true)}%` : team2Name?.slice(0, 2)}
                             </p>
                         </div>
                     </div>

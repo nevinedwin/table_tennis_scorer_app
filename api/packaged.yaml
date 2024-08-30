@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2f43e221e16f17b87f97bf9c7f1057c0.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/421bc1078cc34c7966e95324e9eed538.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/5585dc69ccb6965f762590e61f36a6c8.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/4d2e6c8ac14ed61320c46eec3e5fa474.template
       Parameters:
         StageName:
           Ref: StageName

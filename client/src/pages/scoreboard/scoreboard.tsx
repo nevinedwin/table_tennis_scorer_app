@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
-import { deleteTeam, listTeam } from '../../services/teamService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import Edit from '../team/edit';
-import Table from '../../components/TeamTable/table';
+import PoolTable from '../../components/poolTable/poolTable';
+import { listTeam, TeamType } from '../../services/teamService';
+import { quickSortList } from '../../utilities/common';
 
 const Scoreboard: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editData, setEditData] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [teamList, setTeamList] = useState<Record<string, any>[]>([]);
-  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [teamList, setTeamList] = useState<TeamType[]>([]);
+  const [teamAList, setTeamAList] = useState<TeamType[]>([]);
+  const [teamBList, setTeamBList] = useState<TeamType[]>([]);
+  const [teamCList, setTeamCList] = useState<TeamType[]>([]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -22,10 +20,14 @@ const Scoreboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isDelete) {
-      getList();
+    getList();
+  }, []);
+
+  useEffect(() => {
+    if (teamList.length) {
+      sortDataBasedOnTeamPool(teamList);
     };
-  }, [isEdit, isDelete]);
+  }, [teamList])
 
   const getList = async () => {
 
@@ -40,41 +42,44 @@ const Scoreboard: React.FC = () => {
     }
   }
 
-  const handleEdit = (data: Record<string, any>) => {
-    setIsEdit(true);
-    setEditData(data);
-  };
 
-  const handleDelete = async (id: string) => {
-    try {
+  function sortDataBasedOnTeamPool(data: TeamType[]) {
 
-      setIsDelete(true);
-      await deleteTeam(id);
-      setIsDelete(false);
+    const poolA: TeamType[] = [];
+    const poolB: TeamType[] = [];
+    const poolC: TeamType[] = [];
 
-    } catch (error) {
-      console.log(error);
-    };
-  };
+    data.forEach(team => {
+      if (team.pool === "A") {
+        poolA.push(team);
+      } else if (team.pool === "B") {
+        poolB.push(team)
+      } else {
+        poolC.push(team)
+      }
+    });
 
-
-
+    setTeamAList(quickSortList(poolA) as TeamType[])
+    setTeamBList(quickSortList(poolB) as TeamType[])
+    setTeamCList(quickSortList(poolC) as TeamType[])
+  }
 
   return (
-    <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
-      {isEdit ?
-        <>
-          <FontAwesomeIcon icon={faArrowLeft} className='text-2xl cursor-pointer p-4' onClick={() => setIsEdit(false)} />
-          <Edit data={editData} setIsEdit={setIsEdit} />
-        </>
-        :
-        <>
-          <h1 className='text-3xl font-bold text-center py-8'>Team List</h1>
-          <div className='w-[70%] m-auto h-full'>
-            <Table data={teamList} handleEdit={handleEdit} handleDelete={handleDelete} isLoading={isLoading} />
-          </div>
-        </>
-      }
+    <div>
+      <div className='flex p-4 lg:p-10 justify-center items-center text-2xl lg:text-3xl font-bold'>
+        <p>Team Scoreboard</p>
+      </div>
+      <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"} flex flex-col lg:flex-row lg:justify-around lg:items-start`}>
+        <div className='lg:max-w-[30%] pb-6'>
+          <PoolTable data={teamAList} isLoading={isLoading} pool={'A'} />
+        </div>
+        <div className='lg:max-w-[30%] pb-6'>
+          <PoolTable data={teamBList} isLoading={isLoading} pool={'B'} />
+        </div>
+        <div className='lg:max-w-[30%]'>
+          <PoolTable data={teamCList} isLoading={isLoading} pool={'c'} />
+        </div>
+      </div>
     </div>
   )
 }

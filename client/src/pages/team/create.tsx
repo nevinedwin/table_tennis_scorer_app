@@ -1,6 +1,5 @@
 
 import React, { memo, useCallback, useEffect, useState } from 'react'
-import Hoc from '../../components/hoc/hoc'
 import TeamForm from '../../components/form/teamForm';
 import { createTeam, TeamType } from '../../services/teamService';
 import { validateEmail } from '../../utilities/common';
@@ -12,7 +11,8 @@ const CreateTeam: React.FC = () => {
         player1Email: "",
         player1Name: "",
         player2Email: "",
-        player2Name: ""
+        player2Name: "",
+        pool: "",
     };
 
     const [teamData, setTeamData] = useState<Partial<TeamType>>(initalTeamData);
@@ -30,6 +30,9 @@ const CreateTeam: React.FC = () => {
         } else if (!teamData.player1Name) {
             setError("Player 1 Name is required");
             return false;
+        } else if (!teamData.pool) {
+            setError("pool is required");
+            return false;
         } else if (!teamData.player1Email) {
             setError("Player 1 Email is required");
             return false;
@@ -38,6 +41,9 @@ const CreateTeam: React.FC = () => {
             return false;
         } else if (!teamData.player2Email) {
             setError("Player 2 Email is required");
+            return false;
+        }else if (teamData?.pool?.toUpperCase() !== "A" && teamData?.pool?.toUpperCase() !== "B" && teamData?.pool?.toUpperCase() !== "C" ) {
+            setError("pool should be A | B |C");
             return false;
         } else if (!validateEmail(teamData.player1Email!)) {
             setError("Player 1 Email is Invalid. Use InApp Email");

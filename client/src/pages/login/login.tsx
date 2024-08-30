@@ -10,9 +10,8 @@ const LoginPage: React.FC = () => {
   const { state: { user } } = useAuth();
 
   useEffect(() => {
-    if (user) {
-      ManageLocalStorage.delete(isLoadingKey);
-    }
+
+    ManageLocalStorage.delete(isLoadingKey);
   }, [user])
 
   const isLoading = ManageLocalStorage.get(isLoadingKey);
@@ -39,7 +38,7 @@ const LoginPage: React.FC = () => {
           </p> */}
           <div className='flex items-center justify-center mt-8'>
             <div className='w-[400px] h-[50px]'>
-              <GoogleLoginButton isLoading={isLoading}/>
+              <GoogleLoginButton isLoading={isLoading} />
             </div>
           </div>
         </div>

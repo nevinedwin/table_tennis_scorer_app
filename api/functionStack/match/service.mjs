@@ -323,6 +323,14 @@ export class MatchService {
                 set1winner: matchSet["1"]?.winner || null,
                 set2winner: matchSet["2"]?.winner || null,
                 set3winner: matchSet["3"]?.winner || null,
+                team1Point: team1Data?.point || 0,
+                team2Point: team2Data?.point || 0,
+                team1MatchPlayed: team1Data?.matchPlayed || 0,
+                team1MatchWon: team1Data?.matchWon || 0,
+                team1MatchLose: team1Data?.matchLose || 0,
+                team2MatchPlayed: team2Data?.matchPlayed || 0,
+                team2MatchWon: team2Data?.matchWon || 0,
+                team2MatchLose: team2Data?.matchLose || 0
             }
 
 

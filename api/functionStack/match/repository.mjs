@@ -287,7 +287,15 @@ export class MatchRepository {
                 currentSet: match?.currentSet || null,
                 set1winner: matchSet["1"]?.winner || null,
                 set2winner: matchSet["2"]?.winner || null,
-                set3winner: matchSet["3"]?.winner || null
+                set3winner: matchSet["3"]?.winner || null,
+                team1Point: team1?.point || 0,
+                team2Point: team2?.point || 0,
+                team1MatchPlayed: team1?.matchPlayed || 0,
+                team1MatchWon: team1?.matchWon || 0,
+                team1MatchLose: team1?.matchLose || 0,
+                team2MatchPlayed: team2?.matchPlayed || 0,
+                team2MatchWon: team2?.matchWon || 0,
+                team2MatchLose: team2?.matchLose || 0
             };
 
             //debugger
@@ -388,27 +396,29 @@ export class MatchRepository {
     };
 
 
-    async getMatch(id) {
-        try {
+    // async getMatch(id) {
+    //     try {
 
-            const params = {
-                TableName: this.tableName,
-                Key: {
-                    id,
-                    details: "match"
-                }
-            }
+    //         console.log({id});
 
-            const [err, resp] = await get(params);
+    //         const params = {
+    //             TableName: this.tableName,
+    //             Key: {
+    //                 id,
+    //                 details: "match"
+    //             }
+    //         }
 
-            if (err) throw err;
+    //         const [err, resp] = await get(params);
 
-            return [null, resp];
+    //         if (err) throw err;
 
-        } catch (error) {
-            return [error, null];
-        }
-    };
+    //         return [null, resp];
+
+    //     } catch (error) {
+    //         return [error, null];
+    //     }
+    // };
 
     async getUserBasedVoting(userId, matchId) {
         try {
@@ -522,6 +532,9 @@ export class MatchRepository {
     async getMatch(matchId) {
         try {
 
+            //debugger
+            console.log(`matchId: ${JSON.stringify(matchId)}`);
+
             const params = {
                 TableName: this.tableName,
                 Key: {
@@ -529,6 +542,9 @@ export class MatchRepository {
                     details: "match"
                 }
             };
+
+            //debugger
+            console.log(`params: ${JSON.stringify(params)}`);
 
             const [err, resp] = await get(params);
 
@@ -565,7 +581,7 @@ export class MatchRepository {
     };
 
 
-    async updateSingle({matchId, updateKey, updateValue}) {
+    async updateSingle({ matchId, updateKey, updateValue }) {
         try {
             const params = {
                 TableName: this.tableName,

@@ -4,7 +4,7 @@ import { MatchListType, MatchStatus } from '../../services/matchService';
 import Pagination from '../TeamTable/pagination';
 import { UserRole } from '../../context/authContext/authContextTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSignal, faTrash, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatTime } from '../../utilities/common';
 import ToggleButton from '../toggleButton/toggleButton';
 
@@ -13,7 +13,7 @@ type MatchTablePropTypes = {
     isLoading: boolean;
     handleEdit: (data: string) => void;
     handleDelete: (id: string) => void;
-    handlePoll: (id: string) => void;
+    handleLive: (id: string) => void;
 }
 
 type LogoForPlayerPropTypes = {
@@ -30,7 +30,7 @@ const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
 };
 
 
-const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDelete, handleEdit }) => {
+const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDelete, handleEdit, handleLive }) => {
     const { state: { user } } = useAuth();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -113,6 +113,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                             <>
                                 <col width="5%"></col>
                                 <col width="5%"></col>
+                                <col width="5%"></col>
                             </>
                         }
                     </colgroup>
@@ -132,6 +133,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                 <>
                                     <th className='p-2 text-center'>Edit</th>
                                     <th className='p-2 text-center'>Delete</th>
+                                    <th className='p-2 text-center'>Go Live</th>
                                 </>
                             }
                         </tr>
@@ -195,6 +197,14 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                             </td>
                                             <td className='p-2 text-center'>
                                                 <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleDelete(eachItem?.matchId || "")} />
+                                            </td>
+                                            <td className='p-2 text-center'>
+                                                {
+                                                    eachItem?.matchStatus === MatchStatus.Pending ?
+                                                        <FontAwesomeIcon icon={faSignal} className='cursor-pointer text-xl p-4' onClick={() => handleLive(eachItem?.matchId || "")} />
+                                                        :
+                                                        <p>Live</p>
+                                                }
                                             </td>
                                         </>
                                     }

@@ -2,27 +2,69 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 import Hoc from "../../components/hoc/hoc";
 import Heading from "../../components/dashboard/heading";
 import Matchpaper from "../../components/paper/matchpaper";
-import { addVote, listMatch, MatchListType } from "../../services/matchService";
+import { getFullMatch, listMatch, MatchListType, MatchStatus } from "../../services/matchService";
 import { quickSort } from "../../utilities/common";
 import LiveBoard from "../../components/dashboard/liveBoard";
+import { useSocket } from "../../context/websocketContext/websocketContext";
 
 export type NavigationType = 'details' | 'prediction';
 
 const Dashboard: React.FC = () => {
 
+    const { newMessage } = useSocket()
+
     const [matches, setMatches] = useState<MatchListType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [isLive, setIsLive] = useState<boolean>(false);
+    const [liveData, setLiveData] = useState<MatchListType | null>(null);
 
 
     useEffect(() => {
+        // console.log("object");
         getMatchList();
     }, []);
+    
+    useEffect(() => {
+        if (newMessage) {
+            console.log("Dashboard Component liveContextData:", newMessage);
+            setIsLive(true);
+            if (newMessage.matchId) {
+                getFullMatchData(newMessage.matchId);
+            }
+        }
+    }, [newMessage]);
+
+    // console.log("liveData", liveData);
+
+    const checkLiveMatch = async (arr: any[]) => {
+        let matchId = null;
+        for (const i of arr) {
+            if (i.matchStatus === MatchStatus.Live) {
+                setIsLive(true);
+                matchId = i.id;
+                setLiveData(i)
+                break;
+            }
+        }
+    };
+
+    const getFullMatchData = async (matchId: string) => {
+        try {
+            const resp = await getFullMatch({ matchId });
+            console.log({resp});
+            setLiveData(resp);
+        } catch (error) {
+            console.log(error);
+        };
+    };
 
     const getMatchList = useCallback(async () => {
         try {
             setLoading(true)
             const data: MatchListType[] = await listMatch();
+
+            await checkLiveMatch(data);
+
             const soreted = quickSort(data, 'matchNumber');
             const filtered = filterData(soreted);
             setMatches(filtered?.slice(0, 4));
@@ -42,18 +84,18 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="h-full w-full flex flex-col">
+        <div className="h-full w-full flex flex-col gap-10">
             <div className="">
                 {isLive ?
                     <div className="w-full">
-                        <LiveBoard />
+                        <LiveBoard data={liveData} />
                     </div>
                     :
                     <Heading />}
             </div>
-            <div className="px-8 flex">
+            <div className="px-2 lg:px-8 flex">
                 <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 `}>
-                    <div className="text-xxl font-bold mb-3">Upcoming Matches</div>
+                    <div className="text-md lg:text-xxl font-bold mb-3">Upcoming Matches</div>
                     <div className="flex flex-wrap w-full h-full justify-start gap-12">
                         {
                             loading ?
@@ -68,7 +110,7 @@ const Dashboard: React.FC = () => {
                                         />
                                     ))
                                     :
-                                    <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
+                                    <div className="w-full h-full lg:w-[500px] lg:h-[400px] flex justify-center items-center border border-borderColor rounded-md">
                                         <p className="text-xxl animate-pulse">No Upcoming Match Added</p>
                                     </div>
                         }

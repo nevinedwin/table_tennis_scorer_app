@@ -71,7 +71,7 @@ const Navbar: React.FC = () => {
                 </button>
                 {dropdownOpen && (
                     <ul className="min-w-[70vw] flex flex-col items-center justify-between fixed top-1/2 left-1/2 -translate-x-1/2
-              -translate-y-1/2 z-30 bg-black/90 dark:bg-light/75 rounded-lg backdrop-blur-md py-32 border-white border">
+              -translate-y-1/2 z-30 bg-black/90 dark:bg-light/75 rounded-lg backdrop-blur-md py-32 border-white border animate-opacity">
                         {user && navbarList[user.role] && navbarList[user.role].map((eachItem, index) => (
                             <li key={index}
                                 onClick={() => handleNavigation(eachItem.key)}

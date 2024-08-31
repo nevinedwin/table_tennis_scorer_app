@@ -8,17 +8,20 @@ interface WebSocketContextType {
     onConnect: (url: string) => void;
     onDisconnect: () => void;
     onReconnect: ()=> void;
+    newMessage: any;
 }
 
 export const WebSocketContext = createContext<WebSocketContextType>({
     isConnected: false,
     onConnect: () => { },
     onDisconnect: () => { },
-    onReconnect: ()=> {}
+    onReconnect: ()=> {},
+    newMessage: null
 });
 
 export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isConnected, setIsConnected] = useState(false);
+    const [newMessage, setNewMessage] = useState<any>(null);
 
     const socket = useRef<WebSocket | null>(null);
 
@@ -34,7 +37,8 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const onSocketMessage = (data: any) => {
         // debugger
-        console.log("object", data);
+        const parseObj = JSON.parse(data);
+        setNewMessage(parseObj?.payload?.data);
     }
 
     const onConnect = (socketUrl: string) => {
@@ -71,8 +75,9 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         isConnected,
         onConnect,
         onDisconnect,
-        onReconnect
-    }), [isConnected]);
+        onReconnect,
+        newMessage
+    }), [isConnected, newMessage]);
 
     return (
         <WebSocketContext.Provider value={memoizedValue}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
-import { deleteMatch, listMatch, MatchListType } from '../../services/matchService';
+import { deleteMatch, listMatch, MatchListType, MatchStatus, updateMatchSingle } from '../../services/matchService';
 import { quickSort } from '../../utilities/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +40,7 @@ const Matches: React.FC = () => {
       setIsLoading(false)
 
     } catch (error) {
+      setIsLoading(false)
       console.log(error);
     }
   };
@@ -58,13 +59,22 @@ const Matches: React.FC = () => {
       setIsDelete(false);
 
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     };
   };
 
 
-  const handlePoll = () => {
+  const handleLive = async (id: string) => {
+    try {
 
+      setIsLoading(true)
+      await updateMatchSingle({ matchId: id, updateKey: "matchStatus", updateValue: MatchStatus.Live });
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
   }
 
   return (
@@ -78,7 +88,7 @@ const Matches: React.FC = () => {
         <>
           <h1 className='text-xxl lg:text-3xl font-bold text-center py-8'>Matches</h1>
           <div className='w-[90%] m-auto h-full'>
-            <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handlePoll={handlePoll} />
+            <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handleLive={handleLive} />
           </div>
         </>
       }

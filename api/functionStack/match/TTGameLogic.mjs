@@ -1,4 +1,5 @@
-import { post, put } from 'libs/db-lib/index.mjs';
+import { post, put, get } from 'libs/db-lib/index.mjs';
+import { v4 as uuidV4 } from 'uuid';
 
 const WINNING_SCORE = 11;
 
@@ -23,7 +24,8 @@ export class TableTennisGame {
         this.team1Set3Score = 0;
         this.team2Set3Score = 0;
         this.currentSet = 1;
-        this.undoHistory = [];
+        this.undoHistory = {};
+        this.undoHistoryId = "";
         this.team1Id = "";
         this.team2Id = "";
         this.winner = null;
@@ -50,18 +52,25 @@ export class TableTennisGame {
     }
 
     async initialize() {
+
+
         const [err, matchData] = await this.getMatchData();
+
+        //debugger
+        console.log(`matchData: ${JSON.stringify(matchData)}`);
+
         if (err) throw err;
+
         if (matchData) {
             this.team1Set1Score = matchData.team1Set1Score;
-            this.team2Set1Score = matchData.team1Set2Score;
             this.team1Set2Score = matchData.team1Set2Score;
-            this.team2Set2Score = matchData.team2Set2Score;
             this.team1Set3Score = matchData.team1Set3Score;
-            this.team2Set3Score = matchData.team2Set3Score;
             this.team1SetScore = matchData.team1SetScore;
+            this.team2Set1Score = matchData.team2Set1Score;
+            this.team2Set2Score = matchData.team2Set2Score;
+            this.team2Set3Score = matchData.team2Set3Score;
             this.team2SetScore = matchData.team2SetScore;
-            this.undoHistory = matchData.undoHistory;
+            this.undoHistoryId = matchData.undoHistoryId;
             this.winner = matchData.winner;
             this.team1Id = matchData.team1Id;
             this.team2Id = matchData.team2Id;
@@ -80,33 +89,39 @@ export class TableTennisGame {
             this.team2Point = matchData.team2Point;
             this.team1MatchPlayed = matchData.team1MatchPlayed;
             this.team2MatchPlayed = matchData.team2MatchPlayed;
-            this.team1Won = matchData.team1Won;
-            this.team2Won = matchData.team2Won;
-            this.team1Lose = matchData.team1Lose;
-            this.team2Lose = matchData.team2Lose;
+            this.team1MatchWon = matchData.team1MatchWon;
+            this.team2MatchWon = matchData.team2MatchWon;
+            this.team1MatchLose = matchData.team1MatchLose;
+            this.team2MatchLose = matchData.team2MatchLose;
         };
     };
 
 
     async scorePoint(teamId) {
+
+
         if (this.winner) throw "Game Is Already Over";
+
 
         const scoredTeamNumber = teamId === this.team1Id ? 1 : 2;
 
+        //debugger
+        console.log(`scoredTeamNumber: ${JSON.stringify(scoredTeamNumber)}`);
+
         if (this.currentSet === 1) {
-            if (this.scoredTeamNumber === 1) {
+            if (scoredTeamNumber === 1) {
                 this.team1Set1Score += 1;
             } else {
-                this.team1Set2Score += 1;
+                this.team2Set1Score += 1;
             }
         } else if (this.currentSet === 2) {
-            if (this.scoredTeamNumber === 1) {
+            if (scoredTeamNumber === 1) {
                 this.team1Set2Score += 1;
             } else {
                 this.team2Set2Score += 1;
             }
         } else if (this.currentSet === 3) {
-            if (this.scoredTeamNumber === 1) {
+            if (scoredTeamNumber === 1) {
                 this.team1Set3Score += 1;
             } else {
                 this.team2Set3Score += 1;
@@ -152,15 +167,35 @@ export class TableTennisGame {
             };
         };
 
-        this.recordAction({ action: "score", scoredTeamNumber });
+
+        //debugger
+        console.log(`this:`, this);
+
+        await this.recordAction({ action: "score", scoredTeamNumber });
         await this.saveMatchData();
         return this.getMatchState();
     }
 
     async undoLastAction() {
-        if (this.undoHistory.length === 0) throw "No action to Undo";
 
-        const lastAction = this.undoHistory.pop();
+
+        const getHistoryParams = {
+            TableName: this.tableName,
+            Key: {
+                id: this.undoHistoryId,
+                details: `${this.matchId}#undo`
+            }
+        }
+
+        const [err, succ] = await get(getHistoryParams);
+
+        if (err) throw err;
+
+        this.undoHistory = succ?.Item[0] || {};
+
+        if (Object.keys(this.undoHistory).length === 0) throw "No action to Undo";
+
+        const lastAction = this.undoHistory;
         this.team1Set1Score = lastAction.team1Set1Score;
         this.team2Set1Score = lastAction.team1Set2Score;
         this.team1Set2Score = lastAction.team1Set2Score;
@@ -169,7 +204,7 @@ export class TableTennisGame {
         this.team2Set3Score = lastAction.team2Set3Score;
         this.team1SetScore = lastAction.team1SetScore;
         this.team2SetScore = lastAction.team2SetScore;
-        this.undoHistory = lastAction.undoHistory;
+        this.undoHistoryId = lastAction.undoHistoryId;
         this.winner = lastAction.winner;
         this.team1Id = lastAction.team1Id;
         this.team2Id = lastAction.team2Id;
@@ -188,10 +223,14 @@ export class TableTennisGame {
         this.team2Point = lastAction.team2Point;
         this.team1MatchPlayed = lastAction.team1MatchPlayed;
         this.team2MatchPlayed = lastAction.team2MatchPlayed;
-        this.team1Won = lastAction.team1Won;
-        this.team2Won = lastAction.team2Won;
-        this.team1Lose = lastAction.team1Lose;
-        this.team2Lose = lastAction.team2Lose;
+        this.team1MatchWon = lastAction.team1MatchWon;
+        this.team2MatchWon = lastAction.team2MatchWon;
+        this.team1MatchLose = lastAction.team1MatchLose;
+        this.team2MatchLose = lastAction.team2MatchLose;
+
+
+        //debugger
+        console.log(`saveMatchData:`);
 
         await this.saveMatchData();
         return this.getMatchState();
@@ -233,19 +272,23 @@ export class TableTennisGame {
         };
     };
 
-    recordAction(action) {
-        this.undoHistory.push({
+    async recordAction(action) {
+
+        //debugger
+        console.log(`Entered Record action:`);
+
+        this.undoHistory = {
             action: action.action,
             scoredTeamNumber: action.scoredTeamNumber,
             team1Set1Score: this.team1Set1Score,
-            team1Set2Score: this.team2Set1Score,
             team1Set2Score: this.team1Set2Score,
-            team2Set2Score: this.team2Set2Score,
             team1Set3Score: this.team1Set3Score,
-            team2Set3Score: this.team2Set3Score,
             team1SetScore: this.team1SetScore,
+            team2Set1Score: this.team2Set1Score,
+            team2Set2Score: this.team2Set2Score,
+            team2Set3Score: this.team2Set3Score,
             team2SetScore: this.team2SetScore,
-            undoHistory: this.undoHistory,
+            undoHistoryId: this.undoHistoryId,
             winner: this.winner,
             team1Id: this.team1Id,
             team2Id: this.team2Id,
@@ -264,104 +307,145 @@ export class TableTennisGame {
             team2Point: this.team2Point,
             team1MatchPlayed: this.team1MatchPlayed,
             team2MatchPlayed: this.team2MatchPlayed,
-            team1Won: this.team1Won,
-            team2Won: this.team2Won,
-            team1Lose: this.team1Lose,
-            team2Lose: this.team2Lose,
-        })
+            team1MatchWon: this.team1MatchWon,
+            team2MatchWon: this.team2MatchWon,
+            team1MatchLose: this.team1MatchLose,
+            team2MatchLose: this.team2MatchLose,
+        };
+
+        const undoId = uuidV4();
+        this.undoHistoryId = undoId;
+
+        const saveParams = {
+            TableName: this.tableName,
+            Item: {
+                id: undoId,
+                details: `${this.matchId}#undo`,
+                role: this.matchId,
+                ...this.undoHistory
+            }
+        };
+
+        //debugger
+        console.log(`saveParams: ${JSON.stringify(saveParams)}`);
+
+        const [err, succ] = await post(saveParams);
+
+        if (err) throw err;
     };
 
 
     async getMatchData() {
-        // get Match data
-        const [err, matchData] = await this.repository.getMatch(this.matchId)
 
-        if (err) throw err;
+        try {
+            // get Match data
 
-        const match = matchData?.Item || {};
+            //debugger
+            console.log(`this: ${JSON.stringify(this)}`);
+            const [err, matchData] = await this.repository.getMatch(this.matchId)
 
-        // get1Team data
-        const [team1Err, team1] = await this.repository.fetchTeam(this.team1Id);
+            if (err) throw err;
 
-        if (team1Err) throw team1Err;
+            const match = matchData?.Item || {};
 
-        const team1Data = team1?.Item || {};
+            // get1Team data
+            const [team1Err, team1] = await this.repository.fetchTeam(match.team1Id);
 
-        // get2Team data
-        const [team2Err, team2] = await this.repository.fetchTeam(this.team2Id);
+            if (team1Err) throw team1Err;
 
-        if (team2Err) throw team2Err;
+            const team1Data = team1?.Item || {};
 
-        const team2Data = team2?.Item || {};
+            // get2Team data
+            const [team2Err, team2] = await this.repository.fetchTeam(match.team2Id);
 
-        // get match set data
-        const [matchSet1Err, matchSet1Data] = await this.repository.getMatchSet(this.matchId, 1);
+            if (team2Err) throw team2Err;
 
-        if (matchSet1Err) throw matchSet1Err;
+            const team2Data = team2?.Item || {};
 
-        const [matchSet2Err, matchSet2Data] = await this.repository.getMatchSet(this.matchId, 2);
+            // get match set data
+            const [matchSet1Err, matchSet1Data] = await this.repository.getMatchSet(this.matchId, 1);
 
-        if (matchSet2Err) throw matchSet2Err;
+            if (matchSet1Err) throw matchSet1Err;
 
-        const [matchSet3Err, matchSet3Data] = await this.repository.getMatchSet(this.matchId, 3);
+            const [matchSet2Err, matchSet2Data] = await this.repository.getMatchSet(this.matchId, 2);
 
-        if (matchSet3Err) throw matchSet3Err;
+            if (matchSet2Err) throw matchSet2Err;
 
-        const matchSet = {
-            1: matchSet1Data.Item || {},
-            2: matchSet2Data.Item || {},
-            3: matchSet3Data.Item || {},
-        };
+            const [matchSet3Err, matchSet3Data] = await this.repository.getMatchSet(this.matchId, 3);
 
-        const returnData = {
-            matchId: match?.id || null,
-            matchNumber: match?.matchNumber || null,
-            date: match?.date || null,
-            team1Id: match?.team1Id || null,
-            team1Name: team1Data?.teamName || null,
-            team1Player1Name: team1Data?.player1Name || null,
-            team1Player2Name: team1Data?.player2Name || null,
-            team1Set1Score: matchSet["1"]?.team1Score || 0,
-            team1Set2Score: matchSet["2"]?.team1Score || 0,
-            team1Set3Score: matchSet["3"]?.team1Score || 0,
-            team1SetScore: match?.team1SetScore || 0,
-            team1Voting: match?.team1Voting || 0,
-            team2Id: match?.team2Id || null,
-            team2Name: team2Data?.teamName || null,
-            team2Player1Name: team2Data?.player1Name || null,
-            team2Player2Name: team2Data?.player2Name || null,
-            team2Set1Score: matchSet["1"]?.team2Score || 0,
-            team2Set2Score: matchSet["2"]?.team2Score || 0,
-            team2Set3Score: matchSet["3"]?.team2Score || 0,
-            team2SetScore: match?.team2SetScore || 0,
-            team2Voting: match?.team2Voting || 0,
-            votingStarted: match?.votingStarted || false,
-            totalVoting: match.totalVoting || 0,
-            matchResult: match?.matchResult || null,
-            matchStatus: match?.matchStatus || null,
-            undoHistory: match?.undoHistory || null,
-            winner: match?.winner || null,
-            currentSet: match?.currentSet || null,
-            set1winner: matchSet["1"]?.winner || null,
-            set2winner: matchSet["2"]?.winner || null,
-            set3winner: matchSet["3"]?.winner || null,
-            team1Point: team1Data?.point || 0,
-            team2Point: team2Data?.point || 0,
-            team1MatchPlayed: team1Data?.matchPlayed || 0,
-            team1MatchWon: team1Data?.matchWon || 0,
-            team1MatchLose: team1Data?.matchLose || 0,
-            team2MatchPlayed: team2Data?.matchPlayed || 0,
-            team2MatchWon: team2Data?.matchWon || 0,
-            team2MatchLose: team2Data?.matchLose || 0
-        };
+            if (matchSet3Err) throw matchSet3Err;
 
-        return returnData;
+            const matchSet = {
+                1: matchSet1Data.Item || {},
+                2: matchSet2Data.Item || {},
+                3: matchSet3Data.Item || {},
+            };
+
+            //debugger
+            console.log(`Enetered Here 1:`);
+
+            const returnData = {
+                matchId: match?.id || null,
+                matchNumber: match?.matchNumber || null,
+                date: match?.date || null,
+                team1Id: match?.team1Id || null,
+                team1Name: team1Data?.teamName || null,
+                team1Player1Name: team1Data?.player1Name || null,
+                team1Player2Name: team1Data?.player2Name || null,
+                team1Set1Score: matchSet["1"]?.team1Score || 0,
+                team1Set2Score: matchSet["2"]?.team1Score || 0,
+                team1Set3Score: matchSet["3"]?.team1Score || 0,
+                team1SetScore: match?.team1SetScore || 0,
+                team1Voting: match?.team1Voting || 0,
+                team2Id: match?.team2Id || null,
+                team2Name: team2Data?.teamName || null,
+                team2Player1Name: team2Data?.player1Name || null,
+                team2Player2Name: team2Data?.player2Name || null,
+                team2Set1Score: matchSet["1"]?.team2Score || 0,
+                team2Set2Score: matchSet["2"]?.team2Score || 0,
+                team2Set3Score: matchSet["3"]?.team2Score || 0,
+                team2SetScore: match?.team2SetScore || 0,
+                team2Voting: match?.team2Voting || 0,
+                votingStarted: match?.votingStarted || false,
+                totalVoting: match.totalVoting || 0,
+                matchResult: match?.matchResult || null,
+                matchStatus: match?.matchStatus || null,
+                undoHistoryId: match?.undoHistoryId || null,
+                winner: match?.winner || null,
+                currentSet: match?.currentSet || null,
+                set1winner: matchSet["1"]?.winner || null,
+                set2winner: matchSet["2"]?.winner || null,
+                set3winner: matchSet["3"]?.winner || null,
+                team1Point: team1Data?.point || 0,
+                team2Point: team2Data?.point || 0,
+                team1MatchPlayed: team1Data?.matchPlayed || 0,
+                team1MatchWon: team1Data?.matchWon || 0,
+                team1MatchLose: team1Data?.matchLose || 0,
+                team2MatchPlayed: team2Data?.matchPlayed || 0,
+                team2MatchWon: team2Data?.matchWon || 0,
+                team2MatchLose: team2Data?.matchLose || 0
+            };
+
+            //debugger
+            console.log(`returnData: ${JSON.stringify(returnData)}`);
+
+            return [null, returnData];
+
+        } catch (error) {
+            //debugger
+            console.log(`Error in fetching Data: ${JSON.stringify(error)}`);
+
+            return [error, null];
+        }
     };
 
 
     async saveMatchData() {
-        // set matchData
 
+        //debugger
+        console.log(`Entered save matchData: `);
+
+        // set matchData
         const matchParams = {
             TableName: this.tableName,
             Item: {
@@ -379,18 +463,20 @@ export class TableTennisGame {
                 team2Voting: this.team2Voting,
                 totalVoting: this.totalVoting,
                 votingStarted: this.votingStarted,
-                undoHistory: this.undoHistory,
+                undoHistoryId: this.undoHistoryId,
                 winner: this.winner,
                 currentSet: this.currentSet
             }
         };
 
         //debugger
-        console.log(`matchParams: ${JSON.stringify(matchParams)}`);
+        console.log(`matchParams:`, matchParams);
 
         const [writeMatchErr, writeMatch] = await post(matchParams);
 
         if (writeMatchErr) throw writeMatchErr;
+
+        console.log(this.currentSet === 1 ? this.team1Set1Score : this.currentSet === 2 ? this.team1Set2Score : this.team1Set3Score);
 
         // set setmatch
         const setParams = {
@@ -409,7 +495,7 @@ export class TableTennisGame {
         //debugger
         console.log(`setParams: ${JSON.stringify(setParams)}`);
 
-        const [writeSetErr, writeSet] = await post(matchParams);
+        const [writeSetErr, writeSet] = await post(setParams);
 
         if (writeSetErr) throw writeSetErr;
 
@@ -475,7 +561,7 @@ export class TableTennisGame {
             //debugger
             console.log(`update2Params: ${JSON.stringify(update2Params)}`);
 
-            const [udpate2Err, update2Resp] = await put(updateParams);
+            const [udpate2Err, update2Resp] = await put(update2Params);
 
             if (udpate2Err) throw udpate2Err;
 
@@ -496,6 +582,7 @@ export class TableTennisGame {
             team1SetScore: this.team1SetScore,
             team2SetScore: this.team2SetScore,
             undoHistory: this.undoHistory,
+            undoHistoryId: this.undoHistoryId,
             winner: this.winner,
             team1Id: this.team1Id,
             team2Id: this.team2Id,
@@ -514,10 +601,10 @@ export class TableTennisGame {
             team2Point: this.team2Point,
             team1MatchPlayed: this.team1MatchPlayed,
             team2MatchPlayed: this.team2MatchPlayed,
-            team1Won: this.team1Won,
-            team2Won: this.team2Won,
-            team1Lose: this.team1Lose,
-            team2Lose: this.team2Lose
+            team1MatchWon: this.team1MatchWon,
+            team2MatchWon: this.team2MatchWon,
+            team1MatchLose: this.team1MatchLose,
+            team2MatchLose: this.team2MatchLose
         };
     }
 }

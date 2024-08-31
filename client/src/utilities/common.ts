@@ -71,8 +71,7 @@ export const findPercentage = (total: number, given: number, down: boolean) => {
 
 
 export function quickSortList<T>(arr: T[], left = 0, right = arr.length - 1) {
-    console.log("arr", arr);
-    
+
     if (left >= right) return arr;
 
 

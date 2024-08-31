@@ -29,11 +29,22 @@ export default {
           '0%': { left: '-100%' },
           '100%': { left: '100%' },
         },
+        slideIn: {
+          "0%": { opacity: 0, transform: "translateX(100%)" },
+          "100%": { opacity: 1, transform: "translateX(0)" }
+        },
+        opacity: {
+          "0%": {opacity: 0},
+          "100%": {opacity: 1},
+          "0%": {opacity: 0}
+        }
       },
       animation: {
         wave: 'wave 15s ease-in-out infinite',
         'background-wave': 'background-wave 10s ease-in-out infinite',
         'line-move': 'line-move 1.5s linear infinite',
+        slideIn: "slideIn .8s ease-in-out forwards",
+        opacity: "opacity .3s ease-in-out"
       },
       spacing: {
         '2': '0.5rem',
@@ -70,7 +81,7 @@ export default {
         'xxl': ['20px', '30px'],
         '4xl': ['50px', '65px'],
         '5xl': ['80px', '100px'],
-        '10xl':['180px', '200px']
+        '10xl': ['180px', '200px']
       },
       screens: {
         'xs': { 'min': '479px' },

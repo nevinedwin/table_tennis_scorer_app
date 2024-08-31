@@ -11,7 +11,8 @@ export const endpoints = {
     ADDVOTE: "match/addVote",
     GETVOTE: "match/getVote",
     GETFULLMATCH: "match/getFullMatch",
-    UPDATESINGLE: "match/updateSingle"
+    UPDATESINGLE: "match/updateSingle",
+    PLAYGAME: "match/playGame"
 }
 
 export enum MatchStatus {
@@ -66,6 +67,19 @@ export type MatchListType = {
     matchResult: string;
     matchStatus: string;
     winner: string;
+    set1Winner: string;
+    set2Winner: string;
+    set3winner: number;
+    undoHistory: any;
+    currentSet: number;
+    team1Point: number;
+    team1MatchPlayed: number;
+    team1MatchLose: number;
+    team1MatchWon: number;
+    team2MatchWon: number;
+    team2MatchPlayed: number;
+    team2Point: number;
+    team2MatchLose: number;
 }
 
 // create match
@@ -153,5 +167,13 @@ export const updateMatchSingle = async (data: any) => {
     return res;
 };
 
+// play game
+export const playGame = async (data: any) => {
+    const res: any = await api.post(endpoints.PLAYGAME, data);
+    if (res?.response?.status === 500) {
+        throw res.response.data
+    }
+    return res;
+}
 
 

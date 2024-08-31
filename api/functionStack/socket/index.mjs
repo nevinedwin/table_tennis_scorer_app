@@ -6,6 +6,8 @@ import { get, query } from 'libs/db-lib/index.mjs';
 const { WEBSOCKET_POST_URL, TABLE_NAME, INDEX_NAME } = process.env;
 
 async function sendNotification({ notificationType, payload = "", connectionId }) {
+    //debugger
+    console.log(`Entered notificaiton Fucntion:`);
     try {
         const apigwManagementApi = new AWS.ApiGatewayManagementApi({
             endpoint: WEBSOCKET_POST_URL
@@ -26,7 +28,7 @@ async function sendNotification({ notificationType, payload = "", connectionId }
 
     } catch (error) {
         //debugger
-        console.log(`error in sending notification: ${JSON.stringify(error)}`);
+        console.log(`Error in sending notification to Connection ID ${connectionId}: ${error.message}, Stack: ${error.stack}, Full Error: ${JSON.stringify(error)}`);
     };
 };
 
@@ -103,7 +105,7 @@ async function getMatchSet(matchId, setNumber) {
 };
 
 
-async function getAllConnectionIds () {
+async function getAllConnectionIds() {
     try {
 
         const params = {
@@ -152,7 +154,7 @@ export async function main(event) {
             console.log(`oldImg: ${JSON.stringify(oldImg)}`);
 
 
-            if (newImg?.matchStatus === "LIVE") {
+            if (newImg?.matchStatus === "LIVE" && newImg?.role === "MATCH") {
 
                 const match = newImg;
 
@@ -221,34 +223,72 @@ export async function main(event) {
                     set1winner: matchSet["1"]?.winner || null,
                     set2winner: matchSet["2"]?.winner || null,
                     set3winner: matchSet["3"]?.winner || null,
+                    team1Point: team1Data?.point || 0,
+                    team2Point: team2Data?.point || 0,
+                    team1MatchPlayed: team1Data?.matchPlayed || 0,
+                    team1MatchWon: team1Data?.matchWon || 0,
+                    team1MatchLose: team1Data?.matchLose || 0,
+                    team2MatchPlayed: team2Data?.matchPlayed || 0,
+                    team2MatchWon: team2Data?.matchWon || 0,
+                    team2MatchLose: team2Data?.matchLose || 0
                 };
+
+
+                //debugger
+                console.log(`returnData: ${JSON.stringify(returnData)}`);
 
                 // get all connetion Ids
                 const [getErr, connectionIds] = await getAllConnectionIds();
-        
-                if(getErr) throw getErr;
-        
+
+                if (getErr) throw getErr;
+
                 //debugger
                 console.log(`connectionIds: ${JSON.stringify(connectionIds)}`);
 
 
-                for await (const connectionIdData of connectionIds){
-                    const message = {
-                        action: "LIVE_MATCH",
-                        data: returnData
-                    }
+                const notificationSendPromises = [];
+                if (Array.isArray(connectionIds?.Items)) {
+                    for (const eachId of connectionIds.Items) {
+                        const message = {
+                            action: "LIVE_MATCH",
+                            data: returnData
+                        }
 
-                    await sendNotification({connectionId: connectionIdData.connectionId, notificationType: "LIVE", payload: message});
-                }
-            }
-        }
+                        if (eachId?.connectionId) {
+                            notificationSendPromises.push(sendNotification({
+                                connectionId: eachId.connectionId,
+                                notificationType: "LIVE",
+                                payload: message
+                            }));
+                        };
+                    };
+                };
+
+                //debugger
+                console.log(`notificationSendPromises: ${JSON.stringify(notificationSendPromises)}`);
+
+                if (notificationSendPromises.length) {
+
+                    const result = await Promise.allSettled(notificationSendPromises);
+
+                    result.forEach(eachResult => {
+                        if (eachResult.status === "rejected") {
+                            const { error, connectionId } = result.reason;
+                            console.log(`Failed to send notification to ${connectionId}: ${error.message}`);
+                        } else {
+                            console.log(`Notification sent successfully to ${result.value.connectionId}`);
+                        };
+                    })
+                };
+            };
+        };
 
 
         return success("Successful")
 
     } catch (error) {
         //debugger
-        console.log(`Error: ${JSON.stringify(error)}`);
+        console.log(`Error: ${error.message}, Stack: ${error.stack}, Full Error: ${JSON.stringify(error)}`);
         return failure(error);
     }
 }

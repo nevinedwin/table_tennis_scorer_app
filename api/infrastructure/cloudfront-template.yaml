@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTAppTable  Application Cloudfront Template"
+
+Parameters:
+  FrontendBucketDomainName:
+    Type: String
+  TTAppOriginAccessIdentity:
+    Type: String
+  IsEnabledCustomeDomain:
+    Type: String
+  Alias:
+    Type: String
+  SSLCertificateArn:
+    Type: String
+  
+Conditions:
+  EnableCustomDomain: !Equals [!Ref IsEnabledCustomeDomain, "true"]
+
+Resources:
+  TTAppCloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !Ref FrontendBucketDomainName 
+            Id: "FrontendBucketOrigin"
+            S3OriginConfig:
+              OriginAccessIdentity:  !Sub origin-access-identity/cloudfront/${TTAppOriginAccessIdentity}
+        Enabled: true
+        PriceClass: PriceClass_200
+        HttpVersion: "http2"
+        Aliases:
+          - !If [EnableCustomDomain, !Ref Alias, !Ref "AWS::NoValue"]
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS
+            - PATCH
+            - POST
+            - PUT
+          TargetOriginId: "FrontendBucketOrigin"
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: !If [EnableCustomDomain, !Ref "AWS::NoValue", true]
+          AcmCertificateArn: !If [EnableCustomDomain, !Ref SSLCertificateArn, !Ref "AWS::NoValue"]
+          SslSupportMethod: !If [EnableCustomDomain, "sni-only", !Ref "AWS::NoValue"]
+
+
+        
+
+          
+
+
+      
+
+

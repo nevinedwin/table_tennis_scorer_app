@@ -136,8 +136,12 @@ export class TableTennisGame {
                 this.team1SetScore += 1;
                 if (this.currentSet === 1) {
                     this.set1winner = this.team1Id;
+                    await this.updateSets(this.currentSet);
+                    this.currentSet += 1;
                 } else if (this.currentSet === 2) {
                     this.set2winner = this.team1Id;
+                    await this.updateSets(this.currentSet);
+                    this.currentSet += 1;
                 } else {
                     this.set2winner = this.team1Id;
                 }
@@ -145,8 +149,12 @@ export class TableTennisGame {
                 this.team2SetScore += 1;
                 if (this.currentSet === 1) {
                     this.set1winner = this.team2Id;;
+                    await this.updateSets(this.currentSet);
+                    this.currentSet += 1;
                 } else if (this.currentSet === 2) {
                     this.set2winner = this.team2Id;
+                    await this.updateSets(this.currentSet);                    
+                    this.currentSet += 1;
                 } else {
                     this.set2winner = this.team2Id;
                 }
@@ -565,19 +573,48 @@ export class TableTennisGame {
 
             if (udpate2Err) throw udpate2Err;
 
-        } else {
-            this.currentSet += 1;
-        };
+        }
     };
 
+    async updateSets(setNumber) {
+        try {
+
+            // set setmatch
+            const setParams = {
+                TableName: this.tableName,
+                Item: {
+                    id: this.matchId,
+                    details: `set#${setNumber}`,
+                    setNumber: setNumber,
+                    role: "MATCH#SET",
+                    winner: setNumber === 1 ? this.set1winner : setNumber === 2 ? this.set2winner : this.set3winner,
+                    team1Score: setNumber === 1 ? this.team1Set1Score : setNumber === 2 ? this.team1Set2Score : this.team1Set3Score,
+                    team2Score: setNumber === 1 ? this.team2Set1Score : setNumber === 2 ? this.team2Set2Score : this.team2Set3Score,
+                }
+            }
+
+            //debugger
+            console.log(`setParams: ${JSON.stringify(setParams)}`);
+
+            const [writeSetErr, writeSet] = await post(setParams);
+
+            if (writeSetErr) throw writeSetErr;
+        } catch (error) {
+
+            //debugger
+            console.log(`error: ${JSON.stringify(error)}`);
+
+            throw error;
+        };
+    }
     getMatchState() {
         return {
             matchId: this.matchId,
             team1Set1Score: this.team1Set1Score,
             team1Set2Score: this.team2Set1Score,
-            team1Set2Score: this.team1Set2Score,
-            team2Set2Score: this.team2Set2Score,
             team1Set3Score: this.team1Set3Score,
+            team2Set1Score: this.team2Set1Score,
+            team2Set2Score: this.team2Set2Score,
             team2Set3Score: this.team2Set3Score,
             team1SetScore: this.team1SetScore,
             team2SetScore: this.team2SetScore,

@@ -8,21 +8,25 @@ import ListMatches from '../match/list'
 
 const Options: React.FC = () => {
 
-    const [component, setComponent] = useState<string>("create_team")
+    const [component, setComponent] = useState<string>("")
 
     return (
         <div className='w-full h-full'>
-            <div className='w-full h-full flex justify-center items-start'>
-                <div className='w-[20%] p-3'>
-                    <p className='text-center pt-4 pb-6 text-2xl font-bold'>Actions</p>
+            <div className='w-full h-full flex items-start lg:flex-row flex-col'>
+                <div className='lg:w-[20%] w-full px-7 lg:p-3'>
+                    <p className='text-center pt-4 pb-6 text-xxl lg:text-2xl font-bold'>Actions</p>
                     <Accordion setComponent={setComponent} component={component} />
                 </div>
-                <div className='w-[90%] border-l-[1px] border-borderColor h-full'>
-                    {component === "create_team" && <Create />}
-                    {component === "list_team" && <ListTeam />}
-                    {component === "create_match" && <CreateMatch />}
-                    {component === "list_match" && <ListMatches />}
-                </div>
+                {
+                    component && (
+                        <div className='w-full lg:w-[90%] lg:border-l-[1px] lg:border-borderColor h-full p-2 lg:p-0'>
+                            {component === "create_team" && <Create />}
+                            {component === "list_team" && <ListTeam />}
+                            {component === "create_match" && <CreateMatch />}
+                            {component === "list_match" && <ListMatches />}
+                        </div>
+                    )
+                }
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ import { getCurrentUser, signOut } from "@aws-amplify/auth";
 import { fetchSingleUser, getSocketUrl } from "../../services/userService";
 import { useSocket } from "../websocketContext/websocketContext";
 
-const { userIdKey, token } = localStorageKeys;
+const { userIdKey } = localStorageKeys;
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
@@ -20,8 +20,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         case AUTH_ACTIONS.FETCH_USER:
             return { ...state, user: action.payload };
         case AUTH_ACTIONS.LOGOUT:
-            ManageLocalStorage.delete(userIdKey);
-            ManageLocalStorage.delete(token);
+            ManageLocalStorage.clear();
             return { ...state, user: null, userId: null, isLoginStarts: false };
         default:
             return state;
@@ -74,13 +73,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             };
         };
 
-        async function fetchSocket(){
+        async function fetchSocket() {
             try {
                 const socketData: any = await getSocketUrl();
                 if (socketData.socketUrl) {
                     onConnect(socketData.socketUrl);
                 }
-                
+
             } catch (error) {
                 console.log(error);
             }

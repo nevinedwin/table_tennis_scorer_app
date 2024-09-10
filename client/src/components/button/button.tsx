@@ -11,7 +11,7 @@ const StyledButton: React.FC<StyledButtonPropsType> = ({ title, handleClick, isE
     return (
         <button
             onClick={handleClick}
-            className={`w-[150px] p-2 text-black uppercase  font-semibold rounded-md transition-bg-border duration-300 ease-custom text-center
+            className={`w-[150px] p-2 text-black uppercase  font-semibold rounded-md lg:text-2md text-sm transition-bg-border duration-300 ease-custom text-center
                     ${isError ? 'bg-primary' : 'bg-white hover:bg-black hover:text-white hover:border-white border-[1px]'}
 
                 `}>

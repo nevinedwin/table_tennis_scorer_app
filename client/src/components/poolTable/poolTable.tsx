@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react'
-import { listTeam, TeamType } from '../../services/teamService';
+import { TeamType } from '../../services/teamService';
 
 
 type LogoForPlayerPropTypes = {

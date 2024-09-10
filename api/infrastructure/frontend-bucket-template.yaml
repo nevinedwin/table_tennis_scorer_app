@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "TTApp Frontend bucket creation Template"
+
+Parameters:
+  StageName:
+    Type: String
+  StackNamePrefix:
+    Type: String
+  IsEnableCustomDomain:
+    Type: String
+  DomainName:
+    Type: String
+  S3CanonicalUserId:
+    Type: String
+
+Conditions:
+  EnableCustomDomain: !Equals [ !Ref IsEnableCustomDomain, "true" ]
+
+Resources:
+  FrontendBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${StackNamePrefix}-frontend-${StageName}
+      CorsConfiguration:
+        CorsRules:
+            - AllowedMethods:
+                - PUT
+                - POST
+              AllowedOrigins:
+                - !If [EnableCustomDomain, !Ref DomainName, "*"]
+              AllowedHeaders:
+                - "*"
+              Id: !Sub ${StackNamePrefix}-frontend-${StageName}-cors-rule
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Suspended
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  
+  FrontendBucketPlolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref FrontendBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser: !Ref S3CanonicalUserId
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub ${FrontendBucket.Arn}/*
+
+Outputs:
+  FrontendBucket:
+    Description: Bucket for hosting frontend
+    Value: !Ref FrontendBucket
+  
+  FrontendBucketArn:
+    Description: FrontendBucketArn
+    Value: !GetAtt FrontendBucket.Arn
+  
+  FrontendBucketDomainName:
+    Description: Frontend Bucket Domain Name
+    Value: !GetAtt FrontendBucket.RegionalDomainName

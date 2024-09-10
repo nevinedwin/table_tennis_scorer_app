@@ -1,11 +1,11 @@
 import React from 'react'
 import Hoc from '../../components/hoc/hoc'
-import LiveBoard from '../../components/dashboard/liveBoard'
+// import LiveBoard from '../../components/dashboard/liveBoard'
 
 const PredictionScoreBoard: React.FC = () => {
   return (
     <div>
-      <LiveBoard/>
+      {/* <LiveBoard/> */}
     </div>
   )
 }

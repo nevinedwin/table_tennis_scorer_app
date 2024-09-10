@@ -37,11 +37,9 @@ const Dashboard: React.FC = () => {
     // console.log("liveData", liveData);
 
     const checkLiveMatch = async (arr: any[]) => {
-        let matchId = null;
         for (const i of arr) {
             if (i.matchStatus === MatchStatus.Live) {
                 setIsLive(true);
-                matchId = i.id;
                 setLiveData(i)
                 break;
             }

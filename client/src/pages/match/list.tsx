@@ -2,7 +2,7 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import MatchTable from '../../components/matchTable/matchTable';
-import { deleteMatch, listMatch, MatchListType, MatchType } from '../../services/matchService';
+import { deleteMatch, listMatch, MatchListType, MatchStatus, updateMatchSingle } from '../../services/matchService';
 import { quickSort } from '../../utilities/common';
 import EditMatch from './edit';
 
@@ -62,10 +62,17 @@ const ListMatches: React.FC = () => {
         };
     };
 
+    const handleLive = async (id: string) => {
+        try {
 
-    const handlePoll = () => {
-
-    }
+            setIsLoading(true)
+            await updateMatchSingle({ matchId: id, updateKey: "matchStatus", updateValue: MatchStatus.Live });
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    };
 
     return (
         <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
@@ -78,7 +85,7 @@ const ListMatches: React.FC = () => {
                 <>
                     <h1 className='text-3xl font-bold text-center py-8'>Matches</h1>
                     <div className='w-[90%] m-auto h-full'>
-                        <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handlePoll={handlePoll}/>
+                        <MatchTable data={matchList} isLoading={isLoading} handleDelete={handleDelete} handleEdit={handleEdit} handleLive={handleLive} />
                     </div>
                 </>
             }

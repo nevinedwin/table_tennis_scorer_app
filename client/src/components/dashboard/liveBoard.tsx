@@ -109,7 +109,7 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data }) => {
             </div>
           </div>
           <div className='w-full pt-5 lg:pt-[10%] flex justify-center  items-center gap-5'>
-            {data?.set1Winner && <div className=''><ScoreChip setNumber={data.currentSet} team1Score={data?.team1Set1Score} team2Score={data?.team2Set1Score} /></div>}
+            {data?.set1Winner && <div className=''><ScoreChip setNumber={data?.currentSet as number} team1Score={data?.team1Set1Score} team2Score={data?.team2Set1Score} /></div>}
             {data?.set2Winner && <div className=''><ScoreChip setNumber={data?.currentSet as number} team1Score={data?.team1Set2Score as number} team2Score={data?.team2Set2Score as number} /></div>}
             {data?.set3winner && <div className=''><ScoreChip setNumber={data?.currentSet as number} team1Score={data?.team1Set3Score as number} team2Score={data?.team2Set3Score as number} /></div>}
           </div>

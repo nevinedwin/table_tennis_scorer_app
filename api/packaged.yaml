@@ -22,7 +22,7 @@ Mappings:
     prod:
       URL: https://dice.inapp.com/index.html
     local:
-      URL: http://localhost:5173/
+      URL: http://ttapp-frontend.s3-website.ap-south-1.amazonaws.com/
   StackNamePrefix:
     dev:
       Name: ttapp-dev-stack
@@ -34,7 +34,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/af0c16564d7734d7229403d16b3a7f56.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/613b85de8166832a0db4a9505190e97d.template
       Parameters:
         StageName:
           Ref: StageName
@@ -103,7 +103,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/b94e55b7acfeab3b1b5d0234b70c3e09.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/328102e24772c26f89f6355b3bf44357.template
       Parameters:
         StageName:
           Ref: StageName

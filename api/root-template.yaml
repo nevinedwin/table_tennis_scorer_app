@@ -12,6 +12,10 @@ Parameters:
       - prod
       - local
 
+  SSLCertificateArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/ttApp/Application/sslCertificateArn"
+
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/ttApp/Application/googleClientId"
@@ -20,13 +24,20 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/ttApp/Application/googleSecretKey"
 
+  IsEnableCustomDomain:
+    Type: String
+    Default: "false"
+    AllowedValues:
+         - "true"
+         - "false"
 
 Mappings:
   DomainName:
     dev:
-      URL: https://dev-dice.inapp.com/index.html
+      URL: https://khel.ns-info.xyz/index.html
+      # URL: https://dev-khel.inapp.com/index.html
     prod:
-      URL: https://dice.inapp.com/index.html
+      URL: https://khel.inapp.com/index.html
     local:
       URL: http://localhost:5173/
 
@@ -60,6 +71,42 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
   
+  AccessIdentiyStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./infrastructure/access-identity-template.yaml
+      Parameters:
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+
+  FrontendBucketStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./infrastructure/frontend-bucket-template.yaml
+      Parameters:
+        StageName: !Ref StageName
+        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        IsEnableCustomDomain: !Ref IsEnableCustomDomain
+        DomainName: !Sub
+          - https://${domain}
+          - domain: !FindInMap [DomainName, !Ref StageName, URL]
+        S3CanonicalUserId: !GetAtt AccessIdentiyStack.Outputs.S3CanonicalUserId
+  
+  CloudFrontStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./infrastructure/cloudfront-template.yaml
+      Parameters:
+        FrontendBucketDomainName: !GetAtt FrontendBucketStack.Outputs.FrontendBucketDomainName
+        TTAppOriginAccessIdentity: !GetAtt AccessIdentiyStack.Outputs.TTAppOriginAccessIdentity
+        IsEnabledCustomeDomain: !Ref IsEnableCustomDomain
+        Alias: !FindInMap [DomainName, !Ref StageName, URL ]
+        SSLCertificateArn: !Ref SSLCertificateArn
 
   CognitoStack:
     Type: AWS::Serverless::Application
@@ -112,7 +159,6 @@ Resources:
     DeletionPolicy: Delete
 
 Outputs:
-
   TTAppApiURL:
     Description: Api Gateway base url
     Value: !GetAtt FunctionStack.Outputs.TTAppApiURL

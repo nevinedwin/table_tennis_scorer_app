@@ -32,7 +32,7 @@ const InputElement: React.FC<InputElementPropType> = ({ placeholder, name, setDa
                         outline-none border-2 border-borderColor bg-black
                         transition-all duration-300 ease-custom
                         text-white   focus:border-white
-                          hover:border-white
+                          hover:border-white text-sm lg:text-2md
                         placeholder-gray-400'
             />
         </div>

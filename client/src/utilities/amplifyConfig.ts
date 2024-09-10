@@ -15,8 +15,8 @@ export default function configAmplify() {
                     oauth: {
                         domain: config.cognito.DOMAIN,
                         scopes: ['email', 'profile', 'openid'],
-                        redirectSignIn: [config.cognito.SIGN_IN_URL], // or your app's URL
-                        redirectSignOut: [config.cognito.SIGN_OUT_URL], // or your app's URL
+                        redirectSignIn: config.cognito.SIGN_IN_URL, // or your app's URL
+                        redirectSignOut: config.cognito.SIGN_OUT_URL, // or your app's URL
                         responseType: 'code',
                         providers: ["Google"]
                     }

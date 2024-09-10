@@ -9,20 +9,29 @@ Parameters:
     - dev
     - prod
     - local
+  SSLCertificateArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /ttApp/Application/sslCertificateArn
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /ttApp/Application/googleClientId
   GoogleSecretKey:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /ttApp/Application/googleSecretKey
+  IsEnableCustomDomain:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+    - 'true'
+    - 'false'
 Mappings:
   DomainName:
     dev:
-      URL: https://dev-dice.inapp.com/index.html
+      URL: https://khel.ns-info.xyz/index.html
     prod:
-      URL: https://dice.inapp.com/index.html
+      URL: https://khel.inapp.com/index.html
     local:
-      URL: http://ttapp-frontend.s3-website.ap-south-1.amazonaws.com/
+      URL: http://localhost:5173/
   StackNamePrefix:
     dev:
       Name: ttapp-dev-stack
@@ -34,7 +43,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/613b85de8166832a0db4a9505190e97d.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e4c4b6d370f26714e9f8f63b24e16407.template
       Parameters:
         StageName:
           Ref: StageName
@@ -63,6 +72,76 @@ Resources:
     DeletionPolicy: Delete
     Metadata:
       SamResourceId: DynamoDbTableStack
+  AccessIdentiyStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/66de8a12e9c58d1c71d5e6d42e26b092.template
+      Parameters:
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+    Metadata:
+      SamResourceId: AccessIdentiyStack
+  FrontendBucketStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2860e3dc516c63b6187609ff199b6ab7.template
+      Parameters:
+        StageName:
+          Ref: StageName
+        StackNamePrefix:
+          Fn::FindInMap:
+          - StackNamePrefix
+          - Ref: StageName
+          - Name
+        IsEnableCustomDomain:
+          Ref: IsEnableCustomDomain
+        DomainName:
+          Fn::Sub:
+          - https://${domain}
+          - domain:
+              Fn::FindInMap:
+              - DomainName
+              - Ref: StageName
+              - URL
+        S3CanonicalUserId:
+          Fn::GetAtt:
+          - AccessIdentiyStack
+          - Outputs.S3CanonicalUserId
+    Metadata:
+      SamResourceId: FrontendBucketStack
+  CloudFrontStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/36eb555745a77c9cbee129619eb8c417.template
+      Parameters:
+        FrontendBucketDomainName:
+          Fn::GetAtt:
+          - FrontendBucketStack
+          - Outputs.FrontendBucketDomainName
+        TTAppOriginAccessIdentity:
+          Fn::GetAtt:
+          - AccessIdentiyStack
+          - Outputs.TTAppOriginAccessIdentity
+        IsEnabledCustomeDomain:
+          Ref: IsEnableCustomDomain
+        Alias:
+          Fn::FindInMap:
+          - DomainName
+          - Ref: StageName
+          - URL
+        SSLCertificateArn:
+          Ref: SSLCertificateArn
+    Metadata:
+      SamResourceId: CloudFrontStack
   CognitoStack:
     Type: AWS::Serverless::Application
     Properties:

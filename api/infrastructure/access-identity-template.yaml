@@ -16,7 +16,7 @@ Resources:
 Outputs:
   TTAppOriginAccessIdentity:
     Description: "TTApp origin Access Identity"
-    Value: !!Ref TTAppOriginAccessIdentity
+    Value: !Ref TTAppOriginAccessIdentity
   
   S3CanonicalUserId:
     Description: "S3 Canonical User Id"

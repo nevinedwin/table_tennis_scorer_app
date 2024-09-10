@@ -6,9 +6,10 @@ Parameters:
     Default: local
     Type: String
     AllowedValues:
+    - local
+    - debug
     - dev
     - prod
-    - local
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /ttApp/Application/sslCertificateArn
@@ -25,14 +26,36 @@ Parameters:
     - 'true'
     - 'false'
 Mappings:
-  DomainName:
-    dev:
+  URLs:
+    debug:
       URL: https://khel.ns-info.xyz/index.html
+    dev:
+      URL: https://dev-khel.inapp.com/index.html
     prod:
       URL: https://khel.inapp.com/index.html
     local:
       URL: http://localhost:5173/
+  DomainName:
+    debug:
+      URL: khel.ns-info.xyz
+    dev:
+      URL: dev-khel.inapp.com
+    prod:
+      URL: khel.inapp.com
+    local:
+      URL: localhost:5173
+  ApiDomainName:
+    debug:
+      URL: api-khel.ns-info.xyz
+    dev:
+      URL: api-dev-khel.inapp.com
+    prod:
+      URL: api-khel.inapp.com
+    local:
+      URL: api-localhost:5173
   StackNamePrefix:
+    debug:
+      Name: ttapp-debug-stack
     dev:
       Name: ttapp-dev-stack
     prod:
@@ -43,7 +66,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e4c4b6d370f26714e9f8f63b24e16407.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/9087ffc71ce48c65e2ca35416889c0ec.template
       Parameters:
         StageName:
           Ref: StageName
@@ -151,7 +174,7 @@ Resources:
           Ref: StageName
         URLs:
           Fn::FindInMap:
-          - DomainName
+          - URLs
           - Ref: StageName
           - URL
         GoogleClientId:
@@ -182,7 +205,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/328102e24772c26f89f6355b3bf44357.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/1ef2a1161c7953a0eb1beb3d8328c040.template
       Parameters:
         StageName:
           Ref: StageName
@@ -223,6 +246,15 @@ Resources:
           Fn::GetAtt:
           - DynamoDbTableStack
           - Outputs.TTAppDynamoStreamARN
+        IsEnableCustomDomain:
+          Ref: IsEnableCustomDomain
+        ApiDomainName:
+          Fn::FindInMap:
+          - ApiDomainName
+          - Ref: StageName
+          - URL
+        SSLCertificateArn:
+          Ref: SSLCertificateArn
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:

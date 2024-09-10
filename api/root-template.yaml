@@ -49,6 +49,8 @@ Mappings:
       URL: dev-khel.inapp.com
     prod:
       URL: khel.inapp.com
+    local:
+      URL: localhost:5173
   ApiDomainName:
     debug:
       URL: api-khel.ns-info.xyz
@@ -56,6 +58,8 @@ Mappings:
       URL: api-dev-khel.inapp.com
     prod:
       URL: api-khel.inapp.com
+    local:
+      URL: api-localhost:5173
   StackNamePrefix:
     debug:
       Name: ttapp-debug-stack
@@ -65,7 +69,6 @@ Mappings:
       Name: ttapp-stack
     local:
       Name: ttapp-local-stack
-
 
 Resources:
   LambdaLayerStack:

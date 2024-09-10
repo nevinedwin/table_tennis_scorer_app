@@ -10,14 +10,10 @@
     "prebuildLayer": "cd lambdaLayerStack && npm i && cd .. && npm run moveLibsToLayer",
     "buildLayer": "node createLambdaLayer",
     "deploy": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket <Bucket_name> --output-template-file packaged.yaml --region <REGION>",
-    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttAppStack --s3-bucket <Bucket_name> --parameter-overrides stageName=prod",
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack --s3-bucket <Bucket_name> --parameter-overrides stageName=prod",
     "l-install": "cd lambdaLayerStack && npm i ",
     "l-uninstall": "cd lambdaLayerStack && npm uninstall ",
-    "deploy-dev": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket ttapp-dev --output-template-file packaged.yaml --region ap-south-1 --profile nevinedwin",
-    "postdeploy-dev": "sam deploy --template-file ./packaged.yaml --region ap-south-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack-dev --s3-bucket ttapp-dev --parameter-overrides stageName=dev --no-confirm-changeset --profile nevinedwin",
-    "deploy-local": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket ttapp-dev --output-template-file packaged.yaml --region ap-south-1 --profile nevinedwin",
-    "postdeploy-local": "sam deploy --template-file ./packaged.yaml --region ap-south-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack-local --s3-bucket ttapp-dev --parameter-overrides stageName=local --no-confirm-changeset --profile nevinedwin",
-    "delete-local": "aws cloudformation delete-stack --stack-name ttApp-stack-local --profile nevinedwin --region ap-south-1"
+    "delete": "aws cloudformation delete-stack --stack-name ttApp-stack --region <REGION>"
   },
   "keywords": [],
   "author": "",

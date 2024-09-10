@@ -5,7 +5,7 @@ Description: "TTAppTable Application"
 
 Parameters:
   StageName: 
-    Default: dev
+    Default: prod
     Type: String
     AllowedValues:
       - local

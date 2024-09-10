@@ -37,6 +37,15 @@ Parameters:
     Type: String
   TTAppDynamoStreamARN:
     Type: String
+  IsEnableCustomDomain:
+    Type: String
+  ApiDomainName:
+    Type: String
+  SSLCertificateArn:
+    Type: String
+
+Conditions:
+  EnableCustomDomain: !Equals [!Ref IsEnableCustomDomain, "true"]
 
 Resources:
   TTAppApiGateway:
@@ -55,6 +64,27 @@ Resources:
             UserPoolArn: !Ref UserPoolArn
         DefaultAuthorizer: TTAppCognitoAuthorizer
   
+  TTAppApiGatewayCustomDomain:
+    Condition: EnableCustomDomain
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref ApiDomainName
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !Ref SSLCertificateArn
+      SecurityPolicy: TLS_1_2
+  
+  TTAppCustomDomainMapping:
+    Condition: EnableCustomDomain
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref TTAppApiGatewayCustomDomain
+      BasePath: !Ref StageName
+      RestApiId: !Ref TTAppApiGateway
+      Stage: !Ref TTAppApiGateway.Stage
+
+
   # --------------Test Function -----------#
   TestFunction:
     Type: AWS::Serverless::Function

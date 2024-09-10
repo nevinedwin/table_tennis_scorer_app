@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build_client": "npm run build --prefix client",
+    "deploy_client": "npm run deploy --prefix client",
     "client": "npm start --prefix client",
     "api": "npm run deploy-local --prefix api",
     "delete-api": "npm run delete-local --prefix api"

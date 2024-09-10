@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "aws s3 sync dist/ s3://<BUCKET_NAME>",
+    "deploy": "aws s3 sync dist/ s3://ttapp-debug-stack-frontend-debug",
     "postdeploy": "aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --paths '/*'"
   },
   "dependencies": {

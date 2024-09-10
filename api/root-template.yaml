@@ -5,7 +5,7 @@ Description: "TTAppTable Application"
 
 Parameters:
   StageName: 
-    Default: local
+    Default: dev
     Type: String
     AllowedValues:
       - dev
@@ -26,7 +26,7 @@ Parameters:
 
   IsEnableCustomDomain:
     Type: String
-    Default: "false"
+    Default: "true"
     AllowedValues:
          - "true"
          - "false"

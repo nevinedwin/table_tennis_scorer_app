@@ -39,7 +39,7 @@ Parameters:
 Mappings:
   URLs:
     debug:
-      URL: "https://khel.ns-info.xyz/index.html"
+      URL: https://khel.ns-info.xyz/index.html
     dev:
       URL: https://dev-khel.inapp.com/index.html
     prod:

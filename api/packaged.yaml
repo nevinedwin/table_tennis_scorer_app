@@ -12,13 +12,16 @@ Parameters:
     - prod
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/sslCertificateArn
+    Default: /ttApp/Application/SSLCertificateArn
+  ApiSSLCertificateArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /ttApp/Application/ApiSSLCertificateArn
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/googleClientId
+    Default: /ttApp/Application/GoogleClientId
   GoogleSecretKey:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/googleSecretKey
+    Default: /ttApp/Application/GoogleSecretKey
   IsEnableCustomDomain:
     Type: String
     Default: 'false'
@@ -66,7 +69,7 @@ Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/9087ffc71ce48c65e2ca35416889c0ec.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/963b4e5ea625de95fa6215ad92121a76.template
       Parameters:
         StageName:
           Ref: StageName
@@ -144,7 +147,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/36eb555745a77c9cbee129619eb8c417.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/0558398bc607129d7d6d9efa86d7c853.template
       Parameters:
         FrontendBucketDomainName:
           Fn::GetAtt:
@@ -205,7 +208,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/1ef2a1161c7953a0eb1beb3d8328c040.template
+      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e2e2d87dc23aa48bf16025e0a8351ef0.template
       Parameters:
         StageName:
           Ref: StageName
@@ -253,8 +256,8 @@ Resources:
           - ApiDomainName
           - Ref: StageName
           - URL
-        SSLCertificateArn:
-          Ref: SSLCertificateArn
+        ApiSSLCertificateArn:
+          Ref: ApiSSLCertificateArn
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
@@ -318,3 +321,15 @@ Outputs:
       Fn::GetAtt:
       - CognitoStack
       - Outputs.UserPoolClientId
+  CloudFrontUrl:
+    Description: CloudFront Url for frontend
+    Value:
+      Fn::GetAtt:
+      - CloudFrontStack
+      - Outputs.CloudFrontUrl
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution Id
+    Value:
+      Fn::GetAtt:
+      - CloudFrontStack
+      - Outputs.CloudFrontDistributionId

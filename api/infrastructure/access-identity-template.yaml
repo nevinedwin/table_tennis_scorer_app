@@ -1,23 +1,23 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable  Application Cloudfront Template"
+Description: "KhelAppTable  Application Cloudfront Template"
 
 Parameters:
   StackNamePrefix:
     Type: String
 
 Resources:
-  TTAppOriginAccessIdentity:
+  KhelAppOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
           Comment: !Sub This is an Origin Access Identity(OAI) for cloudfront distribution for ${StackNamePrefix}
 
 Outputs:
-  TTAppOriginAccessIdentity:
-    Description: "TTApp origin Access Identity"
-    Value: !Ref TTAppOriginAccessIdentity
+  KhelAppOriginAccessIdentity:
+    Description: "KhelApp origin Access Identity"
+    Value: !Ref KhelAppOriginAccessIdentity
   
   S3CanonicalUserId:
     Description: "S3 Canonical User Id"
-    Value: !GetAtt TTAppOriginAccessIdentity.S3CanonicalUserId
+    Value: !GetAtt KhelAppOriginAccessIdentity.S3CanonicalUserId

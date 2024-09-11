@@ -1,49 +1,75 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: TTAppTable Application
+Description: KhelAppTable Application
 Parameters:
   StageName:
-    Default: local
+    Default: debug
     Type: String
     AllowedValues:
+    - local
+    - debug
     - dev
     - prod
-    - local
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/sslCertificateArn
+    Default: /khelApp/Application/SSLCertificateArn
+  ApiSSLCertificateArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /khelApp/Application/ApiSSLCertificateArn
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/googleClientId
+    Default: /khelApp/Application/GoogleClientId
   GoogleSecretKey:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /ttApp/Application/googleSecretKey
+    Default: /khelApp/Application/GoogleSecretKey
   IsEnableCustomDomain:
     Type: String
-    Default: 'false'
+    Default: 'true'
     AllowedValues:
     - 'true'
     - 'false'
 Mappings:
-  DomainName:
-    dev:
+  URLs:
+    debug:
       URL: https://khel.ns-info.xyz/index.html
+    dev:
+      URL: https://dev-khel.inapp.com/index.html
     prod:
       URL: https://khel.inapp.com/index.html
     local:
       URL: http://localhost:5173/
-  StackNamePrefix:
+  DomainName:
+    debug:
+      URL: khel.ns-info.xyz
     dev:
-      Name: ttapp-dev-stack
+      URL: dev-khel.inapp.com
     prod:
-      Name: ttapp-stack
+      URL: khel.inapp.com
     local:
-      Name: ttapp-local-stack
+      URL: localhost:5173
+  ApiDomainName:
+    debug:
+      URL: api-khel.ns-info.xyz
+    dev:
+      URL: api-dev-khel.inapp.com
+    prod:
+      URL: api-khel.inapp.com
+    local:
+      URL: api-localhost:5173
+  StackNamePrefix:
+    debug:
+      Name: khelapp-debug-stack
+    dev:
+      Name: khelapp-dev-stack
+    prod:
+      Name: khelapp-stack
+    local:
+      Name: khelapp-local-stack
 Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/e4c4b6d370f26714e9f8f63b24e16407.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/74231e963d94f11643d77a3a204b9f28.template
       Parameters:
         StageName:
           Ref: StageName
@@ -59,7 +85,7 @@ Resources:
   DynamoDbTableStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/8067c784799401f1fedcb5e196e3c579.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/f79926e4a9253cdcedfa0dd7ec1da8a4.template
       Parameters:
         StageName:
           Ref: StageName
@@ -77,7 +103,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/66de8a12e9c58d1c71d5e6d42e26b092.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/1849584291dd03bd8fada6df1ca724a4.template
       Parameters:
         StackNamePrefix:
           Fn::FindInMap:
@@ -91,7 +117,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/2860e3dc516c63b6187609ff199b6ab7.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/950d529ad0639fec5bb9d0d8f11911f8.template
       Parameters:
         StageName:
           Ref: StageName
@@ -121,16 +147,16 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/36eb555745a77c9cbee129619eb8c417.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/af36ff9848b7a2b092cb76095e7b47b2.template
       Parameters:
         FrontendBucketDomainName:
           Fn::GetAtt:
           - FrontendBucketStack
           - Outputs.FrontendBucketDomainName
-        TTAppOriginAccessIdentity:
+        KhelAppOriginAccessIdentity:
           Fn::GetAtt:
           - AccessIdentiyStack
-          - Outputs.TTAppOriginAccessIdentity
+          - Outputs.KhelAppOriginAccessIdentity
         IsEnabledCustomeDomain:
           Ref: IsEnableCustomDomain
         Alias:
@@ -145,31 +171,31 @@ Resources:
   CognitoStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/686e5c79942cf9abccace85372c900b5.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/2a4292502416f1cbfb0033faeaf86ea6.template
       Parameters:
         StageName:
           Ref: StageName
         URLs:
           Fn::FindInMap:
-          - DomainName
+          - URLs
           - Ref: StageName
           - URL
         GoogleClientId:
           Ref: GoogleClientId
         GoogleSecretKey:
           Ref: GoogleSecretKey
-        TTAppLayer:
+        KhelAppLayer:
           Fn::GetAtt:
           - LambdaLayerStack
-          - Outputs.TTAppLayer
+          - Outputs.KhelAppLayer
         TableName:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableName
-        TTAppTableArn:
+          - Outputs.KhelAppTableName
+        KhelAppTableArn:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableArn
+          - Outputs.KhelAppTableArn
         StackNamePrefix:
           Fn::FindInMap:
           - StackNamePrefix
@@ -182,7 +208,7 @@ Resources:
   FunctionStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/328102e24772c26f89f6355b3bf44357.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/0b60d36f976a7e10f82d66571937ad19.template
       Parameters:
         StageName:
           Ref: StageName
@@ -190,22 +216,22 @@ Resources:
           Fn::GetAtt:
           - CognitoStack
           - Outputs.UserPoolArn
-        TTAppLayer:
+        KhelAppLayer:
           Fn::GetAtt:
           - LambdaLayerStack
-          - Outputs.TTAppLayer
+          - Outputs.KhelAppLayer
         TableName:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableName
-        TTAppTableArn:
+          - Outputs.KhelAppTableName
+        KhelAppTableArn:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableArn
-        TTAppTableIndex:
+          - Outputs.KhelAppTableArn
+        KhelAppTableIndex:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableIndexName
+          - Outputs.KhelAppTableIndexName
         StackNamePrefix:
           Fn::FindInMap:
           - StackNamePrefix
@@ -214,15 +240,24 @@ Resources:
         WebSocketUrl:
           Fn::GetAtt:
           - SocketStack
-          - Outputs.TTAppWebSocketGatewayEndpoint
+          - Outputs.KhelAppWebSocketGatewayEndpoint
         WebSocketPostUrl:
           Fn::GetAtt:
           - SocketStack
-          - Outputs.TTAppWebSocketGatewayPOSTEndpoint
-        TTAppDynamoStreamARN:
+          - Outputs.KhelAppWebSocketGatewayPOSTEndpoint
+        KhelAppDynamoStreamARN:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppDynamoStreamARN
+          - Outputs.KhelAppDynamoStreamARN
+        IsEnableCustomDomain:
+          Ref: IsEnableCustomDomain
+        ApiDomainName:
+          Fn::FindInMap:
+          - ApiDomainName
+          - Ref: StageName
+          - URL
+        ApiSSLCertificateArn:
+          Ref: ApiSSLCertificateArn
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Metadata:
@@ -230,7 +265,7 @@ Resources:
   SocketStack:
     Type: AWS::Serverless::Application
     Properties:
-      Location: https://s3.ap-south-1.amazonaws.com/ttapp-dev/ebdbc6625a5b17ba57ed4c0f554685e7.template
+      Location: https://s3.ap-south-1.amazonaws.com/khelapp/6ef1bda2c8eeda595d95dc6efab7b9a5.template
       Parameters:
         StageName:
           Ref: StageName
@@ -242,22 +277,22 @@ Resources:
           Fn::GetAtt:
           - CognitoStack
           - Outputs.UserPoolClientId
-        TTAppLayer:
+        KhelAppLayer:
           Fn::GetAtt:
           - LambdaLayerStack
-          - Outputs.TTAppLayer
+          - Outputs.KhelAppLayer
         TableName:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableName
-        TTAppTableArn:
+          - Outputs.KhelAppTableName
+        KhelAppTableArn:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableArn
-        TTAppTableIndex:
+          - Outputs.KhelAppTableArn
+        KhelAppTableIndex:
           Fn::GetAtt:
           - DynamoDbTableStack
-          - Outputs.TTAppTableIndexName
+          - Outputs.KhelAppTableIndexName
         StackNamePrefix:
           Fn::FindInMap:
           - StackNamePrefix
@@ -268,12 +303,12 @@ Resources:
     Metadata:
       SamResourceId: SocketStack
 Outputs:
-  TTAppApiURL:
+  KhelAppApiURL:
     Description: Api Gateway base url
     Value:
       Fn::GetAtt:
       - FunctionStack
-      - Outputs.TTAppApiURL
+      - Outputs.KhelAppApiURL
   UserPoolId:
     Description: User pool ID
     Value:
@@ -286,3 +321,15 @@ Outputs:
       Fn::GetAtt:
       - CognitoStack
       - Outputs.UserPoolClientId
+  CloudFrontUrl:
+    Description: CloudFront Url for frontend
+    Value:
+      Fn::GetAtt:
+      - CloudFrontStack
+      - Outputs.CloudFrontUrl
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution Id
+    Value:
+      Fn::GetAtt:
+      - CloudFrontStack
+      - Outputs.CloudFrontDistributionId

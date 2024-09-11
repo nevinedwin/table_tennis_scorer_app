@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable Application"
+Description: "KhelAppTable Application"
 
 
 Parameters:
@@ -10,10 +10,10 @@ Parameters:
     Type: String
 
 Resources:
-  TTAppDynamoTable:
+  KhelAppDynamoTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${StackNamePrefix}-ttApp-table-${StageName}"
+      TableName: !Sub "${StackNamePrefix}-khelApp-table-${StageName}"
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
@@ -40,22 +40,22 @@ Resources:
         StreamViewType: "NEW_AND_OLD_IMAGES"
 
 Outputs:
-  TTAppTable:
+  KhelAppTable:
     Description: "TT App dynamoDb table"
-    Value: !Ref TTAppDynamoTable
+    Value: !Ref KhelAppDynamoTable
     Export:
-      Name: !Sub "${StackNamePrefix}-TTAppTable"
-  TTAppTableArn:
+      Name: !Sub "${StackNamePrefix}-KhelAppTable"
+  KhelAppTableArn:
     Description: "TT App table ARN"
-    Value: !GetAtt TTAppDynamoTable.Arn
-  TTAppTableName:
-    Description: "TTAppTable table name"
-    Value: !Sub "${StackNamePrefix}-ttApp-table-${StageName}"
-  TTAppTableIndexName:
-    Description: "TTApp Table GSI Index Name"
+    Value: !GetAtt KhelAppDynamoTable.Arn
+  KhelAppTableName:
+    Description: "KhelAppTable table name"
+    Value: !Sub "${StackNamePrefix}-khelApp-table-${StageName}"
+  KhelAppTableIndexName:
+    Description: "KhelApp Table GSI Index Name"
     Value: !Sub  "${StackNamePrefix}-basedOnRole-${StageName}"
-  TTAppDynamoStreamARN:
-    Description: "TTAppDynamoStreamARN"
-    Value: !GetAtt TTAppDynamoTable.StreamArn
+  KhelAppDynamoStreamARN:
+    Description: "KhelAppDynamoStreamARN"
+    Value: !GetAtt KhelAppDynamoTable.StreamArn
     Export:
-      Name: !Sub "${AWS::StackName}-TTAppDynamoStreamARN"
+      Name: !Sub "${AWS::StackName}-KhelAppDynamoStreamARN"

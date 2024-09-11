@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTApp lambda functions template"
+Description: "KhelApp lambda functions template"
 
 Globals:
   Function:
@@ -8,34 +8,34 @@ Globals:
     Timeout: 900
     MemorySize: 1024
     Layers:
-      - !Ref TTAppLayer
+      - !Ref KhelAppLayer
     Environment:
       Variables:
         TABLE_NAME: !Ref TableName
-        INDEX_NAME: !Ref TTAppTableIndex
+        INDEX_NAME: !Ref KhelAppTableIndex
         WEBSOCKET_URL: !Ref WebSocketUrl
         WEBSOCKET_POST_URL: !Ref WebSocketPostUrl
 
 Parameters:
   StageName:
     Type: String
-  TTAppLayer:
+  KhelAppLayer:
     Type: String
   TableName:
     Type: String
-  TTAppTableArn:
+  KhelAppTableArn:
     Type: String
   UserPoolArn:
     Type: String
   StackNamePrefix:
     Type: String
-  TTAppTableIndex:
+  KhelAppTableIndex:
     Type: String
   WebSocketUrl:
     Type: String
   WebSocketPostUrl:
     Type: String
-  TTAppDynamoStreamARN:
+  KhelAppDynamoStreamARN:
     Type: String
   IsEnableCustomDomain:
     Type: String
@@ -48,10 +48,10 @@ Conditions:
   EnableCustomDomain: !Equals [!Ref IsEnableCustomDomain, "true"]
 
 Resources:
-  TTAppApiGateway:
+  KhelAppApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub "ttapp-api-${StageName}"
+      Name: !Sub "khelapp-api-${StageName}"
       StageName: !Ref StageName
       Cors:
         AllowMethods: "'GET,POST,PUT,OPTIONS'"
@@ -60,11 +60,11 @@ Resources:
       Auth:
         AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
-          TTAppCognitoAuthorizer:
+          KhelAppCognitoAuthorizer:
             UserPoolArn: !Ref UserPoolArn
-        DefaultAuthorizer: TTAppCognitoAuthorizer
+        DefaultAuthorizer: KhelAppCognitoAuthorizer
   
-  TTAppApiGatewayCustomDomain:
+  KhelAppApiGatewayCustomDomain:
     Condition: EnableCustomDomain
     Type: AWS::ApiGateway::DomainName
     Properties:
@@ -75,14 +75,14 @@ Resources:
       RegionalCertificateArn: !Ref ApiSSLCertificateArn
       SecurityPolicy: TLS_1_2
   
-  TTAppCustomDomainMapping:
+  KhelAppCustomDomainMapping:
     Condition: EnableCustomDomain
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      DomainName: !Ref TTAppApiGatewayCustomDomain
+      DomainName: !Ref KhelAppApiGatewayCustomDomain
       BasePath: !Ref StageName
-      RestApiId: !Ref TTAppApiGateway
-      Stage: !Ref TTAppApiGateway.Stage
+      RestApiId: !Ref KhelAppApiGateway
+      Stage: !Ref KhelAppApiGateway.Stage
 
 
   # --------------Test Function -----------#
@@ -98,7 +98,7 @@ Resources:
           Properties:
             Path: /test
             Method: GET
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
 
   # ---------- user Function ---------#
   UserApiFunctionRole:
@@ -124,8 +124,8 @@ Resources:
                   - dynamodb:Query
                   - dynamodb:UpdateItem
                 Resource:
-                  - !Ref TTAppTableArn
-                  - !Sub ${TTAppTableArn}/index/*
+                  - !Ref KhelAppTableArn
+                  - !Sub ${KhelAppTableArn}/index/*
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -146,13 +146,13 @@ Resources:
           Properties:
             Path: /user/{action}/{id}
             Method: GET
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
         UserApiPOST:
           Type: Api
           Properties:
             Path: /user/{action}
             Method: POST
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
   
   UserApiFunctionLogGroup:
     Type: AWS::Logs::LogGroup
@@ -188,8 +188,8 @@ Resources:
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
                 Resource:
-                  - !Ref TTAppTableArn
-                  - !Sub ${TTAppTableArn}/index/*
+                  - !Ref KhelAppTableArn
+                  - !Sub ${KhelAppTableArn}/index/*
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -210,13 +210,13 @@ Resources:
           Properties:
             Path: /team/{action}/{id}
             Method: GET
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
         UserApiPOST:
           Type: Api
           Properties:
             Path: /team/{action}
             Method: POST
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
   
   TeamApiFunctionLogGroup:
     Type: AWS::Logs::LogGroup
@@ -251,8 +251,8 @@ Resources:
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
                 Resource:
-                  - !Ref TTAppTableArn
-                  - !Sub ${TTAppTableArn}/index/*
+                  - !Ref KhelAppTableArn
+                  - !Sub ${KhelAppTableArn}/index/*
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -273,13 +273,13 @@ Resources:
           Properties:
             Path: /match/{action}/{id}
             Method: GET
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
         UserApiPOST:
           Type: Api
           Properties:
             Path: /match/{action}
             Method: POST
-            RestApiId: !Ref TTAppApiGateway
+            RestApiId: !Ref KhelAppApiGateway
   
   MatchApiFunctionLogGroup:
     Type: AWS::Logs::LogGroup
@@ -314,8 +314,8 @@ Resources:
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
                 Resource:
-                  - !Ref TTAppTableArn
-                  - !Sub ${TTAppTableArn}/index/*
+                  - !Ref KhelAppTableArn
+                  - !Sub ${KhelAppTableArn}/index/*
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -328,7 +328,7 @@ Resources:
                   - dynamodb:GetRecords
                   - dynamodb:GetShardIterator
                   - dynamodb:ListStreams
-                Resource: !Ref TTAppDynamoStreamARN
+                Resource: !Ref KhelAppDynamoStreamARN
               - Effect: Allow
                 Action:
                   - execute-api:ManageConnections
@@ -346,7 +346,7 @@ Resources:
         DBStreamLive:
           Type: DynamoDB
           Properties:
-            Stream: !Ref TTAppDynamoStreamARN
+            Stream: !Ref KhelAppDynamoStreamARN
             StartingPosition: LATEST
             BatchSize: 1
   
@@ -360,5 +360,5 @@ Resources:
 
 
 Outputs:
-  TTAppApiURL:
-    Value: !Sub https://${TTAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api
+  KhelAppApiURL:
+    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api

@@ -1,11 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable  Application Cloudfront Template"
+Description: "KhelAppTable  Application Cloudfront Template"
 
 Parameters:
   FrontendBucketDomainName:
     Type: String
-  TTAppOriginAccessIdentity:
+  KhelAppOriginAccessIdentity:
     Type: String
   IsEnabledCustomeDomain:
     Type: String
@@ -18,7 +18,7 @@ Conditions:
   EnableCustomDomain: !Equals [!Ref IsEnabledCustomeDomain, "true"]
 
 Resources:
-  TTAppCloudfrontDistribution:
+  KhelAppCloudfrontDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -26,7 +26,7 @@ Resources:
           - DomainName: !Ref FrontendBucketDomainName 
             Id: "FrontendBucketOrigin"
             S3OriginConfig:
-              OriginAccessIdentity:  !Sub origin-access-identity/cloudfront/${TTAppOriginAccessIdentity}
+              OriginAccessIdentity:  !Sub origin-access-identity/cloudfront/${KhelAppOriginAccessIdentity}
         Enabled: true
         PriceClass: PriceClass_All
         HttpVersion: "http2"
@@ -66,10 +66,10 @@ Resources:
 Outputs:
   CloudFrontUrl:
     Description: CloudFront url
-    Value: !GetAtt TTAppCloudfrontDistribution.DomainName
+    Value: !GetAtt KhelAppCloudfrontDistribution.DomainName
   CloudFrontDistributionId:
     Description: CloudFront Distribution Id
-    Value: !GetAtt TTAppCloudfrontDistribution.Id
+    Value: !GetAtt KhelAppCloudfrontDistribution.Id
         
 
           

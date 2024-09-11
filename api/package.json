@@ -10,10 +10,10 @@
     "prebuildLayer": "cd lambdaLayerStack && npm i && cd .. && npm run moveLibsToLayer",
     "buildLayer": "node createLambdaLayer",
     "deploy": "npm run buildLayer && sam package --template-file ./root-template.yaml --s3-bucket <Bucket_name> --output-template-file packaged.yaml --region <REGION>",
-    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ttApp-stack --s3-bucket <Bucket_name> --parameter-overrides stageName=prod",
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name khelApp-stack --s3-bucket <Bucket_name> --parameter-overrides stageName=prod",
     "l-install": "cd lambdaLayerStack && npm i ",
     "l-uninstall": "cd lambdaLayerStack && npm uninstall ",
-    "delete": "aws cloudformation delete-stack --stack-name ttApp-stack --region <REGION>"
+    "delete": "aws cloudformation delete-stack --stack-name khelApp-stack --region <REGION>"
   },
   "keywords": [],
   "author": "",

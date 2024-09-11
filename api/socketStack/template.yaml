@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable Application Socket"
+Description: "KhelAppTable Application Socket"
 
 
 Globals:
@@ -9,22 +9,22 @@ Globals:
     Timeout: 900
     MemorySize: 1024
     Layers:
-      - !Ref TTAppLayer
+      - !Ref KhelAppLayer
     Environment:
       Variables:
         TABLE_NAME: !Ref TableName
-        INDEX_NAME: !Ref TTAppTableIndex
+        INDEX_NAME: !Ref KhelAppTableIndex
         USERPOOL_ID: !Ref UserPoolId
         USERPOOL_CLIENT_ID: !Ref UserPoolClientId
 
 Parameters:
   StageName:
     Type: String
-  TTAppLayer:
+  KhelAppLayer:
     Type: String
   TableName:
     Type: String
-  TTAppTableArn:
+  KhelAppTableArn:
     Type: String
   UserPoolId:
     Type: String
@@ -32,7 +32,7 @@ Parameters:
     Type: String
   StackNamePrefix:
     Type: String
-  TTAppTableIndex:
+  KhelAppTableIndex:
     Type: String
 
 Resources:
@@ -76,15 +76,15 @@ Resources:
                 - execute-api:ManageConnections
                 - execute-api:Invoke
               Resource:
-                - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${TTAppWebSocketGateway}/*
+                - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${KhelAppWebSocketGateway}/*
             - Effect: Allow
               Action:
                 - dynamodb:Query
                 - dynamodb:UpdateItem
                 - dynamodb:PutItem
               Resource:
-                - !Ref TTAppTableArn
-                - !Sub ${TTAppTableArn}/index/*
+                - !Ref KhelAppTableArn
+                - !Sub ${KhelAppTableArn}/index/*
             - Effect: Allow
               Action:
                 - logs:CreateLogGroup
@@ -101,10 +101,10 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${SocketFunction}
       RetentionInDays: 90
   
-  TTAppWebSocketGateway:
+  KhelAppWebSocketGateway:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: !Sub ${StackNamePrefix}-TTAppWebSocket-${StageName}
+      Name: !Sub ${StackNamePrefix}-KhelAppWebSocket-${StageName}
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: request.body.action
 
@@ -112,7 +112,7 @@ Resources:
     Type: AWS::ApiGatewayV2::Authorizer
     Properties:
       Name: LambdaAuth
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       AuthorizerType: REQUEST
       AuthorizerUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerFunction.Arn}/invocations
       IdentitySource:
@@ -121,13 +121,13 @@ Resources:
   ApiIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       Description: Socket Lambda Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SocketFunction.Arn}/invocations
       IntegrationMethod: POST
   
-  TTAppWebSocketGatewayCloudWatchRole:
+  KhelAppWebSocketGatewayCloudWatchRole:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -141,15 +141,15 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'
   
-  TTAppWebSocketGatewayAccount:
+  KhelAppWebSocketGatewayAccount:
     Type: 'AWS::ApiGateway::Account'
     Properties:
-      CloudWatchRoleArn: !GetAtt TTAppWebSocketGatewayCloudWatchRole.Arn
+      CloudWatchRoleArn: !GetAtt KhelAppWebSocketGatewayCloudWatchRole.Arn
   
   ConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       RouteKey: "$connect"
       AuthorizationType: CUSTOM
       OperationName: ConnectRoute
@@ -159,7 +159,7 @@ Resources:
   DisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       RouteKey: "$disconnect"
       AuthorizationType: NONE
       OperationName: DisconnectRoute
@@ -168,7 +168,7 @@ Resources:
   DefaultRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       RouteKey: "$default"
       AuthorizationType: NONE
       OperationName: DefaultRoute
@@ -178,7 +178,7 @@ Resources:
     Type: AWS::ApiGatewayV2::RouteResponse
     Properties:
       RouteId: !Ref DefaultRoute
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
       RouteResponseKey: $default
   
   DeploymentGateway:
@@ -188,12 +188,12 @@ Resources:
       - DisconnectRoute
       - DefaultRoute
     Properties:
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
   
   Stage:
     Type: AWS::ApiGatewayV2::Stage
     DependsOn:
-      - TTAppWebSocketGatewayAccount
+      - KhelAppWebSocketGatewayAccount
     Properties:
       StageName: !Ref StageName
       Description: !Ref StageName
@@ -201,24 +201,24 @@ Resources:
       DefaultRouteSettings:
         DetailedMetricsEnabled: false
       AccessLogSettings:
-        DestinationArn: !GetAtt TTAppWebSocketGatewayLogGroup.Arn
+        DestinationArn: !GetAtt KhelAppWebSocketGatewayLogGroup.Arn
         Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.routeKey $context.protocol" $context.status $context.responseLength $context.requestId $context.integrationErrorMessage
-      ApiId: !Ref TTAppWebSocketGateway
+      ApiId: !Ref KhelAppWebSocketGateway
   
-  TTAppWebSocketGatewayLogGroup:
-    DependsOn: TTAppWebSocketGateway
+  KhelAppWebSocketGatewayLogGroup:
+    DependsOn: KhelAppWebSocketGateway
     Type: AWS::Logs::LogGroup
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub /aws/apigateway/${StackNamePrefix}-TTAppWebSocket-${StageName}
+      LogGroupName: !Sub /aws/apigateway/${StackNamePrefix}-KhelAppWebSocket-${StageName}
       RetentionInDays: 90
   
 
   AuthorizerFunctionPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
-      - TTAppWebSocketGateway
+      - KhelAppWebSocketGateway
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref AuthorizerFunction
@@ -228,7 +228,7 @@ Resources:
   HandlerFunctionPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
-      - TTAppWebSocketGateway
+      - KhelAppWebSocketGateway
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref SocketFunction
@@ -236,12 +236,12 @@ Resources:
 
 
 Outputs:
-  TTAppWebSocketGateway:
+  KhelAppWebSocketGateway:
     Description: "Websocket gateway api-id"
-    Value: !Ref TTAppWebSocketGateway
-  TTAppWebSocketGatewayEndpoint:
+    Value: !Ref KhelAppWebSocketGateway
+  KhelAppWebSocketGatewayEndpoint:
     Description: "The WSS Protocol URI to connect to"
-    Value: !Sub ${TTAppWebSocketGateway.ApiEndpoint}/${StageName}
-  TTAppWebSocketGatewayPOSTEndpoint:
+    Value: !Sub ${KhelAppWebSocketGateway.ApiEndpoint}/${StageName}
+  KhelAppWebSocketGatewayPOSTEndpoint:
     Description: "Post endpoint for Sockets"
-    Value: !Sub https://${TTAppWebSocketGateway}.execute-api.${AWS::Region}.amazonaws.com/${StageName}
+    Value: !Sub https://${KhelAppWebSocketGateway}.execute-api.${AWS::Region}.amazonaws.com/${StageName}

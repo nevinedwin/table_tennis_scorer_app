@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable Application"
+Description: "KhelAppTable Application"
 
 
 Parameters:
@@ -15,19 +15,19 @@ Parameters:
 
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/SSLCertificateArn"
+    Default: "/khelApp/Application/SSLCertificateArn"
 
   ApiSSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/ApiSSLCertificateArn"
+    Default: "/khelApp/Application/ApiSSLCertificateArn"
 
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/GoogleClientId"
+    Default: "/khelApp/Application/GoogleClientId"
 
   GoogleSecretKey:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/GoogleSecretKey"
+    Default: "/khelApp/Application/GoogleSecretKey"
 
   IsEnableCustomDomain:
     Type: String
@@ -66,13 +66,13 @@ Mappings:
       URL: api-localhost:5173
   StackNamePrefix:
     debug:
-      Name: ttapp-debug-stack
+      Name: khelapp-debug-stack
     dev:
-      Name: ttapp-dev-stack
+      Name: khelapp-dev-stack
     prod:
-      Name: ttapp-stack
+      Name: khelapp-stack
     local:
-      Name: ttapp-local-stack
+      Name: khelapp-local-stack
 
 Resources:
   LambdaLayerStack:
@@ -127,7 +127,7 @@ Resources:
       Location: ./infrastructure/cloudfront-template.yaml
       Parameters:
         FrontendBucketDomainName: !GetAtt FrontendBucketStack.Outputs.FrontendBucketDomainName
-        TTAppOriginAccessIdentity: !GetAtt AccessIdentiyStack.Outputs.TTAppOriginAccessIdentity
+        KhelAppOriginAccessIdentity: !GetAtt AccessIdentiyStack.Outputs.KhelAppOriginAccessIdentity
         IsEnabledCustomeDomain: !Ref IsEnableCustomDomain
         Alias: !FindInMap [DomainName, !Ref StageName, URL ]
         SSLCertificateArn: !Ref SSLCertificateArn
@@ -141,9 +141,9 @@ Resources:
         URLs: !FindInMap [URLs, !Ref StageName, URL]
         GoogleClientId: !Ref GoogleClientId
         GoogleSecretKey: !Ref GoogleSecretKey
-        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
-        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
-        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
+        KhelAppLayer: !GetAtt LambdaLayerStack.Outputs.KhelAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
+        KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
@@ -155,14 +155,14 @@ Resources:
       Parameters:
         StageName: !Ref StageName
         UserPoolArn: !GetAtt CognitoStack.Outputs.UserPoolArn
-        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
-        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
-        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
-        TTAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
+        KhelAppLayer: !GetAtt LambdaLayerStack.Outputs.KhelAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
+        KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
+        KhelAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableIndexName
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
-        WebSocketUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayEndpoint
-        WebSocketPostUrl: !GetAtt SocketStack.Outputs.TTAppWebSocketGatewayPOSTEndpoint
-        TTAppDynamoStreamARN: !GetAtt DynamoDbTableStack.Outputs.TTAppDynamoStreamARN
+        WebSocketUrl: !GetAtt SocketStack.Outputs.KhelAppWebSocketGatewayEndpoint
+        WebSocketPostUrl: !GetAtt SocketStack.Outputs.KhelAppWebSocketGatewayPOSTEndpoint
+        KhelAppDynamoStreamARN: !GetAtt DynamoDbTableStack.Outputs.KhelAppDynamoStreamARN
         IsEnableCustomDomain: !Ref IsEnableCustomDomain
         ApiDomainName: !FindInMap [ApiDomainName, !Ref StageName, URL]
         ApiSSLCertificateArn: !Ref ApiSSLCertificateArn
@@ -177,18 +177,18 @@ Resources:
         StageName: !Ref StageName
         UserPoolId: !GetAtt CognitoStack.Outputs.UserPoolId
         UserPoolClientId: !GetAtt CognitoStack.Outputs.UserPoolClientId
-        TTAppLayer: !GetAtt LambdaLayerStack.Outputs.TTAppLayer
-        TableName: !GetAtt DynamoDbTableStack.Outputs.TTAppTableName
-        TTAppTableArn: !GetAtt DynamoDbTableStack.Outputs.TTAppTableArn
-        TTAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.TTAppTableIndexName
+        KhelAppLayer: !GetAtt LambdaLayerStack.Outputs.KhelAppLayer
+        TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
+        KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
+        KhelAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableIndexName
         StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 
 Outputs:
-  TTAppApiURL:
+  KhelAppApiURL:
     Description: Api Gateway base url
-    Value: !GetAtt FunctionStack.Outputs.TTAppApiURL
+    Value: !GetAtt FunctionStack.Outputs.KhelAppApiURL
   UserPoolId:
     Description: User pool ID
     Value: !GetAtt CognitoStack.Outputs.UserPoolId

@@ -41,7 +41,7 @@ Parameters:
     Type: String
   ApiDomainName:
     Type: String
-  SSLCertificateArn:
+  ApiSSLCertificateArn:
     Type: String
 
 Conditions:
@@ -72,7 +72,7 @@ Resources:
       EndpointConfiguration:
         Types:
           - REGIONAL
-      RegionalCertificateArn: !Ref SSLCertificateArn
+      RegionalCertificateArn: !Ref ApiSSLCertificateArn
       SecurityPolicy: TLS_1_2
   
   TTAppCustomDomainMapping:

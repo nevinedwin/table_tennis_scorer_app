@@ -28,7 +28,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity:  !Sub origin-access-identity/cloudfront/${TTAppOriginAccessIdentity}
         Enabled: true
-        PriceClass: PriceClass_200
+        PriceClass: PriceClass_All
         HttpVersion: "http2"
         Aliases:
           - !If [EnableCustomDomain, !Ref Alias, !Ref "AWS::NoValue"]

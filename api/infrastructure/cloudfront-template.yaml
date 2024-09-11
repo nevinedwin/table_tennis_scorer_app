@@ -63,7 +63,13 @@ Resources:
           AcmCertificateArn: !If [EnableCustomDomain, !Ref SSLCertificateArn, !Ref "AWS::NoValue"]
           SslSupportMethod: !If [EnableCustomDomain, "sni-only", !Ref "AWS::NoValue"]
 
-
+Outputs:
+  CloudFrontUrl:
+    Description: CloudFront url
+    Value: !GetAtt TTAppCloudfrontDistribution.DomainName
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution Id
+    Value: !GetAtt TTAppCloudfrontDistribution.Id
         
 
           

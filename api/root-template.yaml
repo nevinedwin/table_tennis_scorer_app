@@ -189,12 +189,16 @@ Outputs:
   TTAppApiURL:
     Description: Api Gateway base url
     Value: !GetAtt FunctionStack.Outputs.TTAppApiURL
-  
   UserPoolId:
     Description: User pool ID
     Value: !GetAtt CognitoStack.Outputs.UserPoolId
-  
   UserPoolClientId:
     Description: User pool Client ID
     Value: !GetAtt CognitoStack.Outputs.UserPoolClientId
+  CloudFrontUrl:
+    Description: CloudFront Url for frontend
+    Value: !GetAtt CloudFrontStack.Outputs.CloudFrontUrl
+  CloudFrontDistributionId:
+    Description: CloudFront Distribution Id
+    Value: !GetAtt CloudFrontStack.Outputs.CloudFrontDistributionId
 

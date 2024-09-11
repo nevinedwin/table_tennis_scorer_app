@@ -37,9 +37,9 @@ const awsVal = {
             USER_POOL_ID: "ap-south-1_uEaQ0F0KZ",
             APP_CLIENT_ID: "26431g3justh61fmaf2se0sbhc",
             IDENTITY_POOL_ID: "",
-            DOMAIN: "ttapp-website-dev.auth.ap-south-1.amazoncognito.com",
-            SIGN_IN_URL: [" https://api-khel.ns-info.xyz/index.html"],
-            SIGN_OUT_URL: [" https://api-khel.ns-info.xyz/index.html"],
+            DOMAIN: "ttapp-website-debug.auth.ap-south-1.amazoncognito.com",
+            SIGN_IN_URL: ["https://khel.ns-info.xyz/index.html"],
+            SIGN_OUT_URL: ["https://khel.ns-info.xyz/index.html"],
         },
     },
     dev: {

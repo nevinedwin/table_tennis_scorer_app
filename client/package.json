@@ -9,8 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "aws s3 sync dist/ s3://ttapp-local-stack-frontend-local --profile nevinedwin",
-    "postdeploy": "aws cloudfront create-invalidation --distribution-id E3QO5XY72J1ZBV --paths '/*' --profile nevinedwin"
+    "deploy": "aws s3 sync dist/ s3://khelapp-local-stack-frontend-local --profile nevinedwin",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id E379BEKUCQET9J --paths '/*' --profile nevinedwin"
   },
   "dependencies": {
     "@aws-amplify/auth": "^6.3.13",

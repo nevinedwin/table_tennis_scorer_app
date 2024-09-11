@@ -15,15 +15,19 @@ Parameters:
 
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/sslCertificateArn"
+    Default: "/ttApp/Application/SSLCertificateArn"
+
+  ApiSSLCertificateArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/ttApp/Application/ApiSSLCertificateArn"
 
   GoogleClientId:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/googleClientId"
+    Default: "/ttApp/Application/GoogleClientId"
 
   GoogleSecretKey:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/googleSecretKey"
+    Default: "/ttApp/Application/GoogleSecretKey"
 
   IsEnableCustomDomain:
     Type: String
@@ -161,7 +165,7 @@ Resources:
         TTAppDynamoStreamARN: !GetAtt DynamoDbTableStack.Outputs.TTAppDynamoStreamARN
         IsEnableCustomDomain: !Ref IsEnableCustomDomain
         ApiDomainName: !FindInMap [ApiDomainName, !Ref StageName, URL]
-        SSLCertificateArn: !Ref SSLCertificateArn
+        ApiSSLCertificateArn: !Ref ApiSSLCertificateArn
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 

@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTAppTable Application Lambda Layer"
+Description: "KhelAppTable Application Lambda Layer"
 
 Parameters:
   StageName:
@@ -9,7 +9,7 @@ Parameters:
     Type: String
 
 Resources:
-  TTAppLayer:
+  KhelAppLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: ./nodejs.zip
@@ -19,8 +19,8 @@ Resources:
         - "nodejs14.x"
 
 Outputs:
-  TTAppLayer:
+  KhelAppLayer:
     Description: "Npm Layer for all lambda"
-    Value: !Ref TTAppLayer
+    Value: !Ref KhelAppLayer
     Export:
-      Name: !Sub "${AWS::StackName}-TTAppLayer"
+      Name: !Sub "${AWS::StackName}-KhelAppLayer"

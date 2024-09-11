@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTApp Cognito Template"
+Description: "KhelApp Cognito Template"
 
 Globals:
   Function:
@@ -8,7 +8,7 @@ Globals:
     Timeout: 900
     MemorySize: 512
     Layers:
-      - !Ref TTAppLayer
+      - !Ref KhelAppLayer
     Environment:
       Variables:
         TABLE_NAME: !Ref TableName
@@ -16,7 +16,7 @@ Globals:
 Parameters:
   StageName:
     Type: String
-  TTAppTableArn:
+  KhelAppTableArn:
     Type: String
   URLs:
     Type: String
@@ -24,7 +24,7 @@ Parameters:
     Type: String
   GoogleSecretKey:
     Type: String
-  TTAppLayer:
+  KhelAppLayer:
     Type: String
   TableName:
     Type: String
@@ -33,15 +33,15 @@ Parameters:
 
 Resources:
   # userPool
-  TTAppUserPool:
+  KhelAppUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: !Sub "tt-app-user-pool-${StageName}"
+      UserPoolName: !Sub "khel-app-user-pool-${StageName}"
       UsernameAttributes:
         - "email"
       LambdaConfig:
-        PreAuthentication: !GetAtt TTAppPreAuthenticationFuncton.Arn
-        PreSignUp: !GetAtt TTAppPreSignUpFuncton.Arn
+        PreAuthentication: !GetAtt KhelAppPreAuthenticationFuncton.Arn
+        PreSignUp: !GetAtt KhelAppPreSignUpFuncton.Arn
         PostConfirmation: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${StackNamePrefix}PostConfirmationFunction${StageName}
       Schema:
         - Name: role
@@ -51,12 +51,12 @@ Resources:
     DeletionPolicy: Delete
 
   # userPoolClient
-  TTAppUserPoolClient:
+  KhelAppUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
-    DependsOn: TTAppUserPoolIdentityProvider
+    DependsOn: KhelAppUserPoolIdentityProvider
     Properties:
-      ClientName: !Sub "ttApp-user-pool-client-${StageName}"
-      UserPoolId: !Ref TTAppUserPool
+      ClientName: !Sub "khelApp-user-pool-client-${StageName}"
+      UserPoolId: !Ref KhelAppUserPool
       GenerateSecret: false
       AllowedOAuthFlows:
         - "code"
@@ -76,13 +76,13 @@ Resources:
         - "Google"
 
   # IdentityProvider
-  TTAppUserPoolIdentityProvider:
+  KhelAppUserPoolIdentityProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
     Properties:
       AttributeMapping:
         email: "email"
         name: "name"
-      UserPoolId: !Ref TTAppUserPool
+      UserPoolId: !Ref KhelAppUserPool
       ProviderName: Google
       ProviderDetails:
         client_id: !Ref GoogleClientId
@@ -91,19 +91,19 @@ Resources:
       ProviderType: Google
 
   # UserPool Domain
-  TTAppUserPoolDomain:
+  KhelAppUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Sub "ttapp-website-${StageName}"
-      UserPoolId: !Ref TTAppUserPool
+      Domain: !Sub "khelapp-website-${StageName}"
+      UserPoolId: !Ref KhelAppUserPool
 
   # pre authentiation role
-  TTAppPreAuthenticationFunctonRole:
+  KhelAppPreAuthenticationFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub TTAppPreAuthenticationFunctonRole-${StageName}
+      RoleName: !Sub KhelAppPreAuthenticationFunctonRole-${StageName}
       Policies:
-        - PolicyName: !Sub TTAppPreAuthenticationFunctonRolePolciy-${StageName}
+        - PolicyName: !Sub KhelAppPreAuthenticationFunctonRolePolciy-${StageName}
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -128,29 +128,29 @@ Resources:
               - sts:AssumeRole
 
   # Pre authentication function
-  TTAppPreAuthenticationFuncton:
+  KhelAppPreAuthenticationFuncton:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
       CodeUri: login
       FunctionName: !Sub "${StackNamePrefix}-authentication-function-${StageName}"
-      Role: !GetAtt TTAppPreAuthenticationFunctonRole.Arn
+      Role: !GetAtt KhelAppPreAuthenticationFunctonRole.Arn
 
   # Pre authentication Lambda permission
-  TTAppPreAuthenticationPermission:
+  KhelAppPreAuthenticationPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt TTAppPreAuthenticationFuncton.Arn
+      FunctionName: !GetAtt KhelAppPreAuthenticationFuncton.Arn
       Principal: cognito-idp.amazonaws.com
 
   # pre signup function role
-  TTAppPreSignUpFunctonRole:
+  KhelAppPreSignUpFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub TTAppPreSignUpFunctonRole-${StageName}
+      RoleName: !Sub KhelAppPreSignUpFunctonRole-${StageName}
       Policies:
-        - PolicyName: !Sub TTAppPreSignUpFunctonRolePolciy-${StageName}
+        - PolicyName: !Sub KhelAppPreSignUpFunctonRolePolciy-${StageName}
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -175,28 +175,28 @@ Resources:
               - sts:AssumeRole
 
   # Pre signUp function
-  TTAppPreSignUpFuncton:
+  KhelAppPreSignUpFuncton:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
       CodeUri: signup
       FunctionName: !Sub "${StackNamePrefix}-preSignUp-function-${StageName}"
-      Role: !GetAtt TTAppPreSignUpFunctonRole.Arn
+      Role: !GetAtt KhelAppPreSignUpFunctonRole.Arn
 
   # Pre signUp Lambda permission
-  TTAppPreSignUpPermission:
+  KhelAppPreSignUpPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt TTAppPreSignUpFuncton.Arn
+      FunctionName: !GetAtt KhelAppPreSignUpFuncton.Arn
       Principal: cognito-idp.amazonaws.com
-      SourceArn: !GetAtt TTAppUserPool.Arn
+      SourceArn: !GetAtt KhelAppUserPool.Arn
 
   # post confirmation lambda role
-  TTAppPostConfirmationLambdaRole:
+  KhelAppPostConfirmationLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub TTAppPostConfirmationLambdaRole-${StageName}
+      RoleName: !Sub KhelAppPostConfirmationLambdaRole-${StageName}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -207,7 +207,7 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: !Sub TTAppPostConfirmationLambdaRolePolciy-${StageName}
+        - PolicyName: !Sub KhelAppPostConfirmationLambdaRolePolciy-${StageName}
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -225,39 +225,39 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:GetItem
-                Resource: !Ref TTAppTableArn
+                Resource: !Ref KhelAppTableArn
               - Effect: Allow
                 Action:
                   - cognito-idp:AdminUpdateUserAttributes
-                Resource: !GetAtt TTAppUserPool.Arn
+                Resource: !GetAtt KhelAppUserPool.Arn
 
   # Post Confirmation Lambda Function
-  TTAppPostConfirmationLambda:
+  KhelAppPostConfirmationLambda:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.main
       CodeUri: postConfirmation
       FunctionName: !Sub ${StackNamePrefix}PostConfirmationFunction${StageName}
-      Role: !GetAtt TTAppPostConfirmationLambdaRole.Arn
+      Role: !GetAtt KhelAppPostConfirmationLambdaRole.Arn
 
   # Post confirmation lamdba permission
-  TTAppPostConfirmationLambdaPermission:
+  KhelAppPostConfirmationLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt TTAppPostConfirmationLambda.Arn
+      FunctionName: !GetAtt KhelAppPostConfirmationLambda.Arn
       Principal: cognito-idp.amazonaws.com
-      SourceArn: !GetAtt TTAppUserPool.Arn
+      SourceArn: !GetAtt KhelAppUserPool.Arn
 
 Outputs:
   UserPoolId:
     Description: Userpool id
-    Value: !Ref TTAppUserPool
+    Value: !Ref KhelAppUserPool
 
   UserPoolClientId:
     Description: User Pool Client ID
-    Value: !Ref TTAppUserPoolClient
+    Value: !Ref KhelAppUserPoolClient
 
   UserPoolArn:
     Description: "Userpool Arn"
-    Value: !GetAtt TTAppUserPool.Arn
+    Value: !GetAtt KhelAppUserPool.Arn

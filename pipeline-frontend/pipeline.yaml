@@ -1,16 +1,16 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: "TTApp Application Pipeline"
+Description: "KhelApp Application Pipeline"
 
 
 Parameters:
   ProjectName:
     Type: String
-    Default: ttApp-pipeline
+    Default: khelApp-pipeline
   
   GitPersonalAccessToken:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: "/ttApp/Application/GitPersonalAccessToken"
+    Default: "/khelApp/Application/GitPersonalAccessToken"
 
 
 Resources:
@@ -73,7 +73,7 @@ Resources:
             build:
               commands:
                 - echo build completed, preparing for deployment
-                - aws s3 sync dist/ s3://ttapp-frontend --delete
+                - aws s3 sync dist/ s3://khelapp-frontend --delete
 
           artifacts:
             files:

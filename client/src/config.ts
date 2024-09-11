@@ -1,83 +1,22 @@
-
-type ENVType = "prod" | "local" | "dev" | "debug"
-
-const { VITE_ENV } = import.meta.env;
-
-
+// local
 const awsVal = {
-    local: {
-        apiGateWay: {
-            NAME: "apiGateway",
-            REGION: "ap-south-1",
-            URL: "https://g33b3lopr3.execute-api.ap-south-1.amazonaws.com/local",
-        },
-        cognito: {
-            REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_Ob7hz5roa",
-            APP_CLIENT_ID: "7qjq2hves89ck5dii9eucffdkn",
-            DOMAIN: "ttapp-website-local.auth.ap-south-1.amazoncognito.com",
-            SIGN_IN_URL: [
-                "http://localhost:5173/",
-                "https://d2xe55jtm2vl50.cloudfront.net/index.html"
-            ],
-            SIGN_OUT_URL: [
-                "http://localhost:5173/",
-                "https://d2xe55jtm2vl50.cloudfront.net/index.html"
-            ],
-        }
+    apiGateWay: {
+        NAME: "apiGateway",
+        REGION: "ap-south-1",
+        URL: "https://g33b3lopr3.execute-api.ap-south-1.amazonaws.com/local",
     },
-    debug: {
-        apiGateWay: {
-            NAME: "apiGateway",
-            REGION: "ap-south-1",
-            URL: "https://api-khel.ns-info.xyz",
-        },
-        cognito: {
-            REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_HumibfFVT",
-            APP_CLIENT_ID: "3m7l1as5l4c2ulijjr0darcs95",
-            IDENTITY_POOL_ID: "",
-            DOMAIN: "ttapp-website-dev.auth.ap-south-1.amazoncognito.com",
-            SIGN_IN_URL: ["https://api-khel.ns-info.xyz/index.html"],
-            SIGN_OUT_URL: ["https://api-khel.ns-info.xyz/index.html"],
-        },
-    },
-    dev: {
-        apiGateWay: {
-            NAME: "apiGateway",
-            REGION: "ap-south-1",
-            URL: "https://api-dev-khel.inapp.com",
-        },
-        cognito: {
-            REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_HumibfFVT",
-            APP_CLIENT_ID: "3m7l1as5l4c2ulijjr0darcs95",
-            IDENTITY_POOL_ID: "",
-            DOMAIN: "ttapp-website-dev.auth.ap-south-1.amazoncognito.com",
-            SIGN_IN_URL: ["https://dev-khel.inapp.com/index.html"],
-            SIGN_OUT_URL: ["https://dev-khel.inapp.com/index.html"],
-        },
-    },
-    prod: {
-        apiGateWay: {
-            NAME: "apiGateWay Production",
-            REGION: "ap-south-1",
-            URL: "https://api-khel.inapp.com",
-        },
-        cognito: {
-            REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_kj1aiCw7X",
-            APP_CLIENT_ID: "7q558oguhbilfm1434tmb7noht",
-            IDENTITY_POOL_ID: "",
-            DOMAIN: "ttapp-website-prod.auth.ap-south-1.amazoncognito.com",
-            SIGN_IN_URL: ["https://khel.inapp.com/index.html"],
-            SIGN_OUT_URL: ["https://khel.inapp.com/index.html"],
-        },
-    },
-};
+    cognito: {
+        REGION: "ap-south-1",
+        USER_POOL_ID: "<USERPOOL_ID>",
+        APP_CLIENT_ID: "<USERPOOLCLIENT_ID>",
+        DOMAIN: "<DOMAIN_NAME>",
+        SIGN_IN_URL: ["<SIGNIN_URL>"],
+        SIGN_OUT_URL: ["<SIGNOUT_URL>"],
+    }
+}
 
 const GetAWSConfig = () => {
-    return awsVal[VITE_ENV as ENVType];
+    return awsVal;
 };
 
 export default GetAWSConfig;

@@ -34,8 +34,8 @@ const awsVal = {
         },
         cognito: {
             REGION: "ap-south-1",
-            USER_POOL_ID: "ap-south-1_HumibfFVT",
-            APP_CLIENT_ID: "3m7l1as5l4c2ulijjr0darcs95",
+            USER_POOL_ID: "ap-south-1_uEaQ0F0KZ",
+            APP_CLIENT_ID: "26431g3justh61fmaf2se0sbhc",
             IDENTITY_POOL_ID: "",
             DOMAIN: "ttapp-website-dev.auth.ap-south-1.amazoncognito.com",
             SIGN_IN_URL: [" https://api-khel.ns-info.xyz/index.html"],

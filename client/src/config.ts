@@ -3,7 +3,7 @@ const awsVal = {
     apiGateWay: {
         NAME: "apiGateway",
         REGION: "ap-south-1",
-        URL: "https://api-khel.ns-info.xyz/debug",
+        URL: "https://api-khel.ns-info.xyz",
     },
     cognito: {
         REGION: "ap-south-1",

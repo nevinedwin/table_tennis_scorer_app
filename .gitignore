@@ -13,6 +13,10 @@ dist-ssr
 *.local
 .env
 
+# for this project build files
+packaged.yaml
+nodejs.zip
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

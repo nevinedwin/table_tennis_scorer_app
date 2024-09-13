@@ -7,8 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-client": "npm run deploy --prefix client",
     "client": "npm start --prefix client",
-    "api": "npm run deploy --prefix api",
-    "delete-api": "npm run delete --prefix api"
+    "api": "npm run deploy --prefix api && npm run removeFolders",
+    "delete-api": "npm run delete --prefix api",
+    "removeFolders": "rm -rf api/packaged.yaml && rm -rf api/lambdaLayerStack/nodejs.zip"
   },
   "keywords": [],
   "author": "",

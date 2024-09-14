@@ -25,37 +25,7 @@ Parameters:
     Default: local
     AllowedValues: ['local', 'debug', 'dev', 'main']
 
-Resources:
-
-  CodeBuildServiceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: codebuild.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-      - PolicyName: CodeBuildAccess
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - s3:GetObject
-                - s3:PutObject
-                - s3:GetObjectVersion
-              Resource: 
-                - !Sub arn:aws:s3:::${PipelineBucket}/*
-            - Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource: '*'
-  
+Resources:  
   PipelineBackend:
     Type: AWS::Serverless::Application
     UpdateReplacePolicy: Delete
@@ -63,7 +33,6 @@ Resources:
     Properties:
       Location: pipeline-backend.yaml
       Parameters:
-        CodeBuildServiceRoleArn: !GetAtt CodeBuildServiceRole.Arn
         PipelineBucket: !Ref PipelineBucket
         ProjectName: !Ref ProjectName
         BackendBucket: !Ref BackendBucket

@@ -61,7 +61,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      Location: ./pipeline-backend.yaml
+      Location: pipeline-backend.yaml
       Parameters:
         CodeBuildServiceRoleArn: !GetAtt CodeBuildServiceRole.Arn
         PipelineBucket: !Ref PipelineBucket

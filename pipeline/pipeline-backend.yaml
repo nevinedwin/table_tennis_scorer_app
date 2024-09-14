@@ -69,7 +69,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                nodejs: 20
+                nodejs: 12
                 python: 3.8
               commands:
                 - pip install aws-sam-cli

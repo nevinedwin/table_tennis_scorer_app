@@ -1,0 +1,257 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: "Pipeline Backend Template"
+
+Parameters:
+  CodeBuildServiceRoleArn:
+    Type: String
+  ProjectName:
+    Type: String
+  BackendBucket:
+    Type: String
+  PipelineBucket:
+    Type: String
+  GitHubOwner:
+    Type: String
+  GitHubRepo:
+    Type: String
+  Branch:
+    Type: String
+  GitHubOAuthToken:
+    Type: String
+
+Resources:
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: !Sub /khel/deployment/codebuild/${ProjectName}/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
+      Policies:
+        - PolicyName: CodeBuildServiceRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogStream
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:*:log-group:${LogGroup}:log-stream:${CodeBuildLogStream}/*
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${PipelineBucket}/*
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${BackendBucket}/*
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref ProjectName
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: |-
+          version: 0.2
+          phases:
+            install:
+              runtime-versions:
+                nodejs: 20
+                python: 3.8
+              commands:
+                - pip install aws-sam-cli
+            build:
+              commands:
+                - cd api
+                - npm run buildLayer
+                - aws cloudformation package --template-file root-template.yaml --s3-bucket "$BackendBucket" --output-template packaged.yaml
+          artifacts:
+            files:
+              - packaged.yaml
+            base-directory: api
+      Artifacts:
+        EncryptionDisabled: false
+        Name: !Ref ProjectName
+        Packaging: NONE
+        Type: CODEPIPELINE
+      Cache:
+        Type: NO_CACHE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:2.0
+        ImagePullCredentialsType: CODEBUILD
+        EnvironmentVariables:
+          - Name: BackendBucket
+            Type: PLAINTEXT
+            Value: !Ref BackendBucket
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole: !Ref CodeBuildServiceRoleArn
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: !Ref LogGroup
+          StreamName: !Ref CodeBuildLogStream
+  
+  LogGroup:
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${ProjectName}-build
+      RetentionInDays: 5
+  
+  CodeBuildLogStream:
+    Type: AWS::Logs::LogStream
+    Properties:
+      LogGroupName: !Ref LogGroup
+      LogStreamName: !Sub ${ProjectName}-codebuild
+
+  PipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: !Sub /khel/deployment/codepipeline/${ProjectName}/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: PipelineServiceRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucketVersions
+                  - s3:ListBucket
+                  - s3:GetBucketVersioning
+                  - s3:GetObjectVersion
+                Resource:
+                  - !Sub arn:aws:s3:::${BackendBucket}
+                  - !Sub arn:aws:s3:::${BackendBucket}/null.zip
+              - Effect: Allow
+                Action:
+                  - codebuild:BatchGetBuilds
+                  - codebuild:StartBuild
+                Resource: !GetAtt CodeBuildProject.Arn
+              - Action:
+                  - iam:PassRole
+                Resource: !GetAtt CloudFormationRole.Arn
+                Effect: Allow
+              - Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${PipelineBucket}/*
+                Effect: Allow
+              - Action:
+                  - cloudformation:DescribeStacks
+                  - cloudformation:UpdateStack
+                Resource:
+                  - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${ProjectName}/*
+                Effect: Allow
+              - Action:
+                  - cloudformation:CreateStack
+                Resource:
+                  - !Sub arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${ProjectName}/*
+                Effect: Allow
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    DependsOn: CodeBuildProject
+    Properties:
+      Name: !Ref ProjectName
+      RoleArn: !GetAtt PipelineServiceRole.Arn
+      ArtifactStore:
+        Location: !Ref PipelineBucket
+        Type: S3
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Owner: ThirdParty
+                Category: Source
+                Version: 2
+                Provider: GitHub
+              Configuration:
+                Owner: !Ref GitHubOwner
+                Repo: !Ref GitHubRepo
+                Branch: !Ref Branch
+                OAuthToken: !Ref GitHubOAuthToken
+                PollForSourceChanges: false
+              OutputArtifacts:
+                - Name: SourceOutput
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName: !Ref ProjectName
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: CfTemplate
+              Name: Build
+              Region: !Ref AWS::Region
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: 1
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
+                RoleArn: !GetAtt CloudFormationRole.Arn
+                ChangeSetName: !Ref ProjectName
+                StackName: !Ref ProjectName
+                TemplatePath: "CfTemplate::packaged.yaml"
+              InputArtifacts:
+                - Name: CfTemplate
+              Name: DeployStack
+              Region: !Ref "AWS::Region"
+              RunOrder: 2
+  
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CloudFormationRolePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'

@@ -74,7 +74,6 @@ Resources:
                 - cd api && npm i
             build:
               commands:
-                - cd api
                 - npm run buildLayer
                 - aws cloudformation package --template-file root-template.yaml --s3-bucket "$BackendBucket" --output-template packaged.yaml
           artifacts:

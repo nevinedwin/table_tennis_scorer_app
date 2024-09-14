@@ -1,0 +1,14 @@
+{
+  "name": "pipeline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "package": "sam package --template-file ./pipeline.yaml --s3-bucket <Bucket_name> --output-template-file packaged.yaml --region <REGION> --profile <USER>",
+    "deploy": "npm run package",
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region <REGION> --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name <PROJECT_NAME> --s3-bucket <Bucket_name> --parameter-overrides PipelineBucket=<BUCKET_NAME> ProjectName=<PROJECT_NAME> BackendBucket=<BACKEND_BUCKET_NAME> Branch=<BRANCH> --profile=<USER>"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

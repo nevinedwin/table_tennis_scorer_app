@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "KhelApp Application Pipeline"
+
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: khelApp-pipeline
+  
+  GitPersonalAccessToken:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: "/khelApp/Application/GitPersonalAccessToken"
+
+
+Resources:
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
+      Policies:
+        - PolicyName: CodeBuildRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogStream
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:*:log-group:${LogGroup}:log-stream:${CodeBuildLogStream}/*
+  
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Description: Code Build for building frontend app
+      Environment:
+        Type: LINUX_CONTAINER
+        Image: aws/codebuild/standard:2.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        ImagePullCredentialsType: CODEBUILD
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Name: !Ref ProjectName
+      Source:
+        Type: GITHUB
+        Auth:
+          Type: SECRETS_MANAGER
+          Resource: !Ref GitPersonalAccessToken
+        Location: https://github.com/nevinedwin/table_tennis_scorer_app.git
+        BuildSpec: |-
+          version: 2.0
+
+          phases:
+            install:
+              commands:
+                - echo installing Nodejs
+                - curl -sL https://deb.nodesource.com/setup_18.x | bash -
+                - yum install -y nodejs
+            pre_build:
+              commands:
+                - echo Installing dependencies
+                - (cd client && npm run build)
+            build:
+              commands:
+                - echo build completed, preparing for deployment
+                - aws s3 sync dist/ s3://khelapp-frontend --delete
+
+          artifacts:
+            files:
+              - '**/*'
+            discard-paths: yes
+            base-directory: dist
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub ${ProjectName}-build
+      RetentionInDays: 5
+  
+  CodeBuildLogStream:
+    Type: AWS::Logs::LogStream
+    Properties:
+      LogGroupName: !Ref LogGroup
+      LogStreamName: !Sub ${ProjectName}-codebuild

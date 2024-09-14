@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: "Pipeline Root Template"
+
+
+Parameters:
+  PipelineBucket:
+    Type: String
+  ProjectName:
+    Type: String
+  BackendBucket:
+    Type: String
+    Default: khelapp
+  GitHubOwner:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /khelApp/CodePipeline/GitHubOwner
+  GitHubRepo:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /khelApp/CodePipeline/GitHubRepo
+  GitHubOAuthToken:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /khelApp/CodePipeline/GitHubOAuthToken
+  Branch:
+    Type: String
+    Default: main
+    AllowedValues: ['local', 'debug', 'dev', 'main']
+
+Resources:
+
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+      - PolicyName: CodeBuildAccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+                - s3:GetObjectVersion
+              Resource: 
+                - !Sub arn:aws:s3:::${PipelineBucket}/*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: '*'
+  
+  PipelineBackend:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./pipeline-backend.yaml
+      Parameters:
+        CodeBuildServiceRoleArn: !GetAtt CodeBuildServiceRole.Arn
+        PipelineBucket: !Ref PipelineBucket
+        ProjectName: !Ref ProjectName
+        BackendBucket: !Ref BackendBucket
+        GitHubOwner: !Ref GitHubOwner
+        GitHubRepo: !Ref GitHubRepo
+        Branch: !Ref Branch
+        GitHubOAuthToken: !Ref GitHubOAuthToken
+  
+  # PipelineFrontendStack:
+  #   Type: AWS::Serverless::Application
+  #   UpdateReplacePolicy: Delete
+  #   DeletionPolicy: Delete
+  #   Properties:
+  #     Location: ./pipeline-frontend.yaml
+  #     Parameters:
+  #       # CodeBuildServiceRoleArn: !GetAtt CodeBuildServiceRole.Arn
+    

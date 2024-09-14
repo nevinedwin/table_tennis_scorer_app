@@ -56,8 +56,7 @@ Resources:
                   - s3:ListBucket
                   - s3:GetObject
                 Resource:
-                  - !Sub arn:aws:s3:::${BackendBucket}
-                  - !Sub arn:aws:s3:::${BackendBucket}/${ProjectName}/*
+                  - !Sub arn:aws:s3:::${BackendBucket}/*
 
   CodeBuildProject:
     Type: AWS::CodeBuild::Project

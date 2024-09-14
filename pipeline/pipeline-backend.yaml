@@ -70,9 +70,8 @@ Resources:
             install:
               runtime-versions:
                 nodejs: 12
-                python: 3.8
               commands:
-                - pip install aws-sam-cli
+                - cd api && npm i
             build:
               commands:
                 - cd api

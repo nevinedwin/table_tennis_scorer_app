@@ -16,7 +16,7 @@ Parameters:
     Default: nevinedwin
   GitHubRepo:
     Type: String
-    Default: nevinedwin/table_tennis_scorer_app
+    Default: table_tennis_scorer_app
   GitHubOAuthToken:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /khelApp/CodePipeline/GitHubOAuthToken

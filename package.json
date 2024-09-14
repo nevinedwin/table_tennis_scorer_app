@@ -9,7 +9,8 @@
     "client": "npm start --prefix client",
     "api": "npm run deploy --prefix api && npm run removeFolders",
     "delete-api": "npm run delete --prefix api",
-    "removeFolders": "rm -rf api/packaged.yaml && rm -rf api/lambdaLayerStack/nodejs.zip"
+    "removeFolders": "rm -rf api/packaged.yaml && rm -rf api/lambdaLayerStack/nodejs.zip",
+    "deploy-pipeline": "npm run deploy --prefix pipeline"
   },
   "keywords": [],
   "author": "",

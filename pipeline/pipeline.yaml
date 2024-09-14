@@ -22,7 +22,7 @@ Parameters:
     Default: /khelApp/CodePipeline/GitHubOAuthToken
   Branch:
     Type: String
-    Default: main
+    Default: local
     AllowedValues: ['local', 'debug', 'dev', 'main']
 
 Resources:

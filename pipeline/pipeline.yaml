@@ -12,11 +12,11 @@ Parameters:
     Type: String
     Default: khelapp
   GitHubOwner:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /khelApp/CodePipeline/GitHubOwner
+    Type: String
+    Default: nevinedwin
   GitHubRepo:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /khelApp/CodePipeline/GitHubRepo
+    Type: String
+    Default: nevinedwin/table_tennis_scorer_app
   GitHubOAuthToken:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /khelApp/CodePipeline/GitHubOAuthToken

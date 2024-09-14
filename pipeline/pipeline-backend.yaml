@@ -252,3 +252,18 @@ Resources:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
+  
+  GitWebHook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubOAuthToken
+      Filters:
+        - JsonPath: "$.ref"
+          MatchEquals: !Sub refs/heads/${Branch}
+      TargetPipeline: !Ref CodePipeline
+      TargetAction: SourceAction
+      Name: CodePipelineBackendWebHook
+      TargetPipelineVersion: !GetAtt CodePipeline.Version
+      RegisterWithThirdParty: true

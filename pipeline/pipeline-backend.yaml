@@ -69,7 +69,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                nodejs: 12
+                nodejs: 20
               commands:
                 - cd api && npm i
             build:
@@ -89,7 +89,7 @@ Resources:
         Type: NO_CACHE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: aws/codebuild/standard:6.0
         ImagePullCredentialsType: CODEBUILD
         EnvironmentVariables:
           - Name: BackendBucket

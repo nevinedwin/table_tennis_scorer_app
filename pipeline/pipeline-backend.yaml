@@ -190,7 +190,7 @@ Resources:
               ActionTypeId:
                 Owner: ThirdParty
                 Category: Source
-                Version: 2
+                Version: 1
                 Provider: GitHub
               Configuration:
                 Owner: !Ref GitHubOwner

@@ -3,8 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: "Pipeline Backend Template"
 
 Parameters:
-  CodeBuildServiceRoleArn:
-    Type: String
   ProjectName:
     Type: String
   BackendBucket:
@@ -21,7 +19,7 @@ Parameters:
     Type: String
 
 Resources:
-  CodeBuildRole:
+  CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
       Path: !Sub /khel/deployment/codebuild/${ProjectName}/
@@ -98,7 +96,7 @@ Resources:
             Value: !Ref BackendBucket
         PrivilegedMode: false
         Type: LINUX_CONTAINER
-      ServiceRole: !Ref CodeBuildServiceRoleArn
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       LogsConfig:
         CloudWatchLogs:
           Status: ENABLED

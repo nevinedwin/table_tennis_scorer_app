@@ -35,4 +35,14 @@ export class UserService {
         };
     };
 
+    async changeRole(data) {
+        try {
+            console.log(`Data: ${data}`);
+
+            return success(data);
+        } catch (error) {
+            return failure(error);
+        };
+    }
+
 }

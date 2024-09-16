@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "package": "sam package --template-file ./pipeline.yaml --s3-bucket khel-test-pipeline --output-template-file packaged.yaml --region ap-south-1 --profile nevinedwin",
+    "package": "sam package --template-file ./pipeline.yaml --s3-bucket khel-test-pipeline --output-template-file packaged.yaml --region us-east-1 --profile nevinedwin",
     "deploy": "npm run package",
-    "postdeploy": "sam deploy --template-file ./packaged.yaml --region ap-south-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name khel-test-pipeline --s3-bucket khel-test-pipeline --parameter-overrides PipelineBucket=khel-test-pipeline FrontendBucket=khelapp-local-stack-frontend-local ProjectName=khelApp-stack-local --profile=nevinedwin",
-    "delete": "aws cloudformation delete-stack --stack-name khel-test-pipeline --region ap-south-1"
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name khel-test-pipeline --s3-bucket khel-test-pipeline --parameter-overrides PipelineBucket=khel-test-pipeline FrontendBucket=khelapp-local-stack-frontend-local ProjectName=khelApp-stack-local --profile=nevinedwin",
+    "delete": "aws cloudformation delete-stack --stack-name khel-test-pipeline --region us-east-1"
   },
   "keywords": [],
   "author": "",

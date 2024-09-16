@@ -21,7 +21,7 @@ Parameters:
     Type: String
 
 Resources:
-  CodeBuildServiceRole:
+  CodeBuildFrontendServiceRole:
     Type: AWS::IAM::Role
     Properties:
       Path: !Sub /khel/deployment/codebuild/${ProjectName}/
@@ -35,7 +35,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
       Policies:
-        - PolicyName: CodeBuildServiceRolePolicy
+        - PolicyName: CodeBuildFrontendServiceRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -44,7 +44,7 @@ Resources:
                   - logs:PutLogEvents
                   - logs:CreateLogStream
                 Resource:
-                  - !Sub arn:aws:logs:${AWS::Region}:*:log-group:${LogGroup}:log-stream:${CodeBuildLogStream}/*
+                  - !Sub arn:aws:logs:${AWS::Region}:*:log-group:${LogGroupFrontend}:log-stream:${CodeBuildLogStreamFrontend}/*
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -54,10 +54,10 @@ Resources:
                   - !Sub arn:aws:s3:::${PipelineBucket}/*
                   - !Sub arn:aws:s3:::${FrontendBucket}/*
   
-  CodeBuildProject:
+  CodeBuildFrontendProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: !Ref ProjectName
+      Name: !Sub ${ProjectName}-frontend
       Source:
         Type: CODEPIPELINE
         BuildSpec: |-
@@ -74,7 +74,7 @@ Resources:
                 - aws s3 sync dist/ "$FrontendBucket"
       Artifacts:
         EncryptionDisabled: false
-        Name: !Ref ProjectName
+        Name: !Sub ${ProjectName}-frontend
         Packaging: NONE
         Type: CODEPIPELINE
       Cache:
@@ -92,28 +92,28 @@ Resources:
             Value: !Ref ProjectName
         PrivilegedMode: false
         Type: LINUX_CONTAINER
-      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      ServiceRole: !GetAtt CodeBuildFrontendServiceRole.Arn
       LogsConfig:
         CloudWatchLogs:
           Status: ENABLED
-          GroupName: !Ref LogGroup
-          StreamName: !Ref CodeBuildLogStream
+          GroupName: !Ref LogGroupFrontend
+          StreamName: !Ref CodeBuildLogStreamFrontend
 
-  LogGroup:
+  LogGroupFrontend:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub ${ProjectName}-build
+      LogGroupName: !Sub ${ProjectName}-build-frontend
       RetentionInDays: 5
   
-  CodeBuildLogStream:
+  CodeBuildLogStreamFrontend:
     Type: AWS::Logs::LogStream
     Properties:
-      LogGroupName: !Ref LogGroup
-      LogStreamName: !Sub ${ProjectName}-codebuild
+      LogGroupName: !Ref LogGroupFrontend
+      LogStreamName: !Sub ${ProjectName}-codebuild-frontend
   
-  PipelineServiceRole:
+  PipelineServiceFrontendRole:
     Type: AWS::IAM::Role
     Properties:
       Path: !Sub /khel/deployment/codepipeline/${ProjectName}/
@@ -126,7 +126,7 @@ Resources:
             Action: sts:AssumeRole
       MaxSessionDuration: 3600
       Policies:
-        - PolicyName: PipelineServiceRolePolicy
+        - PolicyName: PipelineServiceFrontendRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -143,7 +143,7 @@ Resources:
                 Action:
                   - codebuild:BatchGetBuilds
                   - codebuild:StartBuild
-                Resource: !GetAtt CodeBuildProject.Arn
+                Resource: !GetAtt CodeBuildFrontendProject.Arn
               - Action:
                   - iam:PassRole
                 Resource: !Ref PipelineUserRoleArn
@@ -155,12 +155,12 @@ Resources:
                   - !Sub arn:aws:s3:::${PipelineBucket}/*
                 Effect: Allow
 
-  CodePipeline:
+  CodePipelineFrontend:
     Type: AWS::CodePipeline::Pipeline
-    DependsOn: CodeBuildProject
+    DependsOn: CodeBuildFrontendProject
     Properties:
-      Name: !Ref ProjectName
-      RoleArn: !GetAtt PipelineServiceRole.Arn
+      Name: !Sub ${ProjectName}-frontend
+      RoleArn: !GetAtt PipelineServiceFrontendRole.Arn
       ArtifactStore:
         Location: !Ref PipelineBucket
         Type: S3
@@ -190,7 +190,7 @@ Resources:
                 Provider: CodeBuild
                 Version: "1"
               Configuration:
-                ProjectName: !Ref ProjectName
+                ProjectName: !Sub ${ProjectName}-frontend
               InputArtifacts:
                 - Name: SourceOutput
               OutputArtifacts:
@@ -212,7 +212,7 @@ Resources:
               Region: !Ref "AWS::Region"
               RunOrder: 2
   
-  GitWebHook:
+  GitWebHookFrontend:
     Type: AWS::CodePipeline::Webhook
     Properties:
       Authentication: GITHUB_HMAC
@@ -221,17 +221,17 @@ Resources:
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: !Sub refs/heads/${Branch}
-      TargetPipeline: !Ref CodePipeline
+      TargetPipeline: !Ref CodePipelineFrontend
       TargetAction: SourceAction
-      Name: CodePipelineBackendWebHook
-      TargetPipelineVersion: !GetAtt CodePipeline.Version
+      Name: CodePipelineFrontendWebHook
+      TargetPipelineVersion: !GetAtt CodePipelineFrontend.Version
       RegisterWithThirdParty: true
 
   FrontendConfigLambda:
     Type: AWS::Serverless::Function
     Properties:
       Role: !Ref PipelineUserRoleArn
-      CodeUri: src/FrontEndConfig
+      CodeUri: src
       Description: Used to setup config for Front End
       Handler: index.main
       Runtime: nodejs20.x

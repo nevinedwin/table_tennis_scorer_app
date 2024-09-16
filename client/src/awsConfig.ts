@@ -4,14 +4,14 @@ import fs from 'fs';
 const awsVal = {
     apiGateWay: {
         NAME: "apiGateway",
-        REGION: "ap-south-1",
-        URL: "https://wyxggpvbc0.execute-api.ap-south-1.amazonaws.com/local",
+        REGION: "us-east-1",
+        URL: "https://wyxggpvbc0.execute-api.us-east-1.amazonaws.com/local",
     },
     cognito: {
-        REGION: "ap-south-1",
-        USER_POOL_ID: "ap-south-1_Im83sKXVi",
+        REGION: "us-east-1",
+        USER_POOL_ID: "us-east-1_Im83sKXVi",
         APP_CLIENT_ID: "3f3tshts6paoieaed7u18na394",
-        DOMAIN: "khelapp-website-local.auth.ap-south-1.amazoncognito.com",
+        DOMAIN: "khelapp-website-local.auth.us-east-1.amazoncognito.com",
         SIGN_IN_URL: [
             "https://d3g7vu7m4wr9up.cloudfront.net/index.html",
             "http://localhost:5173/"

@@ -17,6 +17,8 @@ Parameters:
     Type: String
   GitHubOAuthToken:
     Type: String
+  PipelineUserRoleArn:
+    Type: String
 
 Resources:
   CodeBuildServiceRole:
@@ -153,7 +155,7 @@ Resources:
                 Resource: !GetAtt CodeBuildProject.Arn
               - Action:
                   - iam:PassRole
-                Resource: !GetAtt CloudFormationRole.Arn
+                Resource: !Ref PipelineUserRoleArn
                 Effect: Allow
               - Action:
                   - s3:PutObject
@@ -226,7 +228,7 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
-                RoleArn: !GetAtt CloudFormationRole.Arn
+                RoleArn: !Ref PipelineUserRoleArn
                 ChangeSetName: !Ref ProjectName
                 StackName: !Ref ProjectName
                 TemplatePath: "CfTemplate::packaged.yaml"
@@ -235,25 +237,6 @@ Resources:
               Name: DeployStack
               Region: !Ref "AWS::Region"
               RunOrder: 2
-  
-  CloudFormationRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: cloudformation.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: CloudFormationRolePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action: '*'
-                Resource: '*'
   
   GitWebHook:
     Type: AWS::CodePipeline::Webhook

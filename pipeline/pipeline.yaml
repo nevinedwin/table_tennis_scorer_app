@@ -11,6 +11,8 @@ Parameters:
   BackendBucket:
     Type: String
     Default: khelapp
+  FrontendBucket:
+    Type: String
   GitHubOwner:
     Type: String
     Default: nevinedwin
@@ -26,6 +28,14 @@ Parameters:
     AllowedValues: ['local', 'debug', 'dev', 'main']
 
 Resources:  
+
+  PipelineRoleStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: pipeline-role.yaml
+
   PipelineBackend:
     Type: AWS::Serverless::Application
     UpdateReplacePolicy: Delete
@@ -40,13 +50,21 @@ Resources:
         GitHubRepo: !Ref GitHubRepo
         Branch: !Ref Branch
         GitHubOAuthToken: !Ref GitHubOAuthToken
+        PipelineUserRoleArn: !GetAtt PipelineRoleStack.Outputs.PipelineUserRoleArn
   
-  # PipelineFrontendStack:
-  #   Type: AWS::Serverless::Application
-  #   UpdateReplacePolicy: Delete
-  #   DeletionPolicy: Delete
-  #   Properties:
-  #     Location: ./pipeline-frontend.yaml
-  #     Parameters:
-  #       # CodeBuildServiceRoleArn: !GetAtt CodeBuildServiceRole.Arn
+  PipelineFrontendStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./pipeline-frontend.yaml
+      Parameters:
+        PipelineBucket: !Ref PipelineBucket
+        ProjectName: !Ref ProjectName
+        FrontendBucket: !Ref FrontendBucket
+        GitHubOwner: !Ref GitHubOwner
+        GitHubRepo: !Ref GitHubRepo
+        Branch: !Ref Branch
+        GitHubOAuthToken: !Ref GitHubOAuthToken
+        PipelineUserRoleArn: !GetAtt PipelineRoleStack.Outputs.PipelineUserRoleArn
     

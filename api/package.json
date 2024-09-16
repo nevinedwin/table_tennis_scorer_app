@@ -10,11 +10,11 @@
     "prebuildLayer": "cd lambdaLayerStack && npm i && cd .. && npm run moveLibsToLayer",
     "buildLayer": "node createLambdaLayer",
     "deploy": "npm run buildLayer && npm run package",
-    "postdeploy": "sam deploy --template-file ./packaged.yaml --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name khelApp-stack-local --s3-bucket khelapp --parameter-overrides stageName=local --profile nevinedwin",
+    "postdeploy": "sam deploy --template-file ./packaged.yaml --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name khel-test --s3-bucket khelapp --parameter-overrides stageName=local --profile nevinedwin",
     "package": "sam package --template-file ./root-template.yaml --s3-bucket khelapp --output-template-file packaged.yaml --region us-east-1 --profile nevinedwin",
     "l-install": "cd lambdaLayerStack && npm i ",
     "l-uninstall": "cd lambdaLayerStack && npm uninstall ",
-    "delete": "aws cloudformation delete-stack --stack-name khelApp-stack-local --region us-east-1 --profile nevinedwin"
+    "delete": "aws cloudformation delete-stack --stack-name khel-test --region us-east-1 --profile nevinedwin"
   },
   "keywords": [],
   "author": "",

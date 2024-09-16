@@ -36,7 +36,7 @@ Resources:
   KhelAppUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: !Sub "khel-app-user-pool-${StageName}"
+      UserPoolName: !Sub "${StackNamePrefix}-user-pool-${StageName}"
       UsernameAttributes:
         - "email"
       LambdaConfig:

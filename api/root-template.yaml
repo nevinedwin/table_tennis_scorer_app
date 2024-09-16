@@ -13,6 +13,10 @@ Parameters:
       - dev
       - prod
 
+  StackNamePrefix:
+    Type: String
+    Default: khel-test
+
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/khelApp/Application/SSLCertificateArn"
@@ -64,15 +68,6 @@ Mappings:
       URL: api-khel.inapp.com
     local:
       URL: api-localhost:5173
-  StackNamePrefix:
-    debug:
-      Name: khelapp-debug-stack
-    dev:
-      Name: khelapp-dev-stack
-    prod:
-      Name: khelapp-stack
-    local:
-      Name: khelapp-local-stack
 
 Resources:
   LambdaLayerStack:
@@ -81,7 +76,7 @@ Resources:
       Location: ./lambdaLayerStack/template.yaml
       Parameters:
         StageName: !Ref StageName
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
   
@@ -91,7 +86,7 @@ Resources:
       Location: ./dynamodbStack/template.yaml
       Parameters:
         StageName: !Ref StageName
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
   
@@ -102,7 +97,7 @@ Resources:
     Properties:
       Location: ./infrastructure/access-identity-template.yaml
       Parameters:
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
 
   FrontendBucketStack:
     Type: AWS::Serverless::Application
@@ -112,7 +107,7 @@ Resources:
       Location: ./infrastructure/frontend-bucket-template.yaml
       Parameters:
         StageName: !Ref StageName
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
         IsEnableCustomDomain: !Ref IsEnableCustomDomain
         DomainName: !Sub
           - https://${domain}
@@ -144,7 +139,7 @@ Resources:
         KhelAppLayer: !GetAtt LambdaLayerStack.Outputs.KhelAppLayer
         TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
         KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
   
@@ -159,7 +154,7 @@ Resources:
         TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
         KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
         KhelAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableIndexName
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
         WebSocketUrl: !GetAtt SocketStack.Outputs.KhelAppWebSocketGatewayEndpoint
         WebSocketPostUrl: !GetAtt SocketStack.Outputs.KhelAppWebSocketGatewayPOSTEndpoint
         KhelAppDynamoStreamARN: !GetAtt DynamoDbTableStack.Outputs.KhelAppDynamoStreamARN
@@ -181,7 +176,7 @@ Resources:
         TableName: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableName
         KhelAppTableArn: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableArn
         KhelAppTableIndex: !GetAtt DynamoDbTableStack.Outputs.KhelAppTableIndexName
-        StackNamePrefix: !FindInMap [StackNamePrefix, !Ref StageName, Name]
+        StackNamePrefix: !Ref StackNamePrefix
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 

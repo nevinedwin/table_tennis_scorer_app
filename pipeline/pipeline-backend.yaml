@@ -74,7 +74,7 @@ Resources:
             build:
               commands:
                 - npm run buildLayer
-                - aws cloudformation package --template-file root-template.yaml --s3-bucket "$BackendBucket" --output-template packaged.yaml
+                - aws cloudformation package --template-file root-template.yaml --s3-bucket "$BackendBucket" --s3-prefix "$ProjectName/templates" --output-template packaged.yaml
           artifacts:
             files:
               - packaged.yaml
@@ -94,6 +94,9 @@ Resources:
           - Name: BackendBucket
             Type: PLAINTEXT
             Value: !Ref BackendBucket
+          - Name: ProjectName
+            Type: PLAINTEXT
+            Value: !Ref ProjectName
         PrivilegedMode: false
         Type: LINUX_CONTAINER
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
@@ -142,8 +145,7 @@ Resources:
                   - s3:GetBucketVersioning
                   - s3:GetObjectVersion
                 Resource:
-                  - !Sub arn:aws:s3:::${BackendBucket}
-                  - !Sub arn:aws:s3:::${BackendBucket}/null.zip
+                  - !Sub arn:aws:s3:::${BackendBucket}/*
               - Effect: Allow
                 Action:
                   - codebuild:BatchGetBuilds

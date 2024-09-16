@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import MatchForm from '../../components/form/matchForm';
-import { createMatch, MatchType } from '../../services/matchService';
+import useMatchApi, { MatchType } from '../../hooks/apiHooks/useMatchApi';
 
 const CreateMatch: React.FC = () => {
 
+    const { createMatch } = useMatchApi()
 
     const [matchData, setMatchData] = useState<Partial<MatchType>>({});
     const [isError, setIsError] = useState<boolean>(false);

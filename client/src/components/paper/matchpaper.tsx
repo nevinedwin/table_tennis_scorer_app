@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { findPercentage, formatDate, formatTime } from '../../utilities/common';
-import { addVote, getFullMatch, getVote } from '../../services/matchService';
-
+import useMatchApi from '../../hooks/apiHooks/useMatchApi';
 
 type LogoForPlayerPropTypes = {
     letter: string
@@ -21,7 +20,6 @@ const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
         </div>
     )
 };
-
 
 
 const EachSection: React.FC<EachSectionPropTypes> = ({ player1Name, teamName, player2Name }) => {
@@ -82,6 +80,8 @@ type MatchPaperPropTypes = {
 }
 
 const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
+
+    const { addVote, getFullMatch, getVote } = useMatchApi();
 
     const [matches, setMatches] = useState<MatchpaperType | {}>(match);
     const { team1Name = '',

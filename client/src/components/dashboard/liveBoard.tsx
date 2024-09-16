@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/authContext/authContext';
 import { UserRole } from '../../context/authContext/authContextTypes';
-import { MatchListType, playGame } from '../../services/matchService';
-
+import useMatchApi, { MatchListType } from '../../hooks/apiHooks/useMatchApi';
 
 type SetBoardPropType = {
   score: number;
@@ -55,6 +54,7 @@ type LiveBoardType = {
 
 const LiveBoard: React.FC<LiveBoardType> = ({ data }) => {
 
+  const { playGame } = useMatchApi();
   const { state: { user } } = useAuth();
 
   const [isLive] = useState<boolean>(true);

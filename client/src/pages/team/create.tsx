@@ -1,10 +1,12 @@
 
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import TeamForm from '../../components/form/teamForm';
-import { createTeam, TeamType } from '../../services/teamService';
 import { validateEmail } from '../../utilities/common';
+import useTeamApi, { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 const CreateTeam: React.FC = () => {
+
+    const { createTeam } = useTeamApi();
 
     const initalTeamData = {
         teamName: "",
@@ -42,7 +44,7 @@ const CreateTeam: React.FC = () => {
         } else if (!teamData.player2Email) {
             setError("Player 2 Email is required");
             return false;
-        }else if (teamData?.pool?.toUpperCase() !== "A" && teamData?.pool?.toUpperCase() !== "B" && teamData?.pool?.toUpperCase() !== "C" ) {
+        } else if (teamData?.pool?.toUpperCase() !== "A" && teamData?.pool?.toUpperCase() !== "B" && teamData?.pool?.toUpperCase() !== "C") {
             setError("pool should be A | B |C");
             return false;
         } else if (!validateEmail(teamData.player1Email!)) {

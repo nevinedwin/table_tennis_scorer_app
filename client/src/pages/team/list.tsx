@@ -3,9 +3,11 @@ import Table from '../../components/TeamTable/table'
 import Edit from './edit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { deleteTeam, listTeam } from '../../services/teamService';
+import useTeamApi from '../../hooks/apiHooks/useTeamApi';
 
 const ListTeam: React.FC = () => {
+
+    const { deleteTeam, listTeam } = useTeamApi();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -37,9 +39,9 @@ const ListTeam: React.FC = () => {
             setIsLoading(false)
 
         } catch (error: any) {
-            console.log("cdacdsvsd",error);
+            console.log("cdacdsvsd", error);
             setIsErr(error?.response?.data || "");
-        }finally{
+        } finally {
             console.log("object");
             setIsLoading(false);
         }

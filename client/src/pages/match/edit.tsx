@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import MatchForm from '../../components/form/matchForm';
-import { editMatch, getMatch, MatchType } from '../../services/matchService';
+import useMatchApi, { MatchType } from '../../hooks/apiHooks/useMatchApi';
 
 type EditMatchPropTypes = {
     data: string;
@@ -9,6 +9,7 @@ type EditMatchPropTypes = {
 
 const EditMatch: React.FC<EditMatchPropTypes> = ({ data, setIsEdit }) => {
 
+    const {getMatch, editMatch} = useMatchApi();
 
     const [matchData, setMatchData] = useState<Partial<MatchType>>({});
     const [matchId] = useState<string>(data);

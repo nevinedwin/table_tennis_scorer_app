@@ -2,15 +2,16 @@ import React, { memo, useCallback, useEffect, useState } from "react";
 import Hoc from "../../components/hoc/hoc";
 import Heading from "../../components/dashboard/heading";
 import Matchpaper from "../../components/paper/matchpaper";
-import { getFullMatch, listMatch, MatchListType, MatchStatus } from "../../services/matchService";
 import { quickSort } from "../../utilities/common";
 import LiveBoard from "../../components/dashboard/liveBoard";
 import { useSocket } from "../../context/websocketContext/websocketContext";
+import useMatchApi, { MatchListType, MatchStatus } from "../../hooks/apiHooks/useMatchApi";
 
 export type NavigationType = 'details' | 'prediction';
 
 const Dashboard: React.FC = () => {
 
+    const { listMatch, getFullMatch } = useMatchApi();
     const { newMessage } = useSocket()
 
     const [matches, setMatches] = useState<MatchListType[]>([]);
@@ -23,7 +24,7 @@ const Dashboard: React.FC = () => {
         // console.log("object");
         getMatchList();
     }, []);
-    
+
     useEffect(() => {
         if (newMessage) {
             console.log("Dashboard Component liveContextData:", newMessage);
@@ -49,7 +50,7 @@ const Dashboard: React.FC = () => {
     const getFullMatchData = async (matchId: string) => {
         try {
             const resp = await getFullMatch({ matchId });
-            console.log({resp});
+            console.log({ resp });
             setLiveData(resp);
         } catch (error) {
             console.log(error);

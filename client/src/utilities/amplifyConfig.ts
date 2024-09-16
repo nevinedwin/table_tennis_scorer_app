@@ -1,9 +1,7 @@
 import { Amplify } from 'aws-amplify';
-import GetAWSConfig from '../config.js';
+import { AmplifyConfigType } from '../context/amplifyContext/amplifyContextType';
 
-const config = GetAWSConfig();
-
-export default function configAmplify() {
+export default function setConfigAmplify(config: AmplifyConfigType) {
 
     Amplify.configure({
         Auth: {

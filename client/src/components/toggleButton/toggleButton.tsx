@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatchType } from '../../services/matchService';
+import { MatchType } from '../../hooks/apiHooks/useMatchApi';
 
 
 type ToggelButtonPropTypes = {

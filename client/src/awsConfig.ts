@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 // local
 const awsVal = {
     apiGateWay: {
@@ -21,8 +23,20 @@ const awsVal = {
     }
 }
 
-const GetAWSConfig = () => {
-    return awsVal;
-};
+const configData = JSON.stringify(awsVal);
 
-export default GetAWSConfig;
+console.log("config writing intiated");
+
+fs.writeFile('./public/aws-config.json', configData, 'utf-8', (err: any)=>{
+    if(err){
+        console.log("An Error Occured while during json object to aws config file writing");
+        console.log(" ");
+        console.log(" ");
+    }
+    
+    console.log("aws-config file created");
+    console.log(" ");
+    console.log(" ");
+})
+
+console.log("config writing Completed");

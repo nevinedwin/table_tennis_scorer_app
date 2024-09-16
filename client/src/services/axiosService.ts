@@ -1,11 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import GetAWSConfig from "../config.js";
 import ManageLocalStorage, { localStorageKeys } from "../utilities/ManageLocalStorage.js";
 import { fetchAuthSession } from "@aws-amplify/auth";
 import { jwtDecode } from 'jwt-decode';
+import { AmplifyConfigType } from "../context/amplifyContext/amplifyContextType.js";
 
 
-const config = GetAWSConfig();
 const { token } = localStorageKeys;
 
 
@@ -20,10 +19,14 @@ class ApiService {
 
     private baseUrl: string;
 
-    constructor() {
-        this.baseUrl = config.apiGateWay.URL;
+    constructor(amplifyConfig: AmplifyConfigType | null) {
+        this.baseUrl = amplifyConfig?.apiGateWay?.URL || '';
 
     };
+
+    updateConfig(newConfig: AmplifyConfigType){
+        this.baseUrl = newConfig?.apiGateWay?.URL || '';
+    }
 
     private async getToken() {
         try {
@@ -111,4 +114,4 @@ class ApiService {
 
 
 
-export default new ApiService();
+export default ApiService;

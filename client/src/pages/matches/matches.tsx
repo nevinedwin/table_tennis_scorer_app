@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
-import { deleteMatch, listMatch, MatchListType, MatchStatus, updateMatchSingle } from '../../services/matchService';
 import { quickSort } from '../../utilities/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import EditMatch from '../match/edit';
 import MatchTable from '../../components/matchTable/matchTable';
+import useMatchApi, { MatchListType, MatchStatus } from '../../hooks/apiHooks/useMatchApi';
 
 const Matches: React.FC = () => {
+
+  const {deleteMatch, listMatch, updateMatchSingle} = useMatchApi();
+  
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editData, setEditData] = useState<string>("");

@@ -2,7 +2,7 @@ import React, { SetStateAction } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './datepicker.css'; // Importing custom styles
-import { MatchType } from '../../services/matchService';
+import { MatchType } from '../../hooks/apiHooks/useMatchApi';
 
 type CalendarInputProps = {
     selectedDate: Date | null;

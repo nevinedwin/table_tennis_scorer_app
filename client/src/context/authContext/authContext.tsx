@@ -3,8 +3,8 @@ import { AUTH_ACTIONS, AuthAction, AuthState, CurrentUserType } from "./authCont
 import ManageLocalStorage, { localStorageKeys } from "../../utilities/ManageLocalStorage";
 import { Hub } from "aws-amplify/utils";
 import { getCurrentUser, signOut } from "@aws-amplify/auth";
-import { fetchSingleUser, getSocketUrl } from "../../services/userService";
 import { useSocket } from "../websocketContext/websocketContext";
+import useUserApi from "../../hooks/apiHooks/useUserApi";
 
 const { userIdKey } = localStorageKeys;
 
@@ -38,6 +38,7 @@ const intialState: AuthState = {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
+    const {fetchSingleUser, getSocketUrl} = useUserApi();
     const { onConnect } = useSocket();
 
     const [state, dispatch] = useReducer(authReducer, intialState);
@@ -123,6 +124,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         } catch (error) {
             // error showing
+            console.log(error);
             console.log("Not signed in");
         };
     };

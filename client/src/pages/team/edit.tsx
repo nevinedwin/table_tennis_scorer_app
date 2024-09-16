@@ -1,8 +1,8 @@
 
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import TeamForm from '../../components/form/teamForm';
-import { editTeam, TeamType } from '../../services/teamService';
 import { validateEmail } from '../../utilities/common';
+import useTeamApi, { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 type EditPropType = {
     data: Record<string, any>;
@@ -11,6 +11,8 @@ type EditPropType = {
 
 
 const EditTeam: React.FC<EditPropType> = ({ data, setIsEdit }) => {
+
+    const { editTeam } = useTeamApi();
 
     const initalTeamData = {
         teamName: "",

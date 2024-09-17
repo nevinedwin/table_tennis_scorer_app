@@ -261,3 +261,7 @@ Outputs:
   UserPoolArn:
     Description: "Userpool Arn"
     Value: !GetAtt KhelAppUserPool.Arn
+
+  DomainName:
+    Description: Userpool Domain Name
+    Value: !Sub "${StackNamePrefix}-website-${StageName}.auth.${AWS::Region}.amazoncognito.com"

@@ -277,7 +277,7 @@ Resources:
                 Action:
                   - cloudfront:CreateInvalidation
                 Resource:
-                  - !Sub arn:aws:cloudfront::{AWS::AccountId}:distribution/*
+                  - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/*
 
   FrontendConfigLambda:
     Type: AWS::Serverless::Function

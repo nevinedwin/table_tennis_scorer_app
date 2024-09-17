@@ -214,7 +214,7 @@ Resources:
               InputArtifacts:
                 - Name: SourceOutput
               OutputArtifacts:
-                - Name: CfTemplate
+                - Name: BuildOutput
               Name: Build
               Region: !Ref AWS::Region
               RunOrder: 1
@@ -231,9 +231,9 @@ Resources:
                 RoleArn: !Ref PipelineUserRoleArn
                 ChangeSetName: !Ref ProjectName
                 StackName: !Ref ProjectName
-                TemplatePath: "CfTemplate::packaged.yaml"
+                TemplatePath: "BuildOutput::packaged.yaml"
               InputArtifacts:
-                - Name: CfTemplate
+                - Name: BuildOutput
               Name: DeployStack
               Region: !Ref "AWS::Region"
               RunOrder: 1

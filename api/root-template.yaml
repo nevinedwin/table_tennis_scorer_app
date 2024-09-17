@@ -5,7 +5,7 @@ Description: "KhelAppTable Application"
 
 Parameters:
   StageName: 
-    Default: local
+    Default: prod
     Type: String
     AllowedValues:
       - local
@@ -15,11 +15,11 @@ Parameters:
 
   StackNamePrefix:
     Type: String
-    Default: khel-test
+    Default: khel-app
 
   FrontendBucketName:
     Type: String
-    Default: khel-app-local-frontend-s3-test1
+    Default: khel-app-prod-frontend-s3
 
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>

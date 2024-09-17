@@ -51,7 +51,7 @@ Resources:
   KhelAppApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub "khel-test-api-${StageName}"
+      Name: !Sub "${StackNamePrefix}-api-${StageName}"
       StageName: !Ref StageName
       Cors:
         AllowMethods: "'GET,POST,PUT,OPTIONS'"

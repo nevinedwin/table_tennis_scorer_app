@@ -94,7 +94,7 @@ Resources:
   KhelAppUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Sub "khel-test-website-${StageName}"
+      Domain: !Sub "${StackNamePrefix}-website-${StageName}"
       UserPoolId: !Ref KhelAppUserPool
 
   # pre authentiation role

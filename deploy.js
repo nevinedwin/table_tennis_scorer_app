@@ -14,7 +14,7 @@ try {
     process.exit(1);
 };
 
-const { REGION, AWS_PROFILE, PIPELINE_BUCKET, BACKEND_BUCKET, FRONTEND_BUCKET, PIPELINE_STACK_NAME, BACKEND_STACK_NAME, CLOUDFRONT_DISTRIBUTION, PROJECT_NAME } = config;
+const { REGION, AWS_PROFILE, PIPELINE_BUCKET, BACKEND_BUCKET, FRONTEND_BUCKET, PIPELINE_STACK_NAME, CLOUDFRONT_DISTRIBUTION, PROJECT_NAME } = config;
 
 // function for logging error
 function logError(message, error) {
@@ -50,7 +50,7 @@ function buildLayer() {
 
 function packageBackend() {
     execute(`
-        sam package --template-file ./root-template.yaml --s3-bucket ${BACKEND_BUCKET} --output-template-file packaged.yaml --region ${REGION} --profile ${AWS_PROFILE}
+        sam package --template-file ./root-template.yaml --s3-bucket ${BACKEND_BUCKET} --s3-prefix ${PROJECT_NAME}/templates --output-template-file packaged.yaml --region ${REGION} --profile ${AWS_PROFILE}
         `, 'packaging the backend stack failed');
 };
 
@@ -58,13 +58,13 @@ function deployBackend() {
     buildLayer();
     packageBackend();
     execute(`
-        sam deploy --template-file ./packaged.yaml --region ${REGION} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ${BACKEND_STACK_NAME} --s3-bucket ${BACKEND_BUCKET} --parameter-overrides FrontEndBucketName=${FRONTEND_BUCKET} --profile ${AWS_PROFILE}
+        sam deploy --template-file ./packaged.yaml --region ${REGION} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ${PROJECT_NAME} --s3-bucket ${BACKEND_BUCKET} --s3-prefix ${PROJECT_NAME}/templates --parameter-overrides FrontEndBucketName=${FRONTEND_BUCKET} --profile ${AWS_PROFILE}
         `, 'Deploying backend gets failed');
 }
 
 function deleteBackend() {
     execute(`
-        aws cloudformation delete-stack --stack-name ${BACKEND_STACK_NAME} --region ${REGION} --profile ${AWS_PROFILE}
+        aws cloudformation delete-stack --stack-name ${PROJECT_NAME} --region ${REGION} --profile ${AWS_PROFILE}
         `, 'Deleting Stack gets Failed');
 }
 

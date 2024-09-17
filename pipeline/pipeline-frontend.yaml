@@ -50,9 +50,13 @@ Resources:
                   - s3:PutObject
                   - s3:GetObject
                   - s3:DeleteObject
+                  - s3:ListBucket
                 Resource:
                   - !Sub arn:aws:s3:::${PipelineBucket}/*
+                  - !Sub arn:aws:s3:::${PipelineBucket}
                   - !Sub arn:aws:s3:::${FrontendBucket}/*
+                  - !Sub arn:aws:s3:::${FrontendBucket}
+
   
   CodeBuildFrontendProject:
     Type: AWS::CodeBuild::Project
@@ -71,7 +75,7 @@ Resources:
             build:
               commands:
                 - npm run build
-                - aws s3 sync dist/ "$FrontendBucket"
+                - aws s3 sync dist/ s3://"$FrontendBucket"
       Artifacts:
         EncryptionDisabled: false
         Name: !Sub ${ProjectName}-frontend

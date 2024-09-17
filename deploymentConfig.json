@@ -1,10 +1,10 @@
 {
-    "PROJECT_NAME": "khel-app",
+    "PROJECT_NAME": "khel-test",
     "REGION": "us-east-1",
     "AWS_PROFILE": "nevinedwin",
-    "PIPELINE_BUCKET": "khel-app-prod-pipeline-s3",
-    "BACKEND_BUCKET": "khel-app-prod-s3",
-    "FRONTEND_BUCKET": "khel-app-prod-frontend-s3",
-    "PIPELINE_STACK_NAME": "khel-app-pipeline",
+    "PIPELINE_BUCKET": "khel-test-local-pipeline-s3",
+    "BACKEND_BUCKET": "khel-test-local-s3",
+    "FRONTEND_BUCKET": "khel-test-local-frontend-s3",
+    "PIPELINE_STACK_NAME": "khel-test-pipeline",
     "CLOUDFRONT_DISTRIBUTION": ""
 }

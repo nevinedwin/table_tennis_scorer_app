@@ -2,6 +2,9 @@ AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
 Description: "Pipeline Backend Template"
 
+Parameters:
+  ProjectName:
+    Type: String
 
 Resources:
   CloudFormationRole:
@@ -15,7 +18,7 @@ Resources:
               Service: cloudformation.amazonaws.com
             Action: sts:AssumeRole
       Policies:
-        - PolicyName: CloudFormationRolePolicy
+        - PolicyName: !Sub ${ProjectName}-CloudFormationRolePolicy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:

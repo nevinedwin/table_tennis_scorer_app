@@ -85,14 +85,14 @@ function deployFrontend() {
 
 function packagePipeline() {
     execute(`
-        sam package --template-file ./pipeline.yaml --s3-bucket ${PIPELINE_BUCKET} --output-template-file packaged.yaml --region ${REGION} --profile ${AWS_PROFILE}
+        sam package --template-file ./pipeline.yaml --s3-bucket ${PIPELINE_BUCKET} --s3-prefix templates --output-template-file packaged.yaml --region ${REGION} --profile ${AWS_PROFILE}
         `, 'Pipeline Packaging Failed');
 }
 
 function deployPipeline() {
     packagePipeline();
     execute(`
-        sam deploy --template-file ./packaged.yaml --region ${REGION} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ${PIPELINE_STACK_NAME} --s3-bucket ${PIPELINE_BUCKET} --parameter-overrides PipelineBucket=${PIPELINE_BUCKET} ProjectName=${PROJECT_NAME} BackendBucket=${BACKEND_BUCKET} FrontendBucket=${FRONTEND_BUCKET} --profile ${AWS_PROFILE}
+        sam deploy --template-file ./packaged.yaml --region ${REGION} --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --stack-name ${PIPELINE_STACK_NAME} --s3-bucket ${PIPELINE_BUCKET} --s3-prefix templates --parameter-overrides PipelineBucket=${PIPELINE_BUCKET} ProjectName=${PROJECT_NAME} BackendBucket=${BACKEND_BUCKET} FrontendBucket=${FRONTEND_BUCKET} --profile ${AWS_PROFILE}
         `, 'Pipeline Deployment Failed')
 }
 

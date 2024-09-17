@@ -35,7 +35,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
       Policies:
-        - PolicyName: CodeBuildFrontendServiceRolePolicy
+        - PolicyName: !Sub ${ProjectName}-CodeBuildFrontendServiceRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -126,7 +126,7 @@ Resources:
             Action: sts:AssumeRole
       MaxSessionDuration: 3600
       Policies:
-        - PolicyName: PipelineServiceFrontendRolePolicy
+        - PolicyName: !Sub ${ProjectName}-PipelineServiceFrontendRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -245,7 +245,7 @@ Resources:
             Action: sts:AssumeRole
       MaxSessionDuration: 3600
       Policies:
-        - PolicyName: FrontendConfigLambdaRolePolicy
+        - PolicyName: !Sub ${ProjectName}-FrontendConfigLambdaRolePolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:

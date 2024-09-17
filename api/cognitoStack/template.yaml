@@ -101,7 +101,7 @@ Resources:
   KhelAppPreAuthenticationFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPreAuthenticationFunctonRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPreAuthenticationFunctonRole-${StageName}
       Policies:
         - PolicyName: !Sub KhelAppPreAuthenticationFunctonRolePolciy-${StageName}
           PolicyDocument:
@@ -148,7 +148,7 @@ Resources:
   KhelAppPreSignUpFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPreSignUpFunctonRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPreSignUpFunctonRole-${StageName}
       Policies:
         - PolicyName: !Sub KhelAppPreSignUpFunctonRolePolciy-${StageName}
           PolicyDocument:
@@ -196,7 +196,7 @@ Resources:
   KhelAppPostConfirmationLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPostConfirmationLambdaRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPostConfirmationLambdaRole-${StageName}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:

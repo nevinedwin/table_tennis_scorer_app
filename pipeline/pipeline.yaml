@@ -34,6 +34,8 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       Location: pipeline-role.yaml
+      Parameters:
+        ProjectName: !Ref ProjectName
 
   PipelineBackend:
     Type: AWS::Serverless::Application

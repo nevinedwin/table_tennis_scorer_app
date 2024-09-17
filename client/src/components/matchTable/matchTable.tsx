@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../context/authContext/authContext';
-import { MatchListType, MatchStatus } from '../../services/matchService';
 import Pagination from '../TeamTable/pagination';
 import { UserRole } from '../../context/authContext/authContextTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSignal, faTrash, faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { formatDate, formatTime } from '../../utilities/common';
 import ToggleButton from '../toggleButton/toggleButton';
+import { MatchListType, MatchStatus } from '../../hooks/apiHooks/useMatchApi';
 
 type MatchTablePropTypes = {
     data: Partial<MatchListType[]>,

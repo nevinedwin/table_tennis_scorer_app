@@ -9,7 +9,8 @@ export const LAMBDA = {
     USERS: {
         LIST_USERS: "listUsers",
         GET_USER: "getUsers",
-        SOCKET_URL: "socketUrl"
+        SOCKET_URL: "socketUrl",
+        CHANGE_ROLE: "changeRole"
     },
     TEAM: {
         CREATE: "createTeam",
@@ -53,6 +54,7 @@ export const lambdaPolicies = {
         LAMBDA.MATCH.DELETE,
         LAMBDA.MATCH.PLAYGAME,
         LAMBDA.MATCH.UPDATE_SINGLE,
+        LAMBDA.USERS.CHANGE_ROLE
     ],
     [ROLES.ADMIN]: [
         LAMBDA.TEAM.LIST,

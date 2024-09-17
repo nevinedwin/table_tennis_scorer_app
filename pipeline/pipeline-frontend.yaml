@@ -1,0 +1,297 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: "Pipeline Backend Template"
+
+Parameters:
+  ProjectName:
+    Type: String
+  FrontendBucket:
+    Type: String
+  PipelineBucket:
+    Type: String
+  GitHubOwner:
+    Type: String
+  GitHubRepo:
+    Type: String
+  Branch:
+    Type: String
+  GitHubOAuthToken:
+    Type: String
+  PipelineUserRoleArn:
+    Type: String
+
+Resources:
+  CodeBuildFrontendServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: !Sub /khel/deployment/codebuild/${ProjectName}/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
+      Policies:
+        - PolicyName: !Sub ${ProjectName}-CodeBuildFrontendServiceRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogStream
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:*:log-group:${LogGroupFrontend}:log-stream:${CodeBuildLogStreamFrontend}/*
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub arn:aws:s3:::${PipelineBucket}/*
+                  - !Sub arn:aws:s3:::${PipelineBucket}
+                  - !Sub arn:aws:s3:::${FrontendBucket}/*
+                  - !Sub arn:aws:s3:::${FrontendBucket}
+
+  
+  CodeBuildFrontendProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${ProjectName}-frontend
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: |-
+          version: 0.2
+          phases:
+            install:
+              runtime-versions:
+                nodejs: 20
+              commands:
+                - cd client && npm i
+            build:
+              commands:
+                - npm run build
+                - aws s3 sync dist/ s3://"$FrontendBucket"
+      Artifacts:
+        EncryptionDisabled: false
+        Name: !Sub ${ProjectName}-frontend
+        Packaging: NONE
+        Type: CODEPIPELINE
+      Cache:
+        Type: NO_CACHE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+        ImagePullCredentialsType: CODEBUILD
+        EnvironmentVariables:
+          - Name: FrontendBucket
+            Type: PLAINTEXT
+            Value: !Ref FrontendBucket
+          - Name: ProjectName
+            Type: PLAINTEXT
+            Value: !Ref ProjectName
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole: !GetAtt CodeBuildFrontendServiceRole.Arn
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: !Ref LogGroupFrontend
+          StreamName: !Ref CodeBuildLogStreamFrontend
+
+  LogGroupFrontend:
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub ${ProjectName}-build-frontend
+      RetentionInDays: 5
+  
+  CodeBuildLogStreamFrontend:
+    Type: AWS::Logs::LogStream
+    Properties:
+      LogGroupName: !Ref LogGroupFrontend
+      LogStreamName: !Sub ${ProjectName}-codebuild-frontend
+  
+  PipelineServiceFrontendRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: !Sub /khel/deployment/codepipeline/${ProjectName}/
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: !Sub ${ProjectName}-PipelineServiceFrontendRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListBucketVersions
+                  - s3:ListBucket
+                  - s3:GetBucketVersioning
+                  - s3:GetObjectVersion
+                Resource:
+                  - !Sub arn:aws:s3:::${FrontendBucket}/*
+              - Effect: Allow
+                Action:
+                  - codebuild:BatchGetBuilds
+                  - codebuild:StartBuild
+                Resource: !GetAtt CodeBuildFrontendProject.Arn
+              - Action:
+                  - iam:PassRole
+                Resource: !Ref PipelineUserRoleArn
+                Effect: Allow
+              - Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource:
+                  - !Sub arn:aws:s3:::${PipelineBucket}/*
+                Effect: Allow
+              - Action:
+                  - lambda:InvokeFunction
+                  - lambda:ListFunctions
+                Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*
+                Effect: Allow
+
+  CodePipelineFrontend:
+    Type: AWS::CodePipeline::Pipeline
+    DependsOn: CodeBuildFrontendProject
+    Properties:
+      Name: !Sub ${ProjectName}-frontend
+      RoleArn: !GetAtt PipelineServiceFrontendRole.Arn
+      ArtifactStore:
+        Location: !Ref PipelineBucket
+        Type: S3
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Owner: ThirdParty
+                Category: Source
+                Version: 1
+                Provider: GitHub
+              Configuration:
+                Owner: !Ref GitHubOwner
+                Repo: !Ref GitHubRepo
+                Branch: !Ref Branch
+                OAuthToken: !Ref GitHubOAuthToken
+                PollForSourceChanges: true
+              OutputArtifacts:
+                - Name: SourceOutput
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName: !Sub ${ProjectName}-frontend
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+              Name: Build
+              Region: !Ref AWS::Region
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: 1
+              Configuration:
+                FunctionName: !Ref FrontendConfigLambda
+              InputArtifacts:
+                - Name: BuildOutput
+              Name: SetUpFrontendConfig
+              Region: !Ref "AWS::Region"
+              RunOrder: 1
+  
+  GitWebHookFrontend:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GitHubOAuthToken
+      Filters:
+        - JsonPath: "$.ref"
+          MatchEquals: !Sub refs/heads/${Branch}
+      TargetPipeline: !Ref CodePipelineFrontend
+      TargetAction: SourceAction
+      Name: CodePipelineFrontendWebHook
+      TargetPipelineVersion: !GetAtt CodePipelineFrontend.Version
+      RegisterWithThirdParty: true
+  
+  FrontendConfigLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: !Sub ${ProjectName}-FrontendConfigLambdaRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource:
+                  - arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - codepipeline:PutJobSuccessResult
+                  - codepipeline:PutJobFailureResult
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource:
+                  - !Sub arn:aws:s3:::${FrontendBucket}
+                  - !Sub arn:aws:s3:::${FrontendBucket}/*
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource:
+                  - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/*
+
+  FrontendConfigLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt FrontendConfigLambdaRole.Arn
+      CodeUri: src
+      Description: Used to setup config for Front End
+      Handler: index.main
+      Runtime: nodejs20.x
+      Timeout: 900
+      Environment:
+        Variables:
+          PROJECT_NAME: !Ref ProjectName
+          REGION: !Ref AWS::Region
+          FRONTEND_BUCKET: !Ref FrontendBucket
+

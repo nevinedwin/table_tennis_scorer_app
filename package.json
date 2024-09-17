@@ -1,15 +1,19 @@
 {
-  "name": "khelapp",
+  "name": "khel-test",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-client": "npm run deploy --prefix client",
     "client": "npm start --prefix client",
     "api": "npm run deploy --prefix api && npm run removeFolders",
     "delete-api": "npm run delete --prefix api",
-    "removeFolders": "rm -rf api/packaged.yaml && rm -rf api/lambdaLayerStack/nodejs.zip"
+    "removeFolders": "rm -rf api/packaged.yaml && rm -rf api/lambdaLayerStack/nodejs.zip",
+    "deploy-pipeline": "npm run deploy --prefix pipeline",
+    "delete-pipeline": "npm run delete --prefix pipeline",
+    "push-local":"git add . && git commit -m 'test commit' && git push origin feature && git checkout local && git pull origin feature"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from 'react'
-import { TeamType } from '../../services/teamService';
-
+import { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 type LogoForPlayerPropTypes = {
     letter: string

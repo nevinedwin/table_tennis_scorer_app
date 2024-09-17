@@ -1,8 +1,7 @@
 import React from 'react'
 import InputElement from '../inputElement/inputElement'
 import StyledButton from '../button/button'
-import { TeamType } from '../../services/teamService'
-
+import { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 type TeamFormPropType = {
     teamdata: Partial<TeamType>;

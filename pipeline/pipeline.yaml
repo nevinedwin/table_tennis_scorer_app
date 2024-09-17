@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: "Pipeline Root Template"
+
+
+Parameters:
+  PipelineBucket:
+    Type: String
+  ProjectName:
+    Type: String
+  BackendBucket:
+    Type: String
+  FrontendBucket:
+    Type: String
+  GitHubOwner:
+    Type: String
+    Default: nevinedwin
+  GitHubRepo:
+    Type: String
+    Default: table_tennis_scorer_app
+  GitHubOAuthToken:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /khelApp/CodePipeline/GitHubOAuthToken
+  Branch:
+    Type: String
+    Default: debug
+    AllowedValues: ['local', 'debug', 'dev', 'main']
+
+Resources:  
+
+  PipelineRoleStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: pipeline-role.yaml
+      Parameters:
+        ProjectName: !Ref ProjectName
+
+  PipelineBackend:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: pipeline-backend.yaml
+      Parameters:
+        PipelineBucket: !Ref PipelineBucket
+        ProjectName: !Ref ProjectName
+        BackendBucket: !Ref BackendBucket
+        GitHubOwner: !Ref GitHubOwner
+        GitHubRepo: !Ref GitHubRepo
+        Branch: !Ref Branch
+        GitHubOAuthToken: !Ref GitHubOAuthToken
+        PipelineUserRoleArn: !GetAtt PipelineRoleStack.Outputs.PipelineUserRoleArn
+  
+  PipelineFrontendStack:
+    Type: AWS::Serverless::Application
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      Location: ./pipeline-frontend.yaml
+      Parameters:
+        PipelineBucket: !Ref PipelineBucket
+        ProjectName: !Ref ProjectName
+        FrontendBucket: !Ref FrontendBucket
+        GitHubOwner: !Ref GitHubOwner
+        GitHubRepo: !Ref GitHubRepo
+        Branch: !Ref Branch
+        GitHubOAuthToken: !Ref GitHubOAuthToken
+        PipelineUserRoleArn: !GetAtt PipelineRoleStack.Outputs.PipelineUserRoleArn
+    

@@ -1,0 +1,10 @@
+{
+    "PROJECT_NAME": "khel-app",
+    "REGION": "us-east-1",
+    "AWS_PROFILE": "nevinedwin",
+    "PIPELINE_BUCKET": "khel-app-debug-pipeline-s3",
+    "BACKEND_BUCKET": "khel-app-debug-s3",
+    "FRONTEND_BUCKET": "khel-app-debug-frontend-s3",
+    "PIPELINE_STACK_NAME": "khel-app-pipeline",
+    "CLOUDFRONT_DISTRIBUTION": ""
+}

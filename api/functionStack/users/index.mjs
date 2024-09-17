@@ -41,7 +41,7 @@ export const main = async (event) => {
                     isAuthorized = validateAccess(role, LAMBDA.USERS.SOCKET_URL);
 
                     if (isAuthorized) {
-                        response = success({status: true, socketUrl: WEBSOCKET_URL});
+                        response = success({ status: true, socketUrl: WEBSOCKET_URL });
                     };
 
                 } else {
@@ -55,6 +55,14 @@ export const main = async (event) => {
 
                 if (!data) {
                     response = failure("Body is Empty");
+                } else if (action === "changeRole") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.USERS.CHANGE_ROLE);
+
+                    if (isAuthorized) {
+                        response = await service.changeRole(data);
+                    };
+
                 } else {
                     response = failure("Invalid Endpoint");
                 };

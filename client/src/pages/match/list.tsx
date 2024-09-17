@@ -2,11 +2,13 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
 import MatchTable from '../../components/matchTable/matchTable';
-import { deleteMatch, listMatch, MatchListType, MatchStatus, updateMatchSingle } from '../../services/matchService';
 import { quickSort } from '../../utilities/common';
 import EditMatch from './edit';
+import useMatchApi, { MatchListType, MatchStatus } from '../../hooks/apiHooks/useMatchApi';
 
 const ListMatches: React.FC = () => {
+
+    const { listMatch, deleteMatch, updateMatchSingle } = useMatchApi();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<boolean>(false);

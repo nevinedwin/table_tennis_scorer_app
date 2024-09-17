@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { getTeam, listTeam, TeamType } from '../../services/teamService';
+import useTeamApi, { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 type SearchInputPropType = {
     value?: string;
@@ -11,6 +11,9 @@ type SearchInputPropType = {
 }
 
 const SearchInput: React.FC<SearchInputPropType> = ({ placeholder, name, setData, value = "", isButtonClicked = false, setForSearchInput }) => {
+
+    const {getTeam, listTeam} = useTeamApi();
+
     const [onFocus, setOnFocus] = useState<boolean>(false);
     const [teamList, setTeamList] = useState<TeamType[]>([]);
     const [insideValue, setInsideValue] = useState<string>("");

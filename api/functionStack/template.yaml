@@ -51,7 +51,7 @@ Resources:
   KhelAppApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub "khelapp-api-${StageName}"
+      Name: !Sub "${StackNamePrefix}-api-${StageName}"
       StageName: !Ref StageName
       Cors:
         AllowMethods: "'GET,POST,PUT,OPTIONS'"
@@ -361,4 +361,4 @@ Resources:
 
 Outputs:
   KhelAppApiURL:
-    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api
+    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local

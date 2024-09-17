@@ -36,7 +36,7 @@ Resources:
   KhelAppUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UserPoolName: !Sub "khel-app-user-pool-${StageName}"
+      UserPoolName: !Sub "${StackNamePrefix}-user-pool-${StageName}"
       UsernameAttributes:
         - "email"
       LambdaConfig:
@@ -94,14 +94,14 @@ Resources:
   KhelAppUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
-      Domain: !Sub "khelapp-website-${StageName}"
+      Domain: !Sub "${StackNamePrefix}-website-${StageName}"
       UserPoolId: !Ref KhelAppUserPool
 
   # pre authentiation role
   KhelAppPreAuthenticationFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPreAuthenticationFunctonRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPreAuthenticationFunctonRole-${StageName}
       Policies:
         - PolicyName: !Sub KhelAppPreAuthenticationFunctonRolePolciy-${StageName}
           PolicyDocument:
@@ -148,7 +148,7 @@ Resources:
   KhelAppPreSignUpFunctonRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPreSignUpFunctonRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPreSignUpFunctonRole-${StageName}
       Policies:
         - PolicyName: !Sub KhelAppPreSignUpFunctonRolePolciy-${StageName}
           PolicyDocument:
@@ -196,7 +196,7 @@ Resources:
   KhelAppPostConfirmationLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub KhelAppPostConfirmationLambdaRole-${StageName}
+      RoleName: !Sub ${StackNamePrefix}-KhelAppPostConfirmationLambdaRole-${StageName}
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -261,3 +261,7 @@ Outputs:
   UserPoolArn:
     Description: "Userpool Arn"
     Value: !GetAtt KhelAppUserPool.Arn
+
+  DomainName:
+    Description: Userpool Domain Name
+    Value: !Sub "${StackNamePrefix}-website-${StageName}.auth.${AWS::Region}.amazoncognito.com"

@@ -1,0 +1,13 @@
+{
+  "name": "pipeline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "node ../deploy.js deployPipeline",
+    "delete": "node ../deploy.js deletePipeline"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

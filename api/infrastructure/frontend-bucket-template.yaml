@@ -3,15 +3,13 @@ Transform: AWS::Serverless-2016-10-31
 Description: "KhelApp Frontend bucket creation Template"
 
 Parameters:
-  StageName:
-    Type: String
-  StackNamePrefix:
-    Type: String
   IsEnableCustomDomain:
     Type: String
   DomainName:
     Type: String
   S3CanonicalUserId:
+    Type: String
+  FrontendBucketName:
     Type: String
 
 Conditions:
@@ -21,7 +19,7 @@ Resources:
   FrontendBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${StackNamePrefix}-frontend-${StageName}
+      BucketName: !Ref FrontendBucketName
       CorsConfiguration:
         CorsRules:
             - AllowedMethods:
@@ -31,7 +29,7 @@ Resources:
                 - !If [EnableCustomDomain, !Ref DomainName, "*"]
               AllowedHeaders:
                 - "*"
-              Id: !Sub ${StackNamePrefix}-frontend-${StageName}-cors-rule
+              Id: !Sub ${FrontendBucketName}-cors-rule
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true

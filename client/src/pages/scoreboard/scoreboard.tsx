@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
 import PoolTable from '../../components/poolTable/poolTable';
-import { listTeam, TeamType } from '../../services/teamService';
 import { quickSortList } from '../../utilities/common';
+import useTeamApi, { TeamType } from '../../hooks/apiHooks/useTeamApi';
 
 const Scoreboard: React.FC = () => {
+
+  const { listTeam } = useTeamApi();
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [teamList, setTeamList] = useState<TeamType[]>([]);

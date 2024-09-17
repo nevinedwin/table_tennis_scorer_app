@@ -1,10 +1,10 @@
 import React, { memo } from 'react'
 import InputElement from '../inputElement/inputElement'
 import StyledButton from '../button/button'
-import { MatchType } from '../../services/matchService';
 import SearchInput from '../searchInput/searchInput';
 import CalendarInput from '../datePicker/datePicket';
 import ToggleButton from '../toggleButton/toggleButton';
+import { MatchType } from '../../hooks/apiHooks/useMatchApi';
 
 
 

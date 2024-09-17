@@ -41,6 +41,7 @@ async function doFrontendDeploy() {
 
         //debugger
         console.log(`stackOutputs: ${JSON.stringify(stackOutputs)}`);
+        return true;
 
     } catch (error) {
         console.log(`Error: ${JSON.stringify(error)}`);
@@ -48,14 +49,56 @@ async function doFrontendDeploy() {
     }
 }
 
-export const main = async (event) => {
+export const main = async (event, context) => {
     try {
 
         console.log(`Event: ${JSON.stringify(event)}`);
 
         const jobId = event["CodePipeline.job"].id;
 
+
+        async function putJobSuccess(message) {
+            const params = {
+                jobId
+            };
+            try {
+                const putJobSuccessResp = await codepipeline.putJobSuccessResult(params).promise();
+                context.succeed(message);
+            } catch (error) {
+                console.log(`Error in success Job: ${JSON.stringify(error)}`);
+                context.fail(error);
+            }
+        };
+
+
+        async function putJobFailure(message) {
+            const params = {
+                jobId,
+                failureDetails: {
+                    message: JSON.stringify(message),
+                    type: 'JobFailed',
+                    externalExecutionId: context.awsRequestId
+                }
+            };
+            try {
+
+                const putJobFailureResp = await codepipeline.putJobFailureResult(params).promise();
+                //debugger
+                console.log(`putJobFailureResp: ${JSON.stringify(putJobFailureResp)}`);
+
+                context.fail(message);
+            } catch (error) {
+                console.log(`Error in failure Job: ${JSON.stringify(error)}`);
+                context.fail(error);
+            }
+        };
+
         response = await doFrontendDeploy();
+        if (response) {
+            await putJobSuccess("Frontend Deployment Successfull");
+        } else {
+            await putJobFailure("Frontend Deployment Failure");
+        };
 
     } catch (error) {
         console.log(`Error: ${JSON.stringify(error)}`);

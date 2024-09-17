@@ -73,6 +73,9 @@ Mappings:
     local:
       URL: api-localhost:5173
 
+Conditions:
+  IsLocalEnv: !Equals [!Ref StageName, "local"]
+
 Resources:
   LambdaLayerStack:
     Type: AWS::Serverless::Application
@@ -202,7 +205,13 @@ Outputs:
   DomainName:
     Description: Cognito Domain Name
     Value: !GetAtt CognitoStack.Outputs.DomainName
+  FrontendBucket:
+    Description: Frontend Bucket Name
+    Value: !GetAtt FrontendBucketStack.Outputs.FrontendBucket
   SignInUrl:
     Description: Url For redirection and signIn
-    Value: !FindInMap [URLs, !Ref StageName, URL]
+    Value: !If
+      - IsLocalEnv
+      - !Sub "https://${CloudFrontStack.Outputs.CloudFrontUrl}/"
+      - !FindInMap [URLs, !Ref StageName, URL]
 

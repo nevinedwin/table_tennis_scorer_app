@@ -41,7 +41,80 @@ async function doFrontendDeploy() {
 
         //debugger
         console.log(`stackOutputs: ${JSON.stringify(stackOutputs)}`);
-        
+
+        let cloudFrontDistributionId, frontendBucket
+
+        for (let stackOutput of stackOutputs) {
+            switch (stackOutput.OutputKey) {
+                case "UserPoolClientId":
+                    frontendConfigObj.cognito.APP_CLIENT_ID = stackOutput.OutputValue;
+                    break;
+                case "UserPoolId":
+                    frontendConfigObj.cognito.USER_POOL_ID = stackOutput.OutputValue;
+                    break;
+                case "DomainName":
+                    frontendConfigObj.cognito.DOMAIN = stackOutput.OutputValue;
+                    break;
+                case "CloudFrontDistributionId":
+                    cloudFrontDistributionId = stackOutput.OutputValue;
+                    break;
+                case "KhelAppApiURL":
+                    frontendConfigObj.apiGateWay.URL = stackOutput.OutputValue;
+                    break;
+                case "SignInUrl":
+                    frontendConfigObj.cognito.SIGN_IN_URL.push(stackOutput.OutputValue);
+                    frontendConfigObj.cognito.SIGN_OUT_URL.push(stackOutput.OutputValue);
+                    break;
+                case "FrontendBucket":
+                    frontendBucket = stackOutput.OutputValue;
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        //debugger
+        console.log(`frontendConfigObj: ${JSON.stringify(frontendConfigObj)}`);
+
+
+        // upload the frontend config to s3
+        const fileName = "aws-config.json";
+        const uploadS3Params = {
+            Bucket: frontendBucket,
+            Key: fileName,
+            ContentType: "application/json",
+            Body: JSON.stringify(frontendConfigObj)
+        };
+
+        //debugger
+        console.log(`uploadS3Params: ${JSON.stringify(uploadS3Params)}`);
+
+        const s3UploadResp = await s3.upload(uploadS3Params).promise();
+
+        //debugger
+        console.log(`s3UploadResp: ${JSON.stringify(s3UploadResp)}`);
+
+        // create invalidation for the cloudfront
+        const timestamp = new Date().toISOString();
+        const createInvalidationParams = {
+            DistributionId: cloudFrontDistributionId,
+            InvalidationBatch: {
+                CallerReference: timestamp,
+                Paths: {
+                    Quanity: 1,
+                    Items: ["/*"]
+                }
+            }
+        };
+
+        //debugger
+        console.log(`createInvalidationParams: ${JSON.stringify(createInvalidationParams)}`);
+
+        const createInvalidationResp = await cloudfront.createInvalidation(createInvalidationParams).promise();
+
+        //debugger
+        console.log(`createInvalidationResp: ${JSON.stringify(createInvalidationResp)}`);
+
         return true;
 
     } catch (error) {
@@ -50,6 +123,8 @@ async function doFrontendDeploy() {
     }
 }
 
+
+// Main Function
 export const main = async (event, context) => {
     try {
 

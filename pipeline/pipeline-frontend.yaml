@@ -275,7 +275,7 @@ Resources:
                   - !Sub arn:aws:s3:::${FrontendBucket}/*
               - Effect: Allow
                 Action:
-                  - cloudfront:CreateInvalidations
+                  - cloudfront:CreateInvalidation
                 Resource:
                   - !Sub arn:aws:cloudfront::{AWS::AccountId}:distribution/*
 

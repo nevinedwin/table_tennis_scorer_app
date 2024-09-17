@@ -282,4 +282,12 @@ Resources:
           PROJECT_NAME: !Ref ProjectName
           REGION: !Ref AWS::Region
           FRONTEND_BUCKET: !Ref FrontendBucket
+  
+  FrontendConfigLambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${FrontendConfigLambda}
+      RetentionInDays: 30
 

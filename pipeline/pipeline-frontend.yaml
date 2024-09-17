@@ -203,7 +203,7 @@ Resources:
               InputArtifacts:
                 - Name: SourceOutput
               OutputArtifacts:
-                - Name: NullArtifact
+                - Name: BuildOutput
               Name: Build
               Region: !Ref AWS::Region
               RunOrder: 1
@@ -216,7 +216,8 @@ Resources:
                 Version: 1
               Configuration:
                 FunctionName: !Ref FrontendConfigLambda
-              InputArtifacts: []
+              InputArtifacts:
+                - Name: BuildOutput
               Name: SetUpFrontendConfig
               Region: !Ref "AWS::Region"
               RunOrder: 1

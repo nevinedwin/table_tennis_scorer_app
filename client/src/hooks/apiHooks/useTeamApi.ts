@@ -1,4 +1,3 @@
-import ApiService from "../../services/axiosService";
 import { useApiHook } from "./useApiHook"
 
 
@@ -28,7 +27,7 @@ export type TeamType = {
 
 const useTeamApi = () => {
 
-    const { get, post } = useApiHook() as ApiService;
+    const { get, post } = useApiHook();
 
 
     // create team

@@ -1,4 +1,3 @@
-import ApiService from "../../services/axiosService";
 import { useApiHook } from "./useApiHook"
 
 
@@ -87,7 +86,7 @@ export type MatchListType = {
 
 const useMatchApi = () => {
 
-    const { post, get } = useApiHook() as ApiService;
+    const { post, get } = useApiHook();
 
     // create match
     const createMatch = async (data: MatchType) => {

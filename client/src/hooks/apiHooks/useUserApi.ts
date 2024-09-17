@@ -1,4 +1,3 @@
-import ApiService from "../../services/axiosService";
 import { useApiHook } from "./useApiHook"
 
 
@@ -10,10 +9,10 @@ const userEndpoints = {
 
 const useUserApi = () => {
 
-    const { get } = useApiHook() as ApiService;
+    const { get } = useApiHook();
 
     const fetchSingleUser = async (id: string): Promise<any> => {
-        const data: any = await get<any>(`${userEndpoints.fetchSingUser}/${id}`)
+        const data: any = await get(`${userEndpoints.fetchSingUser}/${id}`)
         console.log(data);
         if (data && Object.keys(data).length) {
             return data;

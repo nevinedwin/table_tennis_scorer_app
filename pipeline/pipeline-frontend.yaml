@@ -154,6 +154,11 @@ Resources:
                 Resource:
                   - !Sub arn:aws:s3:::${PipelineBucket}/*
                 Effect: Allow
+              - Action:
+                  - lambda:InvokeFunction
+                  - lambda:ListFunctions
+                Resource: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*
+                Effect: Allow
 
   CodePipelineFrontend:
     Type: AWS::CodePipeline::Pipeline
@@ -201,7 +206,7 @@ Resources:
         - Name: Deploy
           Actions:
             - ActionTypeId:
-                Category: Deploy
+                Category: Invoke
                 Owner: AWS
                 Provider: Lambda
                 Version: 1
@@ -226,11 +231,39 @@ Resources:
       Name: CodePipelineFrontendWebHook
       TargetPipelineVersion: !GetAtt CodePipelineFrontend.Version
       RegisterWithThirdParty: true
+  
+  FrontendConfigLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: FrontendConfigLambdaRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource:
+                  - arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - codepipeline:PutJobSuccessResult
+                  - codepipeline:PutJobFailureResult
+                Resource: "*"
 
   FrontendConfigLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Role: !Ref PipelineUserRoleArn
+      Role: !GetAtt FrontendConfigLambdaRole.Arn
       CodeUri: src
       Description: Used to setup config for Front End
       Handler: index.main

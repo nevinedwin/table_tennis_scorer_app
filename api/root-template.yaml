@@ -17,6 +17,10 @@ Parameters:
     Type: String
     Default: khel-test
 
+  FrontendBucketName:
+    Type: String
+    Default: khel-app-local-frontend-s3-test1
+
   SSLCertificateArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: "/khelApp/Application/SSLCertificateArn"
@@ -106,8 +110,7 @@ Resources:
     Properties:
       Location: ./infrastructure/frontend-bucket-template.yaml
       Parameters:
-        StageName: !Ref StageName
-        StackNamePrefix: !Ref StackNamePrefix
+        FrontendBucketName: !Ref FrontendBucketName
         IsEnableCustomDomain: !Ref IsEnableCustomDomain
         DomainName: !Sub
           - https://${domain}

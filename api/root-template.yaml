@@ -212,6 +212,6 @@ Outputs:
     Description: Url For redirection and signIn
     Value: !If
       - IsLocalEnv
-      - !Sub "https://${!GetAtt CloudFrontStack.Outputs.CloudFrontUrl}/"
+      - !Sub "https://${CloudFrontStack.Outputs.CloudFrontUrl}/"
       - !FindInMap [URLs, !Ref StageName, URL]
 

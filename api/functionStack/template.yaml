@@ -361,4 +361,4 @@ Resources:
 
 Outputs:
   KhelAppApiURL:
-    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local/api
+    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local

@@ -199,4 +199,10 @@ Outputs:
   CloudFrontDistributionId:
     Description: CloudFront Distribution Id
     Value: !GetAtt CloudFrontStack.Outputs.CloudFrontDistributionId
+  DomainName:
+    Description: Cognito Domain Name
+    Value: !GetAtt CognitoStack.Outputs.DomainName
+  SignInUrl:
+    Description: Url For redirection and signIn
+    Value: !FindInMap [URLs, !Ref StageName, URL]
 

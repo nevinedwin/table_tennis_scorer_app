@@ -249,6 +249,6 @@ Resources:
           MatchEquals: !Sub refs/heads/${Branch}
       TargetPipeline: !Ref CodePipeline
       TargetAction: SourceAction
-      Name: CodePipelineBackendWebHook
+      Name: !Sub ${ProjectName}-CodePipelineBackendWebHook
       TargetPipelineVersion: !GetAtt CodePipeline.Version
       RegisterWithThirdParty: true

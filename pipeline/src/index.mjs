@@ -101,7 +101,7 @@ async function doFrontendDeploy() {
             InvalidationBatch: {
                 CallerReference: timestamp,
                 Paths: {
-                    Quanity: 1,
+                    Quantity: 1,
                     Items: ["/*"]
                 }
             }

@@ -41,6 +41,7 @@ async function doFrontendDeploy() {
 
         //debugger
         console.log(`stackOutputs: ${JSON.stringify(stackOutputs)}`);
+        
         return true;
 
     } catch (error) {

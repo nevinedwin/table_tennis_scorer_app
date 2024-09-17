@@ -236,7 +236,7 @@ Resources:
                 - Name: CfTemplate
               Name: DeployStack
               Region: !Ref "AWS::Region"
-              RunOrder: 2
+              RunOrder: 1
   
   GitWebHook:
     Type: AWS::CodePipeline::Webhook

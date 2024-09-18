@@ -185,7 +185,7 @@ Resources:
               Configuration:
                 Owner: !Ref GitHubOwner
                 Repo: !Ref GitHubRepo
-                Branch: !Sub ${Branch}-f
+                Branch: !Ref Branch
                 OAuthToken: !Ref GitHubOAuthToken
                 PollForSourceChanges: true
               OutputArtifacts:

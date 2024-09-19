@@ -382,7 +382,7 @@ export class MatchService {
 
             const { matchId, updateKey, updateValue } = data;
 
-            if (!matchId || !updateKey || !updateValue) throw "Match Id | updateKey | updateVlaue is required";
+            if (!matchId || !updateKey || updateValue === undefined || updateValue === null || updateValue === "") throw "Match Id | updateKey | updateVlaue is required";
 
             // fetch matches;
             const [fetchMatchesErr, fetchMatches] = await this.repository.listMatches();

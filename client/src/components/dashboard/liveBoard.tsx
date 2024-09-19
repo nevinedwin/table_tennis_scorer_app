@@ -51,10 +51,12 @@ const ScoreChip: React.FC<ScoreChipPropType> = ({ team1Score = 0, team2Score = 0
 
 
 type LiveBoardType = {
-  data: MatchListType | null
+  data: MatchListType | null;
+  handleRemove: (id: string) => void;
+
 }
 
-const LiveBoard: React.FC<LiveBoardType> = ({ data }) => {
+const LiveBoard: React.FC<LiveBoardType> = ({ data, handleRemove }) => {
 
   const { playGame } = useMatchApi();
   const { state: { user } } = useAuth();
@@ -123,7 +125,7 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data }) => {
           </div>
           {user?.role === UserRole.SUPER_ADMIN && <div className='flex items-center justify-center pt-5 lg:pt-[1%] lg:gap-2 gap-4'>
             <button className='w-[80px] lg:w-[160px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Undo</button>
-            <button className='w-[100px] lg:w-[200px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove</button>
+            <button onClick={() => handleRemove(data?.matchId || "")} className='w-[100px] lg:w-[200px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove</button>
           </div>}
         </div>
       </div>

@@ -13,11 +13,9 @@ const awsVal = {
         APP_CLIENT_ID: "5oe1l2fq2cm52icem7la402rfd",
         DOMAIN: "khel-test-website-local.auth.us-east-1.amazoncognito.com",
         SIGN_IN_URL: [
-            "https://d35puox7evybpl.cloudfront.net/",
             "http://localhost:5173/"
         ],
         SIGN_OUT_URL: [
-            "https://d35puox7evybpl.cloudfront.net/",
             "http://localhost:5173/"
         ],
     }

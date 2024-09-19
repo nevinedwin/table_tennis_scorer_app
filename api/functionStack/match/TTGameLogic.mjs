@@ -207,7 +207,7 @@ export class TableTennisGame {
 
         if (err) throw err;
 
-        this.undoHistory = succ?.Item[0] || {};
+        this.undoHistory = succ?.Item || {};
 
         if (Object.keys(this.undoHistory).length === 0) throw "No action to Undo";
 

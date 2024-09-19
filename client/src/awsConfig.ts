@@ -5,19 +5,17 @@ const awsVal = {
     apiGateWay: {
         NAME: "apiGateway",
         REGION: "us-east-1",
-        URL: "https://wyxggpvbc0.execute-api.us-west-2.amazonaws.com/local",
+        URL: "https://ths4dgfk8b.execute-api.us-east-1.amazonaws.com/local",
     },
     cognito: {
         REGION: "us-east-1",
-        USER_POOL_ID: "us-east-1_Im83sKXVi",
-        APP_CLIENT_ID: "3f3tshts6paoieaed7u18na394",
+        USER_POOL_ID: "us-east-1_qdlvDN1x1",
+        APP_CLIENT_ID: "5oe1l2fq2cm52icem7la402rfd",
         DOMAIN: "khel-test-website-local.auth.us-west-2.amazoncognito.com",
         SIGN_IN_URL: [
-            "https://d3g7vu7m4wr9up.cloudfront.net/index.html",
             "http://localhost:5173/"
         ],
         SIGN_OUT_URL: [
-            "https://d3g7vu7m4wr9up.cloudfront.net/index.html",
             "http://localhost:5173/"
         ],
     }

@@ -391,7 +391,7 @@ export class MatchService {
 
             const matchList = fetchMatches?.Items || [];
 
-            if (updateKey === "matchStatus" && updateValue === "LIVE") {
+            if ((updateKey === "matchStatus" && updateValue === "LIVE") || (updateKey === "showMatch" && updateValue === true)) {
                 for (let match of matchList) {
                     if (match.matchStatus === "LIVE") {
                         const [updateErr, updateResp] = await this.repository.updateSingle({ matchId: match.id, updateKey: "matchStatus", updateValue: "Finished" });
@@ -405,13 +405,17 @@ export class MatchService {
                 const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "showMatch", updateValue: true });
 
                 if (updateErr) throw updateErr;
-            };
 
-            const [updateErr, updateResp] = await this.repository.updateSingle(data);
+                const [update1Err, update1Resp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "LIVE" });
 
-            if (updateErr) throw updateErr;
+                if (updateErr) throw updateErr;
+            } else {
+                const [updateErr, updateResp] = await this.repository.updateSingle(data);
 
-            return success(updateResp);
+                if (updateErr) throw updateErr;
+            }
+
+            return success("Updated Successfull");
 
         } catch (error) {
             //debugger

@@ -5,7 +5,7 @@ import Matchpaper from "../../components/paper/matchpaper";
 import { quickSort } from "../../utilities/common";
 import LiveBoard from "../../components/dashboard/liveBoard";
 import { useSocket } from "../../context/websocketContext/websocketContext";
-import useMatchApi, { MatchListType, MatchStatus } from "../../hooks/apiHooks/useMatchApi";
+import useMatchApi, { MatchListType } from "../../hooks/apiHooks/useMatchApi";
 
 export type NavigationType = 'details' | 'prediction';
 

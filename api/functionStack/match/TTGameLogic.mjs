@@ -49,6 +49,7 @@ export class TableTennisGame {
         this.team2MatchPlayed = 0;
         this.team2MatchLose = 0;
         this.team2MatchWon = 0;
+        this.showMatch = true;
     }
 
     async initialize() {
@@ -93,6 +94,7 @@ export class TableTennisGame {
             this.team2MatchWon = matchData.team2MatchWon;
             this.team1MatchLose = matchData.team1MatchLose;
             this.team2MatchLose = matchData.team2MatchLose;
+            this.showMatch = matchData.showMatch;
         };
     };
 
@@ -235,6 +237,7 @@ export class TableTennisGame {
         this.team2MatchWon = lastAction.team2MatchWon;
         this.team1MatchLose = lastAction.team1MatchLose;
         this.team2MatchLose = lastAction.team2MatchLose;
+        this.showMatch = lastAction.showMatch;
 
 
         //debugger
@@ -319,6 +322,7 @@ export class TableTennisGame {
             team2MatchWon: this.team2MatchWon,
             team1MatchLose: this.team1MatchLose,
             team2MatchLose: this.team2MatchLose,
+            showMatch: this.showMatch
         };
 
         const undoId = uuidV4();
@@ -431,7 +435,8 @@ export class TableTennisGame {
                 team1MatchLose: team1Data?.matchLose || 0,
                 team2MatchPlayed: team2Data?.matchPlayed || 0,
                 team2MatchWon: team2Data?.matchWon || 0,
-                team2MatchLose: team2Data?.matchLose || 0
+                team2MatchLose: team2Data?.matchLose || 0,
+                showMatch: match?.showMatch || false
             };
 
             //debugger
@@ -473,7 +478,8 @@ export class TableTennisGame {
                 votingStarted: this.votingStarted,
                 undoHistoryId: this.undoHistoryId,
                 winner: this.winner,
-                currentSet: this.currentSet
+                currentSet: this.currentSet,
+                showMatch: this.showMatch
             }
         };
 
@@ -641,7 +647,8 @@ export class TableTennisGame {
             team1MatchWon: this.team1MatchWon,
             team2MatchWon: this.team2MatchWon,
             team1MatchLose: this.team1MatchLose,
-            team2MatchLose: this.team2MatchLose
+            team2MatchLose: this.team2MatchLose,
+            showMatch: this.showMatch
         };
     }
 }

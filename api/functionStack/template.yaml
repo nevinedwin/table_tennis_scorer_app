@@ -366,4 +366,4 @@ Outputs:
     Value: !If 
       - IsDevEnv
       - !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local
-      - !Sub https://${ApiDomainName}.execute-api.${AWS::Region}.amazonaws.com/local
+      - !Sub https://${ApiDomainName}/local

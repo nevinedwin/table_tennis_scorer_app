@@ -197,7 +197,13 @@ export class TableTennisGame {
             }
         }
 
+        //debugger
+        console.log(`getHistoryParams: ${JSON.stringify(getHistoryParams)}`);
+
         const [err, succ] = await get(getHistoryParams);
+
+        //debugger
+        console.log(`succ: ${JSON.stringify(succ)}`);
 
         if (err) throw err;
 

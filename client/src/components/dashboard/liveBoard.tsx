@@ -74,6 +74,16 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data, handleRemove }) => {
     };
   };
 
+  const handleUndoClick = async (matchId: string, teamId: string) => {
+    if (user?.role === UserRole.ADMIN || user?.role === UserRole.SUPER_ADMIN) {
+      if (!data?.winner) {
+        if (matchId && teamId) {
+          await playGame({ matchId, teamId, action: "undo" });
+        };
+      }
+    };
+  };
+
   return (
     <div className='w-full h-full animate-opacity'>
       <div className='w-full text-center'>
@@ -124,8 +134,8 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data, handleRemove }) => {
             {data?.set3Winner && <div className=''><ScoreChip setNumber={3} team1Score={data?.team1Set3Score as number} team2Score={data?.team2Set3Score as number} /></div>}
           </div>
           {user?.role === UserRole.SUPER_ADMIN && <div className='flex items-center justify-center pt-5 lg:pt-[1%] lg:gap-2 gap-4'>
-            <button className='w-[80px] lg:w-[160px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Undo</button>
-            <button onClick={() => handleRemove(data?.matchId || "")} className='w-[100px] lg:w-[200px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove</button>
+            <button onClick={() => handleUndoClick(data?.matchId as string, data?.team2Id as string)} className='w-[80px] lg:w-[160px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Undo</button>
+            <button onClick={() => handleRemove(data?.matchId as string)} className='w-[100px] lg:w-[200px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove</button>
           </div>}
         </div>
       </div>

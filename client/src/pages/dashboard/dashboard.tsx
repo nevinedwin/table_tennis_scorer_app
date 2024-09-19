@@ -39,11 +39,11 @@ const Dashboard: React.FC = () => {
 
     const checkLiveMatch = async (arr: any[]) => {
         for (const i of arr) {
-            if (i.matchStatus === MatchStatus.Live) {
+            if (i.showMatch) {
                 setIsLive(true);
                 setLiveData(i)
                 break;
-            }
+            };
         }
     };
 
@@ -84,16 +84,16 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="h-full w-full flex flex-col gap-10">
-            <div className="">
+            <div className="h-full flex flex-col w-full">
                 {isLive ?
-                    <div className="w-full">
+                    <div className="h-full w-full py-6 px-4">
                         <LiveBoard data={liveData} />
                     </div>
                     :
                     <Heading />}
             </div>
-            <div className="px-2 lg:px-8 flex">
-                <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 `}>
+            <div className="h-full w-full px-2 lg:px-8 flex">
+                <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 h-full `}>
                     <div className="text-md lg:text-xxl font-bold mb-3">Upcoming Matches</div>
                     <div className="flex flex-wrap w-full h-full justify-start gap-12">
                         {

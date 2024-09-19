@@ -9,8 +9,8 @@ import useMatchApi, { MatchListType, MatchStatus } from '../../hooks/apiHooks/us
 
 const Matches: React.FC = () => {
 
-  const {deleteMatch, listMatch, updateMatchSingle} = useMatchApi();
-  
+  const { deleteMatch, listMatch, updateMatchSingle } = useMatchApi();
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editData, setEditData] = useState<string>("");
@@ -70,7 +70,6 @@ const Matches: React.FC = () => {
 
   const handleLive = async (id: string) => {
     try {
-
       setIsLoading(true)
       await updateMatchSingle({ matchId: id, updateKey: "matchStatus", updateValue: MatchStatus.Live });
       setIsLoading(false)

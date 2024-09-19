@@ -24,7 +24,7 @@ type LiveScoreBoardPropType = {
 
 const LiveScoreBoard: React.FC<LiveScoreBoardPropType> = ({ score = 0 }) => {
   return (
-    <div className='h-full w-full border border-borderColor flex items-center justify-center'>
+    <div className='h-full w-full border border-borderColor flex items-center justify-center cursor-pointer'>
       <p className='text-5xl lg:text-10xl'>{score}</p>
     </div>
   )

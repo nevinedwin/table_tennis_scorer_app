@@ -38,9 +38,9 @@ export class TableTennisGame {
         this.team2Voting = 0;
         this.totalVoting = 0;
         this.votingStarted = false;
-        this.set1winner = null;
-        this.set2winner = null;
-        this.set3winner = null;
+        this.set1Winner = null;
+        this.set2Winner = null;
+        this.set3Winner = null;
         this.team1Point = 0;
         this.team2Point = 0;
         this.team1MatchPlayed = 0;
@@ -81,9 +81,9 @@ export class TableTennisGame {
             this.team2Voting = matchData.team2Voting;
             this.totalVoting = matchData.totalVoting;
             this.votingStarted = matchData.votingStarted;
-            this.set1winner = matchData.set1winner;
-            this.set2winner = matchData.set2winner;
-            this.set3winner = matchData.set3winner;
+            this.set1Winner = matchData.set1Winner;
+            this.set2Winner = matchData.set2Winner;
+            this.set3Winner = matchData.set3Winner;
             this.currentSet = matchData.currentSet;
             this.team1Point = matchData.team1Point;
             this.team2Point = matchData.team2Point;
@@ -135,28 +135,28 @@ export class TableTennisGame {
             if (scoredTeamNumber === 1) {
                 this.team1SetScore += 1;
                 if (this.currentSet === 1) {
-                    this.set1winner = this.team1Id;
+                    this.set1Winner = this.team1Id;
                     await this.updateSets(this.currentSet);
                     this.currentSet += 1;
                 } else if (this.currentSet === 2) {
-                    this.set2winner = this.team1Id;
+                    this.set2Winner = this.team1Id;
                     await this.updateSets(this.currentSet);
                     this.currentSet += 1;
                 } else {
-                    this.set2winner = this.team1Id;
+                    this.set2Winner = this.team1Id;
                 }
             } else {
                 this.team2SetScore += 1;
                 if (this.currentSet === 1) {
-                    this.set1winner = this.team2Id;;
+                    this.set1Winner = this.team2Id;;
                     await this.updateSets(this.currentSet);
                     this.currentSet += 1;
                 } else if (this.currentSet === 2) {
-                    this.set2winner = this.team2Id;
+                    this.set2Winner = this.team2Id;
                     await this.updateSets(this.currentSet);                    
                     this.currentSet += 1;
                 } else {
-                    this.set2winner = this.team2Id;
+                    this.set2Winner = this.team2Id;
                 }
             }
 
@@ -223,9 +223,9 @@ export class TableTennisGame {
         this.team2Voting = lastAction.team2Voting;
         this.totalVoting = lastAction.totalVoting;
         this.votingStarted = lastAction.votingStarted;
-        this.set1winner = lastAction.set1winner;
-        this.set2winner = lastAction.set2winner;
-        this.set3winner = lastAction.set3winner;
+        this.set1Winner = lastAction.set1Winner;
+        this.set2Winner = lastAction.set2Winner;
+        this.set3Winner = lastAction.set3Winner;
         this.currentSet = lastAction.currentSet;
         this.team1Point = lastAction.team1Point;
         this.team2Point = lastAction.team2Point;
@@ -307,9 +307,9 @@ export class TableTennisGame {
             team2Voting: this.team2Voting,
             totalVoting: this.totalVoting,
             votingStarted: this.votingStarted,
-            set1winner: this.set1winner,
-            set2winner: this.set2winner,
-            set3winner: this.set3winner,
+            set1Winner: this.set1Winner,
+            set2Winner: this.set2Winner,
+            set3Winner: this.set3Winner,
             currentSet: this.currentSet,
             team1Point: this.team1Point,
             team2Point: this.team2Point,
@@ -421,9 +421,9 @@ export class TableTennisGame {
                 undoHistoryId: match?.undoHistoryId || null,
                 winner: match?.winner || null,
                 currentSet: match?.currentSet || null,
-                set1winner: matchSet["1"]?.winner || null,
-                set2winner: matchSet["2"]?.winner || null,
-                set3winner: matchSet["3"]?.winner || null,
+                set1Winner: matchSet["1"]?.winner || null,
+                set2Winner: matchSet["2"]?.winner || null,
+                set3Winner: matchSet["3"]?.winner || null,
                 team1Point: team1Data?.point || 0,
                 team2Point: team2Data?.point || 0,
                 team1MatchPlayed: team1Data?.matchPlayed || 0,
@@ -494,7 +494,7 @@ export class TableTennisGame {
                 details: `set#${this.currentSet}`,
                 setNumber: this.currentSet,
                 role: "MATCH#SET",
-                winner: this.currentSet === 1 ? this.set1winner : this.currentSet === 2 ? this.set2winner : this.set3winner,
+                winner: this.currentSet === 1 ? this.set1Winner : this.currentSet === 2 ? this.set2Winner : this.set3Winner,
                 team1Score: this.currentSet === 1 ? this.team1Set1Score : this.currentSet === 2 ? this.team1Set2Score : this.team1Set3Score,
                 team2Score: this.currentSet === 1 ? this.team2Set1Score : this.currentSet === 2 ? this.team2Set2Score : this.team2Set3Score,
             }
@@ -587,7 +587,7 @@ export class TableTennisGame {
                     details: `set#${setNumber}`,
                     setNumber: setNumber,
                     role: "MATCH#SET",
-                    winner: setNumber === 1 ? this.set1winner : setNumber === 2 ? this.set2winner : this.set3winner,
+                    winner: setNumber === 1 ? this.set1Winner : setNumber === 2 ? this.set2Winner : this.set3Winner,
                     team1Score: setNumber === 1 ? this.team1Set1Score : setNumber === 2 ? this.team1Set2Score : this.team1Set3Score,
                     team2Score: setNumber === 1 ? this.team2Set1Score : setNumber === 2 ? this.team2Set2Score : this.team2Set3Score,
                 }
@@ -630,9 +630,9 @@ export class TableTennisGame {
             team2Voting: this.team2Voting,
             totalVoting: this.totalVoting,
             votingStarted: this.votingStarted,
-            set1winner: this.set1winner,
-            set2winner: this.set2winner,
-            set3winner: this.set3winner,
+            set1Winner: this.set1Winner,
+            set2Winner: this.set2Winner,
+            set3Winner: this.set3Winner,
             currentSet: this.currentSet,
             team1Point: this.team1Point,
             team2Point: this.team2Point,

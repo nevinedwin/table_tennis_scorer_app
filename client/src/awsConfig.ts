@@ -11,7 +11,7 @@ const awsVal = {
         REGION: "us-east-1",
         USER_POOL_ID: "us-east-1_qdlvDN1x1",
         APP_CLIENT_ID: "5oe1l2fq2cm52icem7la402rfd",
-        DOMAIN: "khel-test-website-local.auth.us-west-2.amazoncognito.com",
+        DOMAIN: "khel-test-website-local.auth.us-east-1.amazoncognito.com",
         SIGN_IN_URL: [
             "http://localhost:5173/"
         ],

@@ -121,9 +121,9 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data }) => {
             {data?.set2Winner && <div className=''><ScoreChip setNumber={2} team1Score={data?.team1Set2Score as number} team2Score={data?.team2Set2Score as number} /></div>}
             {data?.set3Winner && <div className=''><ScoreChip setNumber={3} team1Score={data?.team1Set3Score as number} team2Score={data?.team2Set3Score as number} /></div>}
           </div>
-          {user?.role === UserRole.SUPER_ADMIN && <div className='flex items-center justify-center pt-5 lg:pt-[1%]'>
+          {user?.role === UserRole.SUPER_ADMIN && <div className='flex items-center justify-center pt-5 lg:pt-[1%] lg:gap-2 gap-4'>
             <button className='w-[80px] lg:w-[160px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Undo</button>
-            <button className='w-[80px] lg:w-[160px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove From Dashboard</button>
+            <button className='w-[100px] lg:w-[200px] p-1 lg:p-2 bg-white text-md lg:text-xxl text-black font-bold rounded-md'>Remove</button>
           </div>}
         </div>
       </div>

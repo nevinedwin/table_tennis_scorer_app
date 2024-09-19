@@ -409,6 +409,26 @@ export class MatchService {
                 const [update1Err, update1Resp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "LIVE" });
 
                 if (updateErr) throw updateErr;
+            } else if (updateKey === "showMatch" && updateValue === false) {
+                const [fetchErr, fetchSucc] = await this.repository.fetchMatch(matchId);
+
+                if (fetchErr | !fetchSucc) throw fetchErr;
+
+                const match = fetchSucc.Items[0];
+
+                if (match.winner && match.matchStatus === "LIVE") {
+                    const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "FINISHED" });
+
+                    if (updateErr) throw updateErr;
+                } else {
+                    const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "PENDING" });
+
+                    if (updateErr) throw updateErr;
+                }
+
+                const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "showMatch", updateValue: false });
+
+                if (updateErr) throw updateErr;
             } else {
                 const [updateErr, updateResp] = await this.repository.updateSingle(data);
 

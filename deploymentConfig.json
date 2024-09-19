@@ -6,5 +6,5 @@
     "BACKEND_BUCKET": "khel-test-local-s3",
     "FRONTEND_BUCKET": "khel-test-local-frontend-s3",
     "PIPELINE_STACK_NAME": "khel-test-pipeline",
-    "CLOUDFRONT_DISTRIBUTION": ""
+    "CLOUDFRONT_DISTRIBUTION": "E32J7IJR0QTZSH"
 }

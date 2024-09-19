@@ -46,6 +46,7 @@ Parameters:
 
 Conditions:
   EnableCustomDomain: !Equals [!Ref IsEnableCustomDomain, "true"]
+  IsDevEnv: !Equals [!Ref StageName, "local"]
 
 Resources:
   KhelAppApiGateway:
@@ -361,4 +362,8 @@ Resources:
 
 Outputs:
   KhelAppApiURL:
-    Value: !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local
+    Description: API GATEWAY URL
+    Value: !If 
+      - IsDevEnv
+      - !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local
+      - !Sub https://${ApiDomainName}.execute-api.${AWS::Region}.amazonaws.com/local

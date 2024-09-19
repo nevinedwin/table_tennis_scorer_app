@@ -139,6 +139,12 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                         </tr>
                     </thead>
                     <tbody>
+                        {isLoading &&
+                            <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
+                                <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+                                    <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
+                                </div>
+                            </td>}
                         {currentData.length ?
                             currentData.map((eachItem, index) => (
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>
@@ -212,13 +218,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                             ))
                             :
                             <tr>
-                                {isLoading ?
-                                    <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
-                                        <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
-                                            <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
-                                        </div>
-                                    </td>
-                                    :
+                                {
                                     <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className="text-center">
                                         <div className="flex items-center justify-center h-40">
                                             <div className=" rounded-lg shadow-lg">
@@ -229,6 +229,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                 }
                             </tr>
                         }
+
                     </tbody>
                 </table>
             </div>

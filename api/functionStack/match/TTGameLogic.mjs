@@ -213,7 +213,7 @@ export class TableTennisGame {
 
         const lastAction = this.undoHistory;
         this.team1Set1Score = lastAction.team1Set1Score;
-        this.team2Set1Score = lastAction.team1Set2Score;
+        this.team2Set1Score = lastAction.team2Set1Score;
         this.team1Set2Score = lastAction.team1Set2Score;
         this.team2Set2Score = lastAction.team2Set2Score;
         this.team1Set3Score = lastAction.team1Set3Score;

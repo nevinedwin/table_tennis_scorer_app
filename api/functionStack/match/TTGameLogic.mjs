@@ -49,6 +49,7 @@ export class TableTennisGame {
         this.team2MatchPlayed = 0;
         this.team2MatchLose = 0;
         this.team2MatchWon = 0;
+        this.showMatch = true;
     }
 
     async initialize() {
@@ -93,6 +94,7 @@ export class TableTennisGame {
             this.team2MatchWon = matchData.team2MatchWon;
             this.team1MatchLose = matchData.team1MatchLose;
             this.team2MatchLose = matchData.team2MatchLose;
+            this.showMatch = matchData.showMatch;
         };
     };
 
@@ -143,7 +145,7 @@ export class TableTennisGame {
                     await this.updateSets(this.currentSet);
                     this.currentSet += 1;
                 } else {
-                    this.set2Winner = this.team1Id;
+                    this.set3Winner = this.team1Id;
                 }
             } else {
                 this.team2SetScore += 1;
@@ -195,17 +197,23 @@ export class TableTennisGame {
             }
         }
 
+        //debugger
+        console.log(`getHistoryParams: ${JSON.stringify(getHistoryParams)}`);
+
         const [err, succ] = await get(getHistoryParams);
+
+        //debugger
+        console.log(`succ: ${JSON.stringify(succ)}`);
 
         if (err) throw err;
 
-        this.undoHistory = succ?.Item[0] || {};
+        this.undoHistory = succ?.Item || {};
 
         if (Object.keys(this.undoHistory).length === 0) throw "No action to Undo";
 
         const lastAction = this.undoHistory;
         this.team1Set1Score = lastAction.team1Set1Score;
-        this.team2Set1Score = lastAction.team1Set2Score;
+        this.team2Set1Score = lastAction.team2Set1Score;
         this.team1Set2Score = lastAction.team1Set2Score;
         this.team2Set2Score = lastAction.team2Set2Score;
         this.team1Set3Score = lastAction.team1Set3Score;
@@ -235,6 +243,7 @@ export class TableTennisGame {
         this.team2MatchWon = lastAction.team2MatchWon;
         this.team1MatchLose = lastAction.team1MatchLose;
         this.team2MatchLose = lastAction.team2MatchLose;
+        this.showMatch = lastAction.showMatch;
 
 
         //debugger
@@ -319,6 +328,7 @@ export class TableTennisGame {
             team2MatchWon: this.team2MatchWon,
             team1MatchLose: this.team1MatchLose,
             team2MatchLose: this.team2MatchLose,
+            showMatch: this.showMatch
         };
 
         const undoId = uuidV4();
@@ -431,7 +441,8 @@ export class TableTennisGame {
                 team1MatchLose: team1Data?.matchLose || 0,
                 team2MatchPlayed: team2Data?.matchPlayed || 0,
                 team2MatchWon: team2Data?.matchWon || 0,
-                team2MatchLose: team2Data?.matchLose || 0
+                team2MatchLose: team2Data?.matchLose || 0,
+                showMatch: match?.showMatch || false
             };
 
             //debugger
@@ -473,7 +484,8 @@ export class TableTennisGame {
                 votingStarted: this.votingStarted,
                 undoHistoryId: this.undoHistoryId,
                 winner: this.winner,
-                currentSet: this.currentSet
+                currentSet: this.currentSet,
+                showMatch: this.showMatch
             }
         };
 
@@ -641,7 +653,8 @@ export class TableTennisGame {
             team1MatchWon: this.team1MatchWon,
             team2MatchWon: this.team2MatchWon,
             team1MatchLose: this.team1MatchLose,
-            team2MatchLose: this.team2MatchLose
+            team2MatchLose: this.team2MatchLose,
+            showMatch: this.showMatch
         };
     }
 }

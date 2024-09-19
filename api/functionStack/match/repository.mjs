@@ -65,6 +65,7 @@ export class MatchRepository {
                     currentSet: 1,
                     undoHistory: [],
                     winner: null,
+                    showMatch: false,
                     sf: `${matchId} ${date} ${team1Id} ${team2Id} ${team1SetScore} ${team2SetScore} ${team1Voting} ${team2Voting} ${matchStatus} ${matchResult}`
                 }
             };
@@ -295,7 +296,8 @@ export class MatchRepository {
                 team1MatchLose: team1?.matchLose || 0,
                 team2MatchPlayed: team2?.matchPlayed || 0,
                 team2MatchWon: team2?.matchWon || 0,
-                team2MatchLose: team2?.matchLose || 0
+                team2MatchLose: team2?.matchLose || 0,
+                showMatch: match?.showMatch || false
             };
 
             //debugger

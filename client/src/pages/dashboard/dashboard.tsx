@@ -5,13 +5,13 @@ import Matchpaper from "../../components/paper/matchpaper";
 import { quickSort } from "../../utilities/common";
 import LiveBoard from "../../components/dashboard/liveBoard";
 import { useSocket } from "../../context/websocketContext/websocketContext";
-import useMatchApi, { MatchListType, MatchStatus } from "../../hooks/apiHooks/useMatchApi";
+import useMatchApi, { MatchListType } from "../../hooks/apiHooks/useMatchApi";
 
 export type NavigationType = 'details' | 'prediction';
 
 const Dashboard: React.FC = () => {
 
-    const { listMatch, getFullMatch } = useMatchApi();
+    const { listMatch, getFullMatch, updateMatchSingle } = useMatchApi();
     const { newMessage } = useSocket()
 
     const [matches, setMatches] = useState<MatchListType[]>([]);
@@ -39,11 +39,11 @@ const Dashboard: React.FC = () => {
 
     const checkLiveMatch = async (arr: any[]) => {
         for (const i of arr) {
-            if (i.matchStatus === MatchStatus.Live) {
+            if (i.showMatch) {
                 setIsLive(true);
                 setLiveData(i)
                 break;
-            }
+            };
         }
     };
 
@@ -82,41 +82,61 @@ const Dashboard: React.FC = () => {
         })
     };
 
+    const handelRemove = useCallback(async (id: string) => {
+        try {
+            setLoading(true)
+            await updateMatchSingle({ matchId: id, updateKey: "showMatch", updateValue: false });
+            setLoading(false)
+            setIsLive(false);
+            setLiveData(null)
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    }, [])
+
     return (
-        <div className="h-full w-full flex flex-col gap-10">
-            <div className="">
-                {isLive ?
-                    <div className="w-full">
-                        <LiveBoard data={liveData} />
-                    </div>
-                    :
-                    <Heading />}
-            </div>
-            <div className="px-2 lg:px-8 flex">
-                <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 `}>
-                    <div className="text-md lg:text-xxl font-bold mb-3">Upcoming Matches</div>
-                    <div className="flex flex-wrap w-full h-full justify-start gap-12">
-                        {
-                            loading ?
-                                <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
-                                    <p className="text-xxl animate-pulse">Loading...</p>
-                                </div>
-                                :
-                                matches.length ?
-                                    matches.map((match, index) => (
-                                        <Matchpaper key={index}
-                                            match={match}
-                                        />
-                                    ))
-                                    :
-                                    <div className="w-full h-full lg:w-[500px] lg:h-[400px] flex justify-center items-center border border-borderColor rounded-md">
-                                        <p className="text-xxl animate-pulse">No Upcoming Match Added</p>
+        <>
+            {loading &&
+                <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+                    <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
+                </div>
+            }
+            <div className="h-full w-full flex flex-col gap-10">
+                <div className="h-full flex flex-col w-full">
+                    {isLive ?
+                        <div className="h-full w-full py-6 px-4">
+                            <LiveBoard data={liveData} handleRemove={handelRemove} />
+                        </div>
+                        :
+                        <Heading />}
+                </div>
+                <div className="h-full w-full px-2 lg:px-8 flex">
+                    <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 h-full `}>
+                        <div className="text-md lg:text-xxl font-bold mb-3">Upcoming Matches</div>
+                        <div className="flex flex-wrap w-full h-full justify-start gap-12">
+                            {
+                                loading ?
+                                    <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
+                                        <p className="text-xxl animate-pulse">Loading...</p>
                                     </div>
-                        }
+                                    :
+                                    matches.length ?
+                                        matches.map((match, index) => (
+                                            <Matchpaper key={index}
+                                                match={match}
+                                            />
+                                        ))
+                                        :
+                                        <div className="w-full h-full lg:w-[500px] lg:h-[400px] flex justify-center items-center border border-borderColor rounded-md">
+                                            <p className="text-xxl animate-pulse">No Upcoming Match Added</p>
+                                        </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 };
 

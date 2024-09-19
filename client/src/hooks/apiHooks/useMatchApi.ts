@@ -81,6 +81,7 @@ export type MatchListType = {
     team2MatchPlayed: number;
     team2Point: number;
     team2MatchLose: number;
+    showMatch: boolean;
 }
 
 
@@ -181,9 +182,6 @@ const useMatchApi = () => {
         }
         return res;
     }
-
-
-
 
     return {
         createMatch,

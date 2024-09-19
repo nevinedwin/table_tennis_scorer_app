@@ -330,7 +330,8 @@ export class MatchService {
                 team1MatchLose: team1Data?.matchLose || 0,
                 team2MatchPlayed: team2Data?.matchPlayed || 0,
                 team2MatchWon: team2Data?.matchWon || 0,
-                team2MatchLose: team2Data?.matchLose || 0
+                team2MatchLose: team2Data?.matchLose || 0,
+                showMatch: match?.showMatch || false
             }
 
 
@@ -382,6 +383,29 @@ export class MatchService {
             const { matchId, updateKey, updateValue } = data;
 
             if (!matchId || !updateKey || !updateValue) throw "Match Id | updateKey | updateVlaue is required";
+
+            // fetch matches;
+            const [fetchMatchesErr, fetchMatches] = await this.repository.listMatches();
+
+            if (fetchMatchesErr) throw fetchMatchesErr;
+
+            const matchList = fetchMatches?.Items || [];
+
+            if (updateKey === "matchStatus" && updateValue === "LIVE") {
+                for (let match of matchList) {
+                    if (match.matchStatus === "LIVE") {
+                        const [updateErr, updateResp] = await this.repository.updateSingle({ matchId: match.id, updateKey: "matchStatus", updateValue: "Finished" });
+                        if (updateErr) throw updateErr;
+                    }
+                    if (match.showMatch) {
+                        const [updateErr, updateResp] = await this.repository.updateSingle({ matchId: match.id, updateKey: "showMatch", updateValue: false });
+                        if (updateErr) throw updateErr;
+                    }
+                }
+                const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "showMatch", updateValue: true });
+
+                if (updateErr) throw updateErr;
+            };
 
             const [updateErr, updateResp] = await this.repository.updateSingle(data);
 

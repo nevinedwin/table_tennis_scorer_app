@@ -183,9 +183,6 @@ const useMatchApi = () => {
         return res;
     }
 
-
-
-
     return {
         createMatch,
         listMatch,

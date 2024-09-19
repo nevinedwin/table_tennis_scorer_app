@@ -11,7 +11,7 @@ export type NavigationType = 'details' | 'prediction';
 
 const Dashboard: React.FC = () => {
 
-    const { listMatch, getFullMatch } = useMatchApi();
+    const { listMatch, getFullMatch, updateMatchSingle } = useMatchApi();
     const { newMessage } = useSocket()
 
     const [matches, setMatches] = useState<MatchListType[]>([]);
@@ -82,12 +82,23 @@ const Dashboard: React.FC = () => {
         })
     };
 
+    const handelRemove = useCallback(async (id: string) => {
+        try {
+            setLoading(true)
+            await updateMatchSingle({ matchId: id, updateKey: "showMatch", updateValue: false });
+            setLoading(false)
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    }, [])
+
     return (
         <div className="h-full w-full flex flex-col gap-10">
             <div className="h-full flex flex-col w-full">
                 {isLive ?
                     <div className="h-full w-full py-6 px-4">
-                        <LiveBoard data={liveData} />
+                        <LiveBoard data={liveData} handleRemove={handelRemove}/>
                     </div>
                     :
                     <Heading />}

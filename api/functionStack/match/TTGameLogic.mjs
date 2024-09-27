@@ -168,12 +168,14 @@ export class TableTennisGame {
                 this.team1MatchPlayed += 1;
                 this.team1MatchWon += 1;
                 this.team2MatchLose += 1;
+                this.matchStatus = MatchStatus.Finished
             } else if (this.team2SetScore >= 2) {
                 this.winner = this.team2Id;
                 this.team2Point += 2;
                 this.team2MatchPlayed += 1;
                 this.team2MatchWon += 1;
                 this.team1MatchLose += 1;
+                this.matchStatus = MatchStatus.Finished
             };
         };
 

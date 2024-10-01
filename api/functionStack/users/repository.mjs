@@ -45,6 +45,7 @@ export class UserRepository {
                 predictionsWin: Item.predictionsWin,
                 predictionsLose: Item.predictionsLose,
                 totalPredictions: Item.totalPredictions,
+                userName: Item.userName
             };
 
             return [null, userData];

@@ -11,7 +11,8 @@ const userEndpoints = {
     test: "test",
     fetchSingUser: "user/get",
     socketUrl: "user/socketUrl",
-    changeRole: "user/changeRole"
+    changeRole: "user/changeRole",
+    listUser: "user/listUser"
 }
 
 const useUserApi = () => {
@@ -37,7 +38,12 @@ const useUserApi = () => {
         return resp;
     }
 
-    return { fetchSingleUser, getSocketUrl, changeRole };
+    const listUsers = async (data: any) => {
+        const resp = await post(`${userEndpoints.listUser}`, data);
+        return resp;
+    }
+
+    return { fetchSingleUser, getSocketUrl, changeRole, listUsers };
 };
 
 export default useUserApi;

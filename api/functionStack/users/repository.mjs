@@ -60,9 +60,9 @@ export class UserRepository {
     async updateUser({ id, updateValue, updateKey, userName }) {
         try {
 
-            if(updateKey === "role"){
-                if(!userName) throw "UserName is requied!"
-                
+            if (updateKey === "role") {
+                if (!userName) throw "UserName is requied!"
+
                 const params = {
                     UserAttributes: [
                         {
@@ -74,14 +74,14 @@ export class UserRepository {
                     Username: userName,
 
                 };
-                
+
                 const updateResp = await cognitoIdentityServiceProvider
-                .adminUpdateUserAttributes(params)
-                .promise();
-                
+                    .adminUpdateUserAttributes(params)
+                    .promise();
+
                 console.log({ updateResp });
             };
-                
+
             const updateParams = {
                 TableName: this.tableName,
                 Key: {
@@ -108,5 +108,35 @@ export class UserRepository {
             return [error, null];
         }
     }
+
+
+    async listUsers(role) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                IndexName: this.indexName,
+                KeyConditionExpression: `#role = :role`,
+                ExpressionAttributeNames: {
+                    "#role": "role"
+                },
+                ExpressionAttributeValues: {
+                    ":role": role
+                }
+            };
+
+            //debugger
+            console.log(`params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await query(params);
+
+            if (err) throw err;
+
+            return [null, succ];
+
+        } catch (error) {
+            return [error, null];
+        }
+    };
 
 };

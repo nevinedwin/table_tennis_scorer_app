@@ -29,7 +29,7 @@ export const LAMBDA = {
         GETVOTE: "getVote",
         GETFULLMATCH: "getFullMatch",
         PLAYGAME: "playGame",
-        UPDATE_SINGLE: "updateSingle"
+        UPDATE_SINGLE: "updateSingle",
     }
 };
 
@@ -44,6 +44,7 @@ export const lambdaPolicies = {
         LAMBDA.MATCH.GETVOTE,
         LAMBDA.MATCH.GETFULLMATCH,
         LAMBDA.TEAM.LIST,
+        LAMBDA.USERS.LIST_USERS
     ],
     [ROLES.SUPER_ADMIN]: [
         LAMBDA.TEAM.CREATE,

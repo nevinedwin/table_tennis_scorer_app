@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
 import Table from '../../components/table/tableContainer'
-import useMatchApi, { MatchListType } from '../../hooks/apiHooks/useMatchApi'
 import { quickSort } from '../../utilities/common'
+import useUserApi from '../../hooks/apiHooks/useUserApi'
+import { UserRole } from '../../context/authContext/authContextTypes'
 
 let rowHead = [
   { title: "Match", isAdmin: false, width: "5%", field: "matchNumber", headCellStyle: "", bodyCellStyle: "text-center" },
@@ -20,10 +21,11 @@ let rowHead = [
 
 const PredictionScoreBoard: React.FC = () => {
 
-  const { listMatch } = useMatchApi();
+  const { listUsers } = useUserApi();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userData, setUserDate] = useState<Partial<MatchListType[]>>([])
+  const [userData, setUserDate] = useState<any>([]);
+  const [role, setRole] = useState<UserRole>(UserRole.SUPER_ADMIN)
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,9 +41,10 @@ const PredictionScoreBoard: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const data = await listMatch();
+      const data = await listUsers({ role });
 
-      const sortedData = quickSort(data as MatchListType[], "matchNumber");
+      const sortedData = quickSort<any, string>(data, "name");
+      console.log({sortedData});
       setUserDate(sortedData)
       setIsLoading(false)
 

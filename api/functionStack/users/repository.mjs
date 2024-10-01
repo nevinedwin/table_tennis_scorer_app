@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import { get, put } from 'libs/db-lib/index.mjs'
+import { get, put, query } from 'libs/db-lib/index.mjs'
 
 const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
 

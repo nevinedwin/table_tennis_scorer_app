@@ -5,14 +5,14 @@ import { UserService } from './service.mjs';
 import { UserRepository } from './repository.mjs';
 
 
-const { TABLE_NAME, INDEX_NAME, WEBSOCKET_URL } = process.env
+const { TABLE_NAME, INDEX_NAME, WEBSOCKET_URL, USERPOOL_ID } = process.env
 
 export const main = async (event) => {
 
     let response = null;
     let isAuthorized = false;
 
-    const repo = new UserRepository(TABLE_NAME, INDEX_NAME);
+    const repo = new UserRepository(TABLE_NAME, INDEX_NAME, USERPOOL_ID);
     const service = new UserService(repo);
 
 

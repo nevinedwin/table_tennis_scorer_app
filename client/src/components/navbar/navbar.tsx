@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import inAppLogo from '../../assets/InApp Logo - Vector (RGB).svg';
+import inAppLogo from '../../assets/Khel_Logo.svg';
 import { useAuth } from '../../context/authContext/authContext';
 import { AUTH_ACTIONS } from '../../context/authContext/authContextTypes';
 import { signOut } from '@aws-amplify/auth';

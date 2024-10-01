@@ -27,7 +27,7 @@ export async function main(event) {
         if (roleErr) throw roleErr;
 
         // add user
-        const [userErr, userResp] = await service.createUser({ role, email, id, name });
+        const [userErr, userResp] = await service.createUser({ role, email, id, name, userName: event.userName });
 
         if (userErr) throw userErr;
 

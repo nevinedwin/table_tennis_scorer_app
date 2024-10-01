@@ -44,7 +44,7 @@ export class PostSignUpRepository {
     };
 
 
-    async adduser({ id, email, role, name }) {
+    async adduser({ id, email, role, name, userName }) {
         try {
 
             const params = {
@@ -59,6 +59,7 @@ export class PostSignUpRepository {
                     totalPredictions: 0,
                     predictionsWin: 0,
                     predictionsLose: 0,
+                    userName,
                     teamId: null,
                     sf: `${id} ${email} ${name} ${role}`
                 },

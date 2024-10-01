@@ -38,7 +38,7 @@ const intialState: AuthState = {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
-    const {fetchSingleUser, getSocketUrl} = useUserApi();
+    const { fetchSingleUser, getSocketUrl } = useUserApi();
     const { onConnect } = useSocket();
 
     const [state, dispatch] = useReducer(authReducer, intialState);
@@ -48,7 +48,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const unsubscribe = Hub.listen("auth", ({ payload }) => {
             switch (payload.event) {
                 case "signInWithRedirect":
-                    getUser();
+                    if (!state.userId) {
+                        getUser();
+                    }
                     break;
                 case "signInWithRedirect_failure":
                     break;
@@ -64,22 +66,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         async function fetchUser(userId: string) {
             try {
-                const data = await fetchSingleUser(userId);
-                dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
+                if (!state.user && !fetchUserFlag) {
+                    setFetchUserFlag(true);
+                    const data = await fetchSingleUser(userId);
+                    dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
+                    setFetchUserFlag(false);
+                }
+                // const data = await fetchSingleUser(userId);
+                // dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
                 // dispatch({ type: AUTH_ACTIONS.LOGIN_STARTS, payload: false });
             } catch (error) {
                 // error showing
-                console.log("dsvsdvsdv", error);
+                setFetchUserFlag(false);
                 dispatch({ type: AUTH_ACTIONS.LOGOUT });
             };
         };
 
         async function fetchSocket() {
+            console.log("nevinedwin");
             try {
-                const socketData: any = await getSocketUrl();
-                if (socketData.socketUrl) {
-                    onConnect(socketData.socketUrl);
-                }
+                // const socketData: any = await getSocketUrl();
+                getSocketUrl().then(
+                    socketData => {
+                        if (socketData?.socketUrl) {
+                            onConnect(socketData.socketUrl);
+                        }
+                    }
+                );
+                // if (socketData?.socketUrl) {
+                //     onConnect(socketData.socketUrl);
+                // }
 
             } catch (error) {
                 console.log(error);
@@ -88,14 +104,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
-        if (userId && !state.isLoginStarts) {
+        if (userId && !state.user && !state.isLoginStarts) {
             fetchUser(userId);
             setFetchUserFlag(false);
             fetchSocket();
 
         };
 
-    }, [fetchUserFlag])
+    }, [fetchUserFlag, state.user, state.isLoginStarts])
 
 
     const getUser = async (): Promise<void> => {
@@ -109,11 +125,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
                 dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userId });
 
-                const socketData: any = await getSocketUrl();
+                // const socketData: any = await getSocketUrl();
 
-                if (socketData.socketUrl) {
-                    onConnect(socketData.socketUrl);
-                }
+                // if (socketData.socketUrl) {
+                //     onConnect(socketData.socketUrl);
+                // }
+
+                getSocketUrl().then(
+                    socketData => {
+                        if (socketData?.socketUrl) {
+                            onConnect(socketData.socketUrl);
+                        }
+                    }
+                );
             } else {
 
                 signOut();

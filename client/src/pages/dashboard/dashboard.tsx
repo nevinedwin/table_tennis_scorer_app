@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         // console.log("object");
         getMatchList();
+
     }, []);
 
     useEffect(() => {

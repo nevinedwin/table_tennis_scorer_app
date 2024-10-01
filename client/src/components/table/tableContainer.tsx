@@ -60,9 +60,9 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                             {tableColumns.length && tableColumns.map((eachHead: any) => (
                                 <React.Fragment key={eachHead.title}>
                                     {eachHead.isAdmin && user?.role === UserRole.SUPER_ADMIN ? (
-                                        <th className='p-2  text-center'>{eachHead.title}</th>
+                                        <th className={`p-2 ${eachHead?.headCellStyle || 'text-center'}`}>{eachHead.title}</th>
                                     ) : (
-                                        <th className='p-2  text-center'>{eachHead.title}</th>
+                                        <th className={`p-2 ${eachHead.headCellStyle || 'text-center'}`}>{eachHead.title}</th>
                                     )}
                                 </React.Fragment>
                             ))}
@@ -80,11 +80,18 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                             bodyData.length ? bodyData.map((eachData: any, index: number) => (
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>
                                     {tableColumns.map(eachColum => (
-                                        <td className={`p-2 text-nowrap ${eachColum?.bodyCellStyle}`}>
-                                            <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                <div className='text-sm lg:text-lg'>{eachData[eachColum.field]}</div>
-                                            </div>
-                                        </td>
+                                        eachColum.field === "indexNumber" ?
+                                            <td className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                    <div className='text-sm lg:text-lg'>{index + 1}</div>
+                                                </div>
+                                            </td>
+                                            :
+                                            <td className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                    <div className='text-sm lg:text-lg'>{eachData[eachColum.field]}</div>
+                                                </div>
+                                            </td>
                                     ))}
                                 </tr>
                             ))

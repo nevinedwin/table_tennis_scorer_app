@@ -5,23 +5,11 @@ import { quickSort } from '../../utilities/common'
 import useUserApi from '../../hooks/apiHooks/useUserApi'
 import { UserRole } from '../../context/authContext/authContextTypes'
 
-let rowHead = [
-  { title: "Match", isAdmin: false, width: "5%", field: "matchNumber", headCellStyle: "", bodyCellStyle: "text-center" },
-  { title: "Date", isAdmin: false, width: "10%", field: "date" },
-  { title: "Team", isAdmin: false, width: "20%", field: "team1Name" },
-  { title: "Player", isAdmin: false, width: "20%", field: "player" },
-  { title: "1", isAdmin: false, width: "5%", field: "1" },
-  { title: "2", isAdmin: false, width: "5%", field: "2" },
-  { title: "3", isAdmin: false, width: "5%", field: "3" },
-  { title: "Final", isAdmin: false, width: "5%", field: "final" },
-  { title: "Status", isAdmin: false, width: "10%", field: "status" },
-  { title: "Edit", isAdmin: true, width: "5%", field: "edit", actionCell: true, actionItem: <></> },
-  { title: "Delete", isAdmin: true, width: "5%", field: "delete", actionCell: true },
-]
-
 const PredictionScoreBoard: React.FC = () => {
 
   const { listUsers } = useUserApi();
+
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userData, setUserDate] = useState<any>([]);
@@ -31,6 +19,13 @@ const PredictionScoreBoard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const itemsPerPage = 5; // Number of rows per page
+
+  useEffect(() => {
+    setIsVisible(true);
+    return () => {
+      setIsVisible(false);
+    };
+  }, []);
 
   useEffect(() => {
     getList();
@@ -44,7 +39,7 @@ const PredictionScoreBoard: React.FC = () => {
       const data = await listUsers({ role });
 
       const sortedData = quickSort<any, string>(data, "name");
-      console.log({sortedData});
+      console.log({ sortedData });
       setUserDate(sortedData)
       setIsLoading(false)
 
@@ -57,16 +52,46 @@ const PredictionScoreBoard: React.FC = () => {
 
   const totalPages = searchTerm ? Math.ceil(userData.length / itemsPerPage) : Math.ceil(userData.length / itemsPerPage);
 
+
+  let rowHead = [
+    { title: "Sl.No", isAdmin: false, width: "5%", field: "indexNumber", headCellStyle: "", bodyCellStyle: "text-center" },
+    { title: "Name", isAdmin: false, width: "20%", field: "displayName", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Email", isAdmin: false, width: "15%", field: "email", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Total Predictions", isAdmin: false, width: "10%", field: "totalPredictions", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Win", isAdmin: false, width: "10%", field: "predictionsWin", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Lose", isAdmin: false, width: "10%", field: "predictionsLose", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Edit", isAdmin: true, width: "20%", field: "edit", actionCell: true, actionItem: <></> },
+    { title: "Delete", isAdmin: true, width: "20%", field: "delete", actionCell: true },
+  ]
+
+
   return (
-    <div>
-      <Table
-        tableColumns={rowHead}
-        isLoading={isLoading}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalPages={totalPages}
-        bodyData={userData}
-      />
+    <div className='w-[90%] m-auto h-full'>
+      <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
+        <h1 className='text-xxl lg:text-3xl font-bold text-center py-8'>Prediction Scoreboard</h1>
+        <div className='flex flex-col lg:flex-row justify-between items-center'>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="border border-borderColor bg-black p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // Reset to first page on search
+              }}
+            />
+          </div>
+        </div>
+        <Table
+          tableColumns={rowHead}
+          isLoading={isLoading}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          bodyData={userData}
+        />
+      </div>
     </div>
   )
 }

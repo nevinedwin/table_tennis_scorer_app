@@ -167,6 +167,7 @@ Resources:
         IsEnableCustomDomain: !Ref IsEnableCustomDomain
         ApiDomainName: !FindInMap [ApiDomainName, !Ref StageName, URL]
         ApiSSLCertificateArn: !Ref ApiSSLCertificateArn
+        UserPoolId: !GetAtt CognitoStack.Outputs.UserPoolId
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
 

@@ -140,11 +140,15 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                     </thead>
                     <tbody>
                         {isLoading &&
-                            <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
-                                <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
-                                    <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
-                                </div>
-                            </td>}
+                            <tr>
+
+                                <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
+                                    <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+                                        <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                         {currentData.length ?
                             currentData.map((eachItem, index) => (
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>

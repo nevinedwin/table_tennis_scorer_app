@@ -56,6 +56,28 @@ export class UserService {
         } catch (error) {
             return failure(error);
         };
-    }
+    };
 
-}
+    async listUser(data) {
+        try {
+
+            const { role = "user" } = data;
+
+            const [fetchUserErr, fetchUser] = await this.repository.listUsers(role);
+
+            if (fetchUserErr) throw fetchUserErr;
+
+            const userList = fetchUser?.Items || [];
+
+            if (!userList.length) {
+                return success([]);
+            };
+
+            return success(userList);
+
+        } catch (error) {
+            return failure(error);
+        }
+    };
+
+};

@@ -54,13 +54,23 @@ export const main = async (event) => {
                 data = event.body ? JSON.parse(event.body) : null;
 
                 if (!data) {
+
                     response = failure("Body is Empty");
+
                 } else if (action === "changeRole") {
 
                     isAuthorized = validateAccess(role, LAMBDA.USERS.CHANGE_ROLE);
 
                     if (isAuthorized) {
                         response = await service.changeRole(data);
+                    };
+
+                } else if (action === "listUser") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.USERS.LIST_USERS);
+
+                    if (isAuthorized) {
+                        response = await service.listUser(data);
                     };
 
                 } else {

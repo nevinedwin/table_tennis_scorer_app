@@ -55,6 +55,8 @@ export default {
         backgroundLightColor: "#e8e8e8",
         backgroundLight: "#f8f8f8",
         boxShadowLightColor: "#bebebe",
+        darkBlack: '#121212',
+        greyShade: "#242526",
         primary: {
           DEFAULT: '#AB1E23',
           light: '#F7BAC5',

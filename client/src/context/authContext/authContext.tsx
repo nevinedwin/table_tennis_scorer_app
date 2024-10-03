@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { onConnect } = useSocket();
 
     const [state, dispatch] = useReducer(authReducer, intialState);
-    const [fetchUserFlag, setFetchUserFlag] = useState(false);
+    const [isSocketConnected, setIsSocketConnected] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = Hub.listen("auth", ({ payload }) => {
@@ -60,94 +60,65 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
 
         return unsubscribe;
-    }, []);
+    }, [state.userId]);
+
 
     useEffect(() => {
-
-        async function fetchUser(userId: string) {
-            try {
-                if (!state.user && !fetchUserFlag) {
-                    setFetchUserFlag(true);
-                    const data = await fetchSingleUser(userId);
-                    dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
-                    setFetchUserFlag(false);
-                }
-                // const data = await fetchSingleUser(userId);
-                // dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
-                // dispatch({ type: AUTH_ACTIONS.LOGIN_STARTS, payload: false });
-            } catch (error) {
-                // error showing
-                setFetchUserFlag(false);
-                dispatch({ type: AUTH_ACTIONS.LOGOUT });
-            };
-        };
-
-        async function fetchSocket() {
-            console.log("nevinedwin");
-            try {
-                // const socketData: any = await getSocketUrl();
-                getSocketUrl().then(
-                    socketData => {
-                        if (socketData?.socketUrl) {
-                            onConnect(socketData.socketUrl);
-                        }
-                    }
-                );
-                // if (socketData?.socketUrl) {
-                //     onConnect(socketData.socketUrl);
-                // }
-
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
         const userId = ManageLocalStorage.get(userIdKey) as string || null;
 
         if (userId && !state.user && !state.isLoginStarts) {
-            fetchUser(userId);
-            setFetchUserFlag(false);
-            fetchSocket();
-
+            fetchUserAndSocket(userId);
         };
 
-    }, [fetchUserFlag, state.user, state.isLoginStarts])
+    }, [isSocketConnected, state.user, state.isLoginStarts])
+
+
+    // fetch socket
+    async function fetchSocket() {
+        try {
+            const socketData = await getSocketUrl();
+            if (socketData?.socketUrl) {
+                onConnect(socketData.socketUrl);
+            }
+        } catch (error) {
+            console.log(`Error in fetching Socket: ${error}`);
+        }
+    }
+
+    // fetchUser 
+    async function fetchUser(userId: string) {
+        try {
+            const data = await fetchSingleUser(userId);
+            dispatch({ type: AUTH_ACTIONS.FETCH_USER, payload: data });
+        } catch (error) {
+            console.log(`Error in fetching User: ${error}`);
+            dispatch({ type: AUTH_ACTIONS.LOGOUT });
+        };
+    }
+
+    // fetch socket and user
+    async function fetchUserAndSocket(userId: string) {
+        await fetchUser(userId);
+        if (!isSocketConnected) {
+            await fetchSocket();
+            setIsSocketConnected(true);
+        };
+    }
 
 
     const getUser = async (): Promise<void> => {
         try {
-
             const currentUser: CurrentUserType = await getCurrentUser();
-
-            const { userId } = currentUser;
-
-            if (userId) {
-
-                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: userId });
-
-                // const socketData: any = await getSocketUrl();
-
-                // if (socketData.socketUrl) {
-                //     onConnect(socketData.socketUrl);
-                // }
-
-                getSocketUrl().then(
-                    socketData => {
-                        if (socketData?.socketUrl) {
-                            onConnect(socketData.socketUrl);
-                        }
-                    }
-                );
+            if (currentUser.userId) {
+                dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: currentUser.userId });
+                await fetchSocket();
+                setIsSocketConnected(true);
+                console.log("cdsbkcbdskb");
             } else {
-
                 signOut();
                 dispatch({ type: AUTH_ACTIONS.LOGOUT });
             };
-
-            setFetchUserFlag(true);
-
         } catch (error) {
-            // error showing
             console.log(error);
             console.log("Not signed in");
         };

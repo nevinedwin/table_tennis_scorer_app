@@ -2,9 +2,9 @@ import React, { memo, useEffect, useState } from "react";
 import { findPercentage, formatDate, formatTime } from "../../utilities/common";
 import useMatchApi from "../../hooks/apiHooks/useMatchApi";
 
-type LogoForPlayerPropTypes = {
-  letter: string;
-};
+// type LogoForPlayerPropTypes = {
+//   letter: string;
+// };
 
 type EachSectionPropTypes = {
   teamName: string;
@@ -14,18 +14,18 @@ type EachSectionPropTypes = {
   bgcolor: string;
 };
 
-const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
-  return (
-    <div className="w-[25px] h-[25px] p-1 rounded-full border-borderColor border-2 text-center text-white flex justify-center items-center">
-      <p className="text-sm uppercase font-bold">{letter?.slice(0, 2)}</p>
-    </div>
-  );
-};
+// const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
+//   return (
+//     <div className="w-[25px] h-[25px] p-1 rounded-full border-borderColor border-2 text-center text-white flex justify-center items-center">
+//       <p className="text-sm uppercase font-bold">{letter?.slice(0, 2)}</p>
+//     </div>
+//   );
+// };
 
 const EachSection: React.FC<EachSectionPropTypes> = ({
-  player1Name,
+  // player1Name,
   teamName,
-  player2Name,
+  // player2Name,
   bgcolor,
 }) => {
   return (
@@ -81,7 +81,7 @@ type MatchpaperType = {
 
 type VoteDataType = {
   isVoted: boolean;
-  votedTeam: string;
+  votedTeam?: string;
 };
 
 type MatchPaperPropTypes = {
@@ -100,8 +100,8 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     team2Name = "",
     team2Player1Name = "",
     team2Player2Name = "",
-    matchNumber = "",
-    votingStarted: vottingStarted = false,
+    // matchNumber = "",
+    // votingStarted: vottingStarted = false,
     date = "",
     totalVoting: totaVoting = 0,
     team1Voting: team1Votting = 0,
@@ -113,24 +113,25 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [voteData, setVoteData] = useState<VoteDataType | {}>({});
 
-  const { isVoted = false, votedTeam = "" } = voteData as VoteDataType;
+  const { isVoted = false } = voteData as VoteDataType;
+  // const { isVoted = false, votedTeam = "" } = voteData as VoteDataType;
 
 
-    useEffect(() => {
-        setIsVisible(true);
-        return () => {
-            setIsVisible(false);
-        };
-    }, []);
+  useEffect(() => {
+    setIsVisible(true);
+    return () => {
+      setIsVisible(false);
+    };
+  }, []);
 
-    useEffect(() => {
-        if (matchId) {
-            getVoteUser(matchId);
-        }
+  useEffect(() => {
+    if (matchId) {
+      getVoteUser(matchId);
+    }
 
-    }, [matchId])
+  }, [matchId])
 
-    
+
 
 
   const getVoteUser = async (matchId: string) => {
@@ -168,7 +169,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
   return (
     // <div className={`max-w-[500px] w-full lg:w-[48%] xl:w-[32%] h-[380px] border border-white p-4 rounded-lg transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
-    <div className="rounded-lg max-w-md mx-auto flex-1 mt-5">
+    <div className={`rounded-lg max-w-md mx-auto flex-1 mt-5 ${isVisible ? 'opacity-100' : "opacity-0"}`}>
       <div className="w-full h-full flex flex-col">
         {/* <div className='w-full h-[30px] text-xxl flex justify-center items-center pt-3'>
                     <div>{matchNumber}</div>

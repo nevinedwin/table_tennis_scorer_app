@@ -1,7 +1,7 @@
 {
     "PROJECT_NAME": "khel-app",
-    "REGION": "us-east-1",
-    "AWS_PROFILE": "nevinedwin",
+    "REGION": "us-west-2",
+    "AWS_PROFILE": "inapp-prod",
     "PIPELINE_BUCKET": "khel-app-prod-pipeline-s3",
     "BACKEND_BUCKET": "khel-app-prod-s3",
     "FRONTEND_BUCKET": "khel-app-prod-frontend-s3",

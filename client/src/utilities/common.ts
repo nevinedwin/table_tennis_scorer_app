@@ -59,6 +59,27 @@ export function quickSort<T extends Record<K, any>, K extends keyof T>(arr: T[],
     return [...quickSort(left, key), pivot, ...quickSort(right, key)];
 };
 
+export function quickSortAdvanced<T>(arr: T[], compareFn: (a: T, b: T) => number): T[] {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    let pivot = arr[arr.length - 1];
+    let left: T[] = [];
+    let right: T[] = [];
+
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (compareFn(arr[i], pivot) < 0) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return [...quickSortAdvanced(left, compareFn), pivot, ...quickSortAdvanced(right, compareFn)];
+}
+
+
 export const findPercentage = (total: number, given: number, down: boolean) => {
     const data = (given * 100) / total;
 

@@ -14,8 +14,6 @@ export class UserRepository {
 
 
     async fetchUser(id) {
-
-
         try {
 
             const params = {

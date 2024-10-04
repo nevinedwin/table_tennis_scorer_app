@@ -5,6 +5,8 @@ export enum UserRole {
     SUPER_ADMIN = "superAdmin"
 }
 
+export type RoleType = "user" | "admin" | "superAdmin";
+
 export enum AUTH_ACTIONS {
     LOGIN_STARTS = "login_start",
     LOGIN_SUCCESS = "login_success",

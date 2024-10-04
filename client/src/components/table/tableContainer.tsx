@@ -38,8 +38,6 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
         };
     }, []);
 
-    console.log({ bodyData });
-
     return (
         <div className={`transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
             <div className='w-full overflow-x-auto'>
@@ -70,28 +68,37 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                     </thead>
                     <tbody>
                         {isLoading &&
-                            <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
-                                <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
-                                    <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
-                                </div>
-                            </td>
+                            <tr>
+                                <td colSpan={user?.role === UserRole.SUPER_ADMIN ? 12 : 10} className='text-center'>
+                                    <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
+                                        <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
+                                    </div>
+                                </td>
+                            </tr>
                         }
                         {
-                            bodyData.length ? bodyData.map((eachData: any, index: number) => (
-                                <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>
-                                    {tableColumns.map(eachColum => (
+                            bodyData.length ? bodyData.map((eachData: any, index1: number) => (
+                                <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index1}>
+                                    {tableColumns.map((eachColum, index) => (
                                         eachColum.field === "indexNumber" ?
-                                            <td className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                            <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
                                                 <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                    <div className='text-sm lg:text-lg'>{index + 1}</div>
+                                                    <div className='text-sm lg:text-lg'>{index1 + 1}</div>
                                                 </div>
                                             </td>
                                             :
-                                            <td className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
-                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                    <div className='text-sm lg:text-lg'>{eachData[eachColum.field]}</div>
-                                                </div>
-                                            </td>
+                                            eachColum.actionCell ?
+                                                <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                    <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                        {/* {eachColum.actionItem} */}
+                                                    </div>
+                                                </td>
+                                                :
+                                                <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                    <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                        <div className='text-sm lg:text-lg'>{eachData[eachColum.field]}</div>
+                                                    </div>
+                                                </td>
                                     ))}
                                 </tr>
                             ))

@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
                     <div className="absolute top-0 left-0 w-full h-full bg-white animate-line-move"></div>
                 </div>
             }
-            <div className="h-full w-full flex flex-col gap-10">
+            <div className="h-4/5 w-full flex flex-col gap-10">
                 <div className="h-full flex flex-col w-full">
                     {isLive ?
                         <div className="h-full w-full py-6 px-4">
@@ -113,14 +113,16 @@ const Dashboard: React.FC = () => {
                         <Heading />}
                 </div>
                 <div className="h-full w-full px-2 lg:px-8 flex">
-                    <div style={{ paddingTop: isLive ? "8px" : "100px" }} className={`flex-1 h-full `}>
-                        <div className="text-md lg:text-xxl font-bold mb-3">Upcoming Matches</div>
-                        <div className="flex flex-wrap w-full h-full justify-start gap-12">
+                    <div style={{ paddingTop: isLive ? "8px" : "10px" }} className={`flex-1 h-full `}>
+                        <div className="text-md lg:text-xxl font-bold mb-3 border-b border-l-white pb-5">UPCOMING MATCHES &mdash; PREDICT NOW</div>
+                        <div className="flex flex-wrap w-full justify-start gap-10 mb-5">
                             {
                                 loading ?
-                                    <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
-                                        <p className="text-xxl animate-pulse">Loading...</p>
+                                    // <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
+                                    <div className="flex items-center justify-center w-full">
+                                        <p className="text-xxl animate-pulse text-center">Loading...</p>
                                     </div>
+                                    // </div>
                                     :
                                     matches.length ?
                                         matches.map((match, index) => (

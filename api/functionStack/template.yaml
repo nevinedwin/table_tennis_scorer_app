@@ -15,6 +15,7 @@ Globals:
         INDEX_NAME: !Ref KhelAppTableIndex
         WEBSOCKET_URL: !Ref WebSocketUrl
         WEBSOCKET_POST_URL: !Ref WebSocketPostUrl
+        USERPOOL_ID: !Ref UserPoolId
 
 Parameters:
   StageName:
@@ -42,6 +43,8 @@ Parameters:
   ApiDomainName:
     Type: String
   ApiSSLCertificateArn:
+    Type: String
+  UserPoolId:
     Type: String
 
 Conditions:
@@ -133,6 +136,10 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminUpdateUserAttributes
+                Resource: !Ref UserPoolArn
 
   UserApiFunction:
     Type: AWS::Serverless::Function
@@ -366,4 +373,4 @@ Outputs:
     Value: !If 
       - IsDevEnv
       - !Sub https://${KhelAppApiGateway}.execute-api.${AWS::Region}.amazonaws.com/local
-      - !Sub https://${ApiDomainName}.execute-api.${AWS::Region}.amazonaws.com/local
+      - !Sub https://${ApiDomainName}/${StageName}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Hoc from '../../components/hoc/hoc'
 import { quickSort } from '../../utilities/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,8 +9,8 @@ import useMatchApi, { MatchListType, MatchStatus } from '../../hooks/apiHooks/us
 
 const Matches: React.FC = () => {
 
-  const {deleteMatch, listMatch, updateMatchSingle} = useMatchApi();
-  
+  const { deleteMatch, listMatch, updateMatchSingle } = useMatchApi();
+
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [editData, setEditData] = useState<string>("");
@@ -32,7 +32,18 @@ const Matches: React.FC = () => {
   }, [isEdit, isDelete]);
 
 
-  const getList = async () => {
+  const handleLive = async (id: string) => {
+    try {
+      setIsLoading(true)
+      await updateMatchSingle({ matchId: id, updateKey: "matchStatus", updateValue: MatchStatus.Live });
+      await getList()
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+  }
+  const getList = useCallback( async () => {
 
     try {
       setIsLoading(true);
@@ -46,7 +57,7 @@ const Matches: React.FC = () => {
       setIsLoading(false)
       console.log(error);
     }
-  };
+  }, [isLoading]);
 
 
   const handleEdit = (data: string) => {
@@ -68,17 +79,6 @@ const Matches: React.FC = () => {
   };
 
 
-  const handleLive = async (id: string) => {
-    try {
-
-      setIsLoading(true)
-      await updateMatchSingle({ matchId: id, updateKey: "matchStatus", updateValue: MatchStatus.Live });
-      setIsLoading(false)
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-    }
-  }
 
   return (
     <div className={`w-full p-4 transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>

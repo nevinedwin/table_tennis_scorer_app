@@ -70,7 +70,7 @@ export type MatchListType = {
     winner: string;
     set1Winner: string;
     set2Winner: string;
-    set3winner: number;
+    set3Winner: number;
     undoHistory: any;
     currentSet: number;
     team1Point: number;
@@ -81,6 +81,7 @@ export type MatchListType = {
     team2MatchPlayed: number;
     team2Point: number;
     team2MatchLose: number;
+    showMatch: boolean;
 }
 
 
@@ -181,9 +182,6 @@ const useMatchApi = () => {
         }
         return res;
     }
-
-
-
 
     return {
         createMatch,

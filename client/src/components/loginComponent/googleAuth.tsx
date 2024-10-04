@@ -28,17 +28,26 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonTypeProp> = ({ isLoading }) =
 
     return (
         <>
-            <button
-                onClick={handleLogin}
-                className={`flex h-full justify-center items-center  font-medium rounded-lg py-2 px-4 w-full text-xl
-                        ${isLoading ? `bg-gray-500 cursor-default` : `bg-primary text-light transition-bg-border duration-300 ease-custom
-                        hover:bg-black hover:border-white hover:border-[1px]`}
-                        
-                     `}>
-                <FontAwesomeIcon icon={faGoogle} className="mr-2 text-2xl" />
-                Sign in with Google
-            </button>
-            {signInError && <div className={`text-[14px] text-primary`}>{signInError}</div>}
+     <div className="flex justify-center w-full">
+      <button
+        onClick={handleLogin}
+        className={`
+          flex justify-center items-center font-medium rounded-3xl py-2 px-4 
+          w-3/4 text-lg
+          ${isLoading 
+            ? `bg-gray-500 cursor-default` 
+            : `bg-blue-600 text-white transition-all duration-300 ease-custom
+               hover:bg-blue-700 hover:shadow-md`
+          }
+        `}
+        disabled={isLoading}
+      >
+        <FontAwesomeIcon icon={faGoogle} className="mr-2 text-xl" />
+        Sign in with Google
+      </button>
+      {signInError && <div className={`text-[14px] text-primary`}>{signInError}</div>}
+
+    </div>
         </>
     );
 };

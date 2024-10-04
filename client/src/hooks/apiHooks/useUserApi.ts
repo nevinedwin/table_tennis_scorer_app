@@ -1,15 +1,23 @@
+import { UserRole } from "../../context/authContext/authContextTypes";
 import { useApiHook } from "./useApiHook"
 
+type ChangeRoleType = {
+    userId: string,
+    userName: String,
+    role: UserRole
+}
 
 const userEndpoints = {
     test: "test",
     fetchSingUser: "user/get",
-    socketUrl: "user/socketUrl"
+    socketUrl: "user/socketUrl",
+    changeRole: "user/changeRole",
+    listUser: "user/listUser"
 }
 
 const useUserApi = () => {
 
-    const { get } = useApiHook();
+    const { get, post } = useApiHook();
 
     const fetchSingleUser = async (id: string): Promise<any> => {
         const data: any = await get(`${userEndpoints.fetchSingUser}/${id}`)
@@ -25,7 +33,17 @@ const useUserApi = () => {
         return resp;
     };
 
-    return { fetchSingleUser, getSocketUrl };
+    const changeRole = async (data: ChangeRoleType) => {
+        const resp = await post(`${userEndpoints.changeRole}`, data);
+        return resp;
+    }
+
+    const listUsers = async (data: any) => {
+        const resp = await post(`${userEndpoints.listUser}`, data);
+        return resp;
+    }
+
+    return { fetchSingleUser, getSocketUrl, changeRole, listUsers };
 };
 
 export default useUserApi;

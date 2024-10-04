@@ -320,9 +320,9 @@ export class MatchService {
                 undoHistory: match?.undoHistory || null,
                 winner: match?.winner || null,
                 currentSet: match?.currentSet || null,
-                set1winner: matchSet["1"]?.winner || null,
-                set2winner: matchSet["2"]?.winner || null,
-                set3winner: matchSet["3"]?.winner || null,
+                set1Winner: matchSet["1"]?.winner || null,
+                set2Winner: matchSet["2"]?.winner || null,
+                set3Winner: matchSet["3"]?.winner || null,
                 team1Point: team1Data?.point || 0,
                 team2Point: team2Data?.point || 0,
                 team1MatchPlayed: team1Data?.matchPlayed || 0,
@@ -330,7 +330,8 @@ export class MatchService {
                 team1MatchLose: team1Data?.matchLose || 0,
                 team2MatchPlayed: team2Data?.matchPlayed || 0,
                 team2MatchWon: team2Data?.matchWon || 0,
-                team2MatchLose: team2Data?.matchLose || 0
+                team2MatchLose: team2Data?.matchLose || 0,
+                showMatch: match?.showMatch || false
             }
 
 
@@ -381,13 +382,60 @@ export class MatchService {
 
             const { matchId, updateKey, updateValue } = data;
 
-            if (!matchId || !updateKey || !updateValue) throw "Match Id | updateKey | updateVlaue is required";
+            if (!matchId || !updateKey || updateValue === undefined || updateValue === null || updateValue === "") throw "Match Id | updateKey | updateVlaue is required";
 
-            const [updateErr, updateResp] = await this.repository.updateSingle(data);
+            // fetch matches;
+            const [fetchMatchesErr, fetchMatches] = await this.repository.listMatches();
 
-            if (updateErr) throw updateErr;
+            if (fetchMatchesErr) throw fetchMatchesErr;
 
-            return success(updateResp);
+            const matchList = fetchMatches?.Items || [];
+
+            if ((updateKey === "matchStatus" && updateValue === "LIVE") || (updateKey === "showMatch" && updateValue === true)) {
+                for (let match of matchList) {
+                    if (match.matchStatus === "LIVE") {
+                        const [updateErr, updateResp] = await this.repository.updateSingle({ matchId: match.id, updateKey: "matchStatus", updateValue: "Finished" });
+                        if (updateErr) throw updateErr;
+                    }
+                    if (match.showMatch) {
+                        const [updateErr, updateResp] = await this.repository.updateSingle({ matchId: match.id, updateKey: "showMatch", updateValue: false });
+                        if (updateErr) throw updateErr;
+                    }
+                }
+                const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "showMatch", updateValue: true });
+
+                if (updateErr) throw updateErr;
+
+                const [update1Err, update1Resp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "LIVE" });
+
+                if (updateErr) throw updateErr;
+            } else if (updateKey === "showMatch" && updateValue === false) {
+                const [fetchErr, fetchSucc] = await this.repository.fetchMatch(matchId);
+
+                if (fetchErr | !fetchSucc) throw fetchErr;
+
+                const match = fetchSucc.Items[0];
+
+                if (match.winner && match.matchStatus === "LIVE") {
+                    const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "FINISHED" });
+
+                    if (updateErr) throw updateErr;
+                } else {
+                    const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "PENDING" });
+
+                    if (updateErr) throw updateErr;
+                }
+
+                const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "showMatch", updateValue: false });
+
+                if (updateErr) throw updateErr;
+            } else {
+                const [updateErr, updateResp] = await this.repository.updateSingle(data);
+
+                if (updateErr) throw updateErr;
+            }
+
+            return success("Updated Successfull");
 
         } catch (error) {
             //debugger

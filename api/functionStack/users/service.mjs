@@ -39,10 +39,45 @@ export class UserService {
         try {
             console.log(`Data: ${data}`);
 
+            const { userId, role, userName } = data;
+
+            if (!userId || !role) {
+                throw "UserId or Role is missing";
+            }
+
+            const [changeRole, err] = this.repository.updateUser({ id: userId, updateValue: role, updateKey: "role", userName });
+
+            if (err) throw err;
+
+            //debugger
+            console.log(`changeRole: ${JSON.stringify(changeRole)}`);
+
             return success(data);
         } catch (error) {
             return failure(error);
         };
-    }
+    };
 
-}
+    async listUser(data) {
+        try {
+
+            const { role = "user" } = data;
+
+            const [fetchUserErr, fetchUser] = await this.repository.listUsers(role);
+
+            if (fetchUserErr) throw fetchUserErr;
+
+            const userList = fetchUser?.Items || [];
+
+            if (!userList.length) {
+                return success([]);
+            };
+
+            return success(userList);
+
+        } catch (error) {
+            return failure(error);
+        }
+    };
+
+};

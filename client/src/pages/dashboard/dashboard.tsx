@@ -118,9 +118,11 @@ const Dashboard: React.FC = () => {
                         <div className="flex flex-wrap w-full h-full justify-start gap-12">
                             {
                                 loading ?
-                                    <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
-                                        <p className="text-xxl animate-pulse">Loading...</p>
+                                    // <div className="w-[500px] h-[400px] flex justify-center items-center border border-borderColor rounded-md">
+                                    <div className="flex items-center justify-center w-full">
+                                        <p className="text-xxl animate-pulse text-center">Loading...</p>
                                     </div>
+                                    // </div>
                                     :
                                     matches.length ?
                                         matches.map((match, index) => (

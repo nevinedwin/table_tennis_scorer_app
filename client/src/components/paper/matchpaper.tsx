@@ -116,7 +116,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
             getVoteUser(matchId);
         }
 
-    }, [matches])
+    }, [matchId])
 
     const getVoteUser = async (matchId: string) => {
         try {

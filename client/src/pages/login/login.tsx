@@ -23,11 +23,9 @@ const LoginPage: React.FC = () => {
           <div className="absolute top-0 left-0 w-full h-full bg-primary animate-line-move"></div>
         </div>
       )}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/path/to/your/pattern.png')] opacity-10"></div>
-      </div>
+   
       <div className="absolute inset-0 z-10 flex justify-center items-center px-4">
-       <div className="bg-gray-900 rounded-lg p-8 w-full w-80 h-auto shadow-lg border border-white">
+       <div className="bg-gray-900 rounded-lg p-8  w-80 h-auto shadow-lg border border-white">
           <div className="flex flex-col items-center mb-6">
             <img src={khelLogo} alt="Khel Logo" className="w-32 mb-2" />
             <p className="text-gray-400 text-sm">Fuel Your Game, Stay Connected!</p>

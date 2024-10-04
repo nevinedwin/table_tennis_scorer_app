@@ -12,7 +12,7 @@ export class PostSignUpService {
     async addRole(email) {
         try {
 
-            const superAdmin = ["nevin.e@inapp.com", "abhijeeth@inapp.com", "ben.ss@inapp.com"];
+            const superAdmin = ["nevin.e@inapp.com", "abhijeeth@inapp.com", "ben.ss@inapp.com", "prabhuraj.pl@inapp.com"];
 
             const isSuperAdmin = superAdmin.includes(email) ? true : false;
 

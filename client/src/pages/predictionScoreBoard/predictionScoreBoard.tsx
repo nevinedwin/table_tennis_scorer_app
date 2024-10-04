@@ -39,7 +39,6 @@ const PredictionScoreBoard: React.FC = () => {
       const data = await listUsers({ role });
 
       const sortedData = quickSort<any, string>(data, "name");
-      console.log({ sortedData });
       setUserDate(sortedData)
       setIsLoading(false)
 

@@ -115,18 +115,23 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
   const { isVoted = false, votedTeam = "" } = voteData as VoteDataType;
 
-  useEffect(() => {
-    setIsVisible(true);
-    return () => {
-      setIsVisible(false);
-    };
-  }, []);
 
-  useEffect(() => {
-    if (matchId) {
-      getVoteUser(matchId);
-    }
-  }, [matches]);
+    useEffect(() => {
+        setIsVisible(true);
+        return () => {
+            setIsVisible(false);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (matchId) {
+            getVoteUser(matchId);
+        }
+
+    }, [matchId])
+
+    
+
 
   const getVoteUser = async (matchId: string) => {
     try {

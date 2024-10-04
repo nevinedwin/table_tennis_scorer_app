@@ -6,8 +6,6 @@ import useUserApi from '../../hooks/apiHooks/useUserApi'
 import { RoleType, UserRole } from '../../context/authContext/authContextTypes'
 import { useAuth } from '../../context/authContext/authContext'
 import StyledButton from '../../components/button/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const PredictionScoreBoard: React.FC = () => {
 

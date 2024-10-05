@@ -416,6 +416,9 @@ export class MatchService {
 
                 const match = fetchSucc.Items[0];
 
+                //debugger
+                console.log(`Match: ${JSON.stringify(match)}`);
+
                 if (match.winner && match.matchStatus === "LIVE") {
                     const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "FINISHED" });
 

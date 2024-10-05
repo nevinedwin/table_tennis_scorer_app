@@ -21,9 +21,7 @@ const Dashboard: React.FC = () => {
 
 
     useEffect(() => {
-        // console.log("object");
         getMatchList();
-
     }, []);
 
     useEffect(() => {
@@ -31,8 +29,8 @@ const Dashboard: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        console.log(newMessage);
         if (newMessage) {
-            console.log("Dashboard Component liveContextData:", newMessage);
             setIsLive(true);
             if (newMessage.matchId) {
                 getFullMatchData(newMessage.matchId);
@@ -40,7 +38,6 @@ const Dashboard: React.FC = () => {
         }
     }, [newMessage]);
 
-    // console.log("liveData", liveData);
 
     const checkLiveMatch = async (arr: any[]) => {
         for (const i of arr) {
@@ -55,7 +52,6 @@ const Dashboard: React.FC = () => {
     const getFullMatchData = async (matchId: string) => {
         try {
             const resp = await getFullMatch({ matchId });
-            console.log({ resp });
             setLiveData(resp);
         } catch (error) {
             console.log(error);

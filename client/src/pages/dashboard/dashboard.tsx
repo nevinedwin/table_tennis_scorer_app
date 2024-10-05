@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
                 </div>
             }
             <div className="w-full flex flex-col gap-10" style={{ height: 'calc(100vh - 250px)' }}>
-                <div className="h-full flex flex-col w-full">
+                <div className="h-full flex flex-col w-full mb-10 lg:mb-10">
                     {isLive ?
                         <div className="h-full w-full py-6 px-4">
                             <LiveBoard data={liveData} handleRemove={handelRemove} />

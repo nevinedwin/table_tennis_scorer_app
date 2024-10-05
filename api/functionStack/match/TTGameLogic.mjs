@@ -158,7 +158,7 @@ export class TableTennisGame {
                     await this.updateSets(this.currentSet);                    
                     this.currentSet += 1;
                 } else {
-                    this.set2Winner = this.team2Id;
+                    this.set3Winner = this.team2Id;
                 }
             }
 

@@ -147,7 +147,6 @@ export class TableTennisGame {
                     this.currentSet += 1;
                 } else {
                     this.set3Winner = this.team1Id;
-                    await this.updateSets(this.currentSet);
                 }
             } else {
                 this.team2SetScore += 1;
@@ -161,7 +160,6 @@ export class TableTennisGame {
                     this.currentSet += 1;
                 } else {
                     this.set3Winner = this.team2Id;
-                    await this.updateSets(this.currentSet);                    
                 }
             }
 

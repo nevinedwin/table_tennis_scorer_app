@@ -8,48 +8,48 @@ import ManageLocalStorage, { localStorageKeys } from '../../utilities/ManageLoca
 const { isLoading: isLoadingKey } = localStorageKeys;
 
 type GoogleLoginButtonTypeProp = {
-    isLoading?: any;
+  isLoading?: any;
 };
 
 const GoogleLoginButton: React.FC<GoogleLoginButtonTypeProp> = ({ isLoading }) => {
 
-    const { state: { error: signInError } } = useAuth()
+  const { state: { error: signInError } } = useAuth()
 
-    const handleLogin = () => {
-        try {
-            ManageLocalStorage.set(isLoadingKey, 'true');
-            signIn()
-        } catch (error) {
-            console.log(error);
-        };
+  const handleLogin = () => {
+    try {
+      ManageLocalStorage.set(isLoadingKey, 'true');
+      signIn()
+    } catch (error) {
+      console.log(error);
     };
+  };
 
 
 
-    return (
-        <>
-     <div className="flex justify-center w-full">
-      <button
-        onClick={handleLogin}
-        className={`
-          flex justify-center items-center font-medium rounded-3xl py-2 px-4 
-          w-3/4 text-lg
-          ${isLoading 
-            ? `bg-gray-500 cursor-default` 
-            : `bg-blue-600 text-white transition-all duration-300 ease-custom
-               hover:bg-blue-700 hover:shadow-md`
+  return (
+    <>
+      <div className="flex justify-center w-full mt-8">
+        <button
+          onClick={handleLogin}
+          className={`
+          flex justify-center items-center font-medium rounded-lg py-3 px-4 w-full  
+          text-lg
+          ${isLoading
+            ? `bg-blueColor text-white transition-all duration-100 ease-custom cursor-default` 
+            : `bg-blueColor text-white transition-all duration-100 ease-custom
+               hover:border-[1px] hover:border-white hover:shadow-md`
           }
         `}
-        disabled={isLoading}
-      >
-        <FontAwesomeIcon icon={faGoogle} className="mr-2 text-xl" />
-        Sign in with Google
-      </button>
-      {signInError && <div className={`text-[14px] text-primary`}>{signInError}</div>}
+          disabled={isLoading}
+        >
+          <FontAwesomeIcon icon={faGoogle} className="mr-2 text-xl" />
+          Sign in with Google
+        </button>
+        {signInError && <div className={`text-[14px] text-primary`}>{signInError}</div>}
 
-    </div>
-        </>
-    );
+      </div>
+    </>
+  );
 };
 
 export default GoogleLoginButton;

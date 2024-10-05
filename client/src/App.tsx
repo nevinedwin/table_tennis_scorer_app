@@ -18,7 +18,6 @@ function App(): JSX.Element {
     fetch('/aws-config.json', { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } })
       .then(res => res.json())
       .then(awsConfig => {
-        console.log(awsConfig);
         setConfigValue(awsConfig)
         setLoadComp(true);
       })

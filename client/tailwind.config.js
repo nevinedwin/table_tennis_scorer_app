@@ -1,3 +1,5 @@
+import { transform } from 'typescript';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -37,6 +39,10 @@ export default {
           "0%": {opacity: 0},
           "100%": {opacity: 1},
           "0%": {opacity: 0}
+        },
+        spin: {
+          '0%': {transform: 'rotate(0deg)'},
+          '100%': {transform: 'rotate(360deg)'}
         }
       },
       animation: {
@@ -44,7 +50,8 @@ export default {
         'background-wave': 'background-wave 10s ease-in-out infinite',
         'line-move': 'line-move 1.5s linear infinite',
         slideIn: "slideIn .8s ease-in-out forwards",
-        opacity: "opacity .3s ease-in-out"
+        opacity: "opacity .3s ease-in-out",
+        'spin-slow': 'spin 2s linear infinite'
       },
       spacing: {
         '2': '0.5rem',
@@ -57,6 +64,8 @@ export default {
         boxShadowLightColor: "#bebebe",
         darkBlack: '#121212',
         greyShade: "#242526",
+        blueColor: "#3F88FB",
+        cardBg: "#0D1629",
         primary: {
           DEFAULT: '#AB1E23',
           light: '#F7BAC5',

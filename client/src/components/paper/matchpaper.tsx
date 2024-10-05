@@ -92,7 +92,6 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
   const { addVote, getFullMatch, getVote } = useMatchApi();
 
   const [matches, setMatches] = useState<MatchpaperType | {}>(match);
-  console.log("matches", matches);
   const {
     team1Name = "",
     team1Player1Name = "",

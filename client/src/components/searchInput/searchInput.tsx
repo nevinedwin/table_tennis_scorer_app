@@ -102,7 +102,7 @@ const SearchInput: React.FC<SearchInputPropType> = ({ placeholder, name, setData
                 name={name}
                 onChange={handleChange}
                 onClick={handleClick} // Toggle dropdown on click
-                className='w-full p-2 rounded-sm outline-none border-2 border-borderColor bg-black
+                className='w-full p-2 rounded-sm outline-none border-2 border-borderColor bg-bgColor
                             transition-all duration-300 ease-custom text-white focus:border-white
                             hover:border-white placeholder-gray-400'
             />
@@ -110,7 +110,7 @@ const SearchInput: React.FC<SearchInputPropType> = ({ placeholder, name, setData
             {/* Display fetched data below the input */}
             {onFocus && (
                 <div
-                    className={`z-50 absolute left-0 top-10 w-full mt-2 bg-black border-b border-l border-r border-borderColor
+                    className={`z-50 absolute left-0 top-10 w-full mt-2 bg-bgColor border-b border-l border-r border-borderColor
                                 transition-all duration-300 ease-custom overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700
                                 scrollbar-track-gray-900 ${onFocus ? 'max-h-52' : 'max-h-0'}`}
                     style={{

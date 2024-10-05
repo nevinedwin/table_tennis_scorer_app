@@ -21,7 +21,6 @@ const useUserApi = () => {
 
     const fetchSingleUser = async (id: string): Promise<any> => {
         const data: any = await get(`${userEndpoints.fetchSingUser}/${id}`)
-        console.log(data);
         if (data && Object.keys(data).length) {
             return data;
         }

@@ -6,8 +6,6 @@ import useUserApi from '../../hooks/apiHooks/useUserApi'
 import { RoleType, UserRole } from '../../context/authContext/authContextTypes'
 import { useAuth } from '../../context/authContext/authContext'
 import StyledButton from '../../components/button/button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const PredictionScoreBoard: React.FC = () => {
 
@@ -106,7 +104,7 @@ const PredictionScoreBoard: React.FC = () => {
             <input
               type="text"
               placeholder="Search..."
-              className="border border-borderColor bg-black p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+              className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -117,9 +115,9 @@ const PredictionScoreBoard: React.FC = () => {
           <div>
             {user?.role === UserRole.SUPER_ADMIN &&
               <div className='flex gap-2'>
-                <StyledButton title='Users' handleClick={() => handleChangeRole('user')} classes={`${role === UserRole.USER ? 'bg-black text-white border-[1px]' : ""}`} width={"100px"} />
-                <StyledButton title='Referies' handleClick={() => handleChangeRole('admin')} classes={`${role === UserRole.ADMIN ? 'bg-black text-white border-[1px]' : ""}`} width={"100px"} />
-                <StyledButton title='SuperAdmin' handleClick={() => handleChangeRole('superAdmin')} classes={`${role === UserRole.SUPER_ADMIN ? 'bg-black text-white border-[1px]' : ""}`} width={"90px"} />
+                <StyledButton title='Users' handleClick={() => handleChangeRole('user')} classes={`${role === UserRole.USER ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"100px"} />
+                <StyledButton title='Referies' handleClick={() => handleChangeRole('admin')} classes={`${role === UserRole.ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"100px"} />
+                <StyledButton title='SuperAdmin' handleClick={() => handleChangeRole('superAdmin')} classes={`${role === UserRole.SUPER_ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"90px"} />
               </div>
             }
           </div>

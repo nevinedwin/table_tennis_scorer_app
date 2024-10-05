@@ -29,7 +29,7 @@ const InputElement: React.FC<InputElementPropType> = ({ placeholder, name, setDa
                 name={name}
                 onChange={(e) => handleChange(e)}
                 className='w-full p-2 rounded-sm
-                        outline-none border-2 border-borderColor bg-black
+                        outline-none border-2 border-borderColor bg-bgColor
                         transition-all duration-300 ease-custom
                         text-white   focus:border-white
                           hover:border-white text-sm lg:text-2md

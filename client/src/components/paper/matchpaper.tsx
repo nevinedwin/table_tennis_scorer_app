@@ -222,7 +222,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                             onClick={() => handleVote(team1Id, matchId)}
                             className={`h-8 border
                          border-teal-600 rounded-md
-                         hover:${isVoted ? 'bg-black' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
+                         hover:${isVoted ? 'bg-bgColor' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
                          flex items-center justify-center font-bold cursor-pointer uppercase min-w-[10%]`}>
                             <p>
                                 {isVoted ? `${findPercentage(totaVoting, team1Votting, false)}%` : team1Name?.slice(0, 2)}
@@ -233,7 +233,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                             onClick={() => handleVote(team2Id, matchId)}
                             className={` h-8 
                         border border-red-300 rounded-md 
-                        hover:${isVoted ? 'bg-black' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
+                        hover:${isVoted ? 'bg-bgColor' : 'bg-white'} hover:${isVoted ? 'text-white' : 'text-black'} transition-all duration-300 ease-custom
                         flex items-center justify-center font-bold cursor-pointer uppercase min-w-[10%]`}>
                             <p>
                                 {isVoted ? `${findPercentage(totaVoting, team2Votting, true)}%` : team2Name?.slice(0, 2)}

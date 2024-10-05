@@ -49,7 +49,7 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
                 <input
                     type="text"
                     placeholder="Search by Team Name or Player Name.."
-                    className="border border-borderColor bg-black p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+                    className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);

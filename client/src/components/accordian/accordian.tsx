@@ -28,7 +28,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, setCompon
 
 
     return (
-        <div className="border-b border-borderColor bg-black w-full cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
+        <div className="border-b border-borderColor bg-bgColor w-full cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
             <button
                 className="h-18 flex justify-between items-center w-full py-4 px-6 text-left  focus:outline-none"
             >

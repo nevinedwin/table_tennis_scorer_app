@@ -26,7 +26,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({ selectedDate, setSelected
             <DatePicker
                 selected={selectedDate instanceof Date && !isNaN(selectedDate.getTime()) ? selectedDate : null}
                 onChange={(e) => handleDate(e)}
-                className="w-full p-3 rounded-md bg-black border border-borderColor text-white 
+                className="w-full p-3 rounded-md bg-bgColor border border-borderColor text-white 
                            placeholder-gray-400 focus:border-white hover:border-white transition-all duration-300"
                 placeholderText={placeholder}
                 dateFormat="MMMM d, yyyy h:mm aa" // Display date and time

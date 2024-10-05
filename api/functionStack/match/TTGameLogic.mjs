@@ -2,6 +2,7 @@ import { post, put, get } from 'libs/db-lib/index.mjs';
 import { v4 as uuidV4 } from 'uuid';
 
 const WINNING_SCORE = 11;
+const THRESHOLD_SCORE=18;
 
 const MatchStatus = {
     Live: "LIVE",
@@ -258,31 +259,31 @@ export class TableTennisGame {
     isSetWinner(scoredTeamNumber) {
         if (this.currentSet === 1) {
             if (scoredTeamNumber === 1) {
-                if (this.team1Set1Score >= WINNING_SCORE && this.team1Set1Score - this.team2Set1Score >= 2) {
+                if (this.team1Set1Score >= WINNING_SCORE && this.team1Set1Score - this.team2Set1Score >= 2 || this.team1Set1Score === THRESHOLD_SCORE) {
                     return true;
                 }
             } else {
-                if (this.team2Set1Score >= WINNING_SCORE && this.team2Set1Score - this.team1Set1Score >= 2) {
+                if (this.team2Set1Score >= WINNING_SCORE && this.team2Set1Score - this.team1Set1Score >= 2 || this.team2Set1Score === THRESHOLD_SCORE) {
                     return true;
                 }
             }
         } else if (this.currentSet === 2) {
             if (scoredTeamNumber === 1) {
-                if (this.team1Set2Score >= WINNING_SCORE && this.team1Set2Score - this.team2Set2Score >= 2) {
+                if (this.team1Set2Score >= WINNING_SCORE && this.team1Set2Score - this.team2Set2Score >= 2 || this.team1Set2Score === THRESHOLD_SCORE) {
                     return true;
                 }
             } else {
-                if (this.team2Set2Score >= WINNING_SCORE && this.team2Set2Score - this.team1Set2Score >= 2) {
+                if (this.team2Set2Score >= WINNING_SCORE && this.team2Set2Score - this.team1Set2Score >= 2 || this.team2Set2Score === THRESHOLD_SCORE) {
                     return true;
                 }
             }
         } else if (this.currentSet === 3) {
             if (scoredTeamNumber === 1) {
-                if (this.team1Set3Score >= WINNING_SCORE && this.team1Set3Score - this.team2Set3Score >= 2) {
+                if (this.team1Set3Score >= WINNING_SCORE && this.team1Set3Score - this.team2Set3Score >= 2 || this.team1Set3Score === THRESHOLD_SCORE) {
                     return true;
                 }
             } else {
-                if (this.team2Set3Score >= WINNING_SCORE && this.team2Set3Score - this.team1Set3Score >= 2) {
+                if (this.team2Set3Score >= WINNING_SCORE && this.team2Set3Score - this.team1Set3Score >= 2 || this.team2Set3Score === THRESHOLD_SCORE) {
                     return true;
                 }
             }

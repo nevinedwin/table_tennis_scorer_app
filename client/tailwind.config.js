@@ -75,6 +75,7 @@ export default {
         darkBlack: '#121212',
         greyShade: "#242526",
         blueColor: "#3F88FB",
+        blueColor: "#3F88FB",
         navbarBg: "#0E1528",
         cardBg: "#0D1629",
         bgColor: "#13151B",

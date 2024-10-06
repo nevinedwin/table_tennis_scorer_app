@@ -42,16 +42,16 @@ const Heading: React.FC = () => {
           <h1 className="text-4xl lg:text-8xl font-bold mb-4 text-white text-shadow-md lg:text-shadow-xl">
             PING PONG '24
           </h1>
-          <div className="lg:w-[500px] flex items-center justify-center">
+          {/* <div className="lg:w-[500px] flex items-center justify-center">
             <p className="w-full text-center text-white text-sm lg:text-xxl p-2 font-bold tracking-widest uppercase bg-[#3E5362] rounded-xl">
               You can also predict the winner
             </p>
-          </div>
+          </div> */}
           <div className="justify-center items-center text-center w-full">
-            <button className="mt-12 bg-blueColor rounded-xl p-2 font-medium w-48 text-md lg:text-xl border-4 border-[#1E4573] uppercase "
+            <button className="mt-12 bg-primary hover:bg-secondary rounded-xl p-2 font-medium text-md lg:text-xl uppercase "
               onClick={handlePredictClick}
             >
-              Predict Now
+              Predict the winners Now !!
             </button>
           </div>
         </div>

@@ -7,7 +7,7 @@ type RowHeadTypes = {
     title: string,
     isAdmin?: boolean,
     width: string,
-    field: string,
+    field: string[],
     actionCell?: boolean,
     // actionItem?: HTMLElement,
     actionFn?: () => void,
@@ -80,25 +80,39 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                             bodyData.length ? bodyData.map((eachData: any, index1: number) => (
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index1}>
                                     {tableColumns.map((eachColum, index) => (
-                                        eachColum.field === "indexNumber" ?
+                                        eachColum.field.length === 1 ?
+                                            <React.Fragment key={index}>
+                                                {
+                                                    eachColum.field[0] === "indexNumber" ?
+                                                        <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                            <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                                <div className='text-sm lg:text-lg'>{index1 + 1}</div>
+                                                            </div>
+                                                        </td>
+                                                        :
+                                                        eachColum.actionCell ?
+                                                            <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                                    {/* {eachColum.actionItem} */}
+                                                                </div>
+                                                            </td>
+                                                            :
+                                                            <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
+                                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                                                    <div className='text-sm lg:text-lg'>{eachData[eachColum.field[0]]}</div>
+                                                                </div>
+                                                            </td>
+                                                }
+                                            </React.Fragment>
+                                            :
                                             <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
                                                 <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                    <div className='text-sm lg:text-lg'>{index1 + 1}</div>
+                                                    <div className='text-sm lg:text-lg'>
+                                                        <p>{eachData[eachColum.field[0]]}</p>
+                                                        <p>{eachData[eachColum.field[1]]}</p>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            :
-                                            eachColum.actionCell ?
-                                                <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
-                                                    <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                        {/* {eachColum.actionItem} */}
-                                                    </div>
-                                                </td>
-                                                :
-                                                <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
-                                                    <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                        <div className='text-sm lg:text-lg'>{eachData[eachColum.field]}</div>
-                                                    </div>
-                                                </td>
                                     ))}
                                 </tr>
                             ))

@@ -1,9 +1,7 @@
 import React, { memo, useEffect } from "react";
 import banner from "../../assets/Banner.png";
-import { useNavigate } from "react-router-dom";
 
 const Heading: React.FC = () => {
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {

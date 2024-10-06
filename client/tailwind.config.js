@@ -91,7 +91,8 @@ export default {
         borderColor: '#333',
       },
       fontFamily: {
-        sans: ['Roboto', 'sans-serif'],
+        default: ['Roboto', 'sans-serif'],
+        ttHeading: ['rushk', 'sans-serif']
       },
       fontSize: {
         'xs': ['10px', '14px'],
@@ -105,7 +106,8 @@ export default {
         'xxl': ['20px', '30px'],
         '4xl': ['50px', '65px'],
         '5xl': ['80px', '100px'],
-        '10xl': ['180px', '200px']
+        '10xl': ['180px', '200px'],
+        'custom-3xl':['35px', '45px'],
       },
       screens: {
         'xs': { 'min': '479px' },

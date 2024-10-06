@@ -25,12 +25,12 @@ const LoginPage: React.FC = () => {
       )}
 
       <div className="absolute inset-0 z-10 flex justify-center items-center px-4">
-        <div className="bg-cardBg rounded-lg p-8  w-80 lg:w-[360px] h-auto lg:h-[390px] shadow-lg border border-white flex items-center justify-center flex-col">
+        <div className="bg-cardBg rounded-lg p-8  w-80 lg:w-[500px] h-auto lg:h-[450px] shadow-lg border border-white flex items-center justify-center flex-col">
           <div className="flex flex-col items-center mb-6">
-            <div className='w-[163px] h-[112px] flex items-center justify-center'>
+            <div className='flex items-center justify-center'>
               <img src={khelLogo} alt="Khel Logo" className="w-full h-full" />
             </div>
-            <p className="text-white text-md">Fuel Your Game, Stay Connected!</p>
+            <p className="text-white text-xl lg:text-xxl">Fuel Your Game, Stay Connected!</p>
           </div>
           <div className='w-full'>
             <GoogleLoginButton isLoading={isLoading} />

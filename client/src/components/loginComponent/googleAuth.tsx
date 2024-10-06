@@ -35,8 +35,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonTypeProp> = ({ isLoading }) =
           flex justify-center items-center font-medium rounded-lg py-3 px-4 w-full  
           text-lg
           ${isLoading
-            ? `bg-blueColor text-white transition-all duration-100 ease-custom cursor-default` 
-            : `bg-blueColor text-white transition-all duration-100 ease-custom
+            ? `bg-primary text-white transition-all duration-100 ease-custom cursor-default` 
+            : `bg-primary text-white transition-all duration-100 ease-custom
                hover:border-[1px] hover:border-white hover:shadow-md`
           }
         `}

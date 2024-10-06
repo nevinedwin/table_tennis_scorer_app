@@ -48,7 +48,7 @@ const Heading: React.FC = () => {
             </p>
           </div> */}
           <div className="justify-center items-center text-center w-full">
-            <button className="mt-12 bg-primary hover:bg-secondary rounded-xl p-2 font-medium text-md lg:text-xl uppercase "
+            <button className="mt-12 bg-primary hover:bg-secondary rounded-xl py-2 px-8 font-medium text-md lg:text-xl uppercase "
               onClick={handlePredictClick}
             >
               Predict the winners Now !!

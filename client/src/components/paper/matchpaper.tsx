@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { findPercentage, formatDate, formatTime } from "../../utilities/common";
+import { findPercentage, formatDate, formatTime, getInitials } from "../../utilities/common";
 import useMatchApi from "../../hooks/apiHooks/useMatchApi";
 
 type LogoForPlayerPropTypes = {
@@ -29,17 +29,17 @@ const EachSection: React.FC<EachSectionPropTypes> = ({
   bgcolor,
 }) => {
   return (
-    <div className="flex  flex-col pt-3 justify-center items-center cursor-default">
+    <div className="flex flex-[2] flex-col pt-3 justify-center items-center cursor-default">
       <div className="flex-2">
         <div
           className={`w-[30px] lg:w-[40px] h-[30px] lg:h-[40px] rounded-full ${bgcolor} border-borderColor border text-center text-white flex justify-center items-center`}
         >
           <p className="text-md lg:text-xl uppercase font-bold">
-            {teamName?.slice(0, 2)}
+            {getInitials(teamName)}
           </p>
         </div>
       </div>
-      <div className="mt-3 w-[100px] overflow-hidden whitespace-nowrap text-ellipsis text-center text-md lg:text-xl">
+      <div className="mt-3 w-[100px] text-center text-sm lg:text-lg">
         {teamName}
       </div>
     </div>
@@ -272,7 +272,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                     <p className='text-sm lg:text-md text-white'>Your Vote</p>
                   </div>
                   :
-                  <div className='text-sm lg:text-md'>Your Prediction, your game - cast yout vote.</div>
+                  <div className='text-sm lg:text-md'>Your prediction, your game - cast yout vote.</div>
                 :
                 <p className='text-sm lg:text-md'>Voting Not Started.</p>
             }

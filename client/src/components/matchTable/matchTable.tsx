@@ -175,9 +175,9 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                     </td>
                                     <td className='p-2 text-nowrap'>
                                         <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team1Player1Name} <span className='text-2xl font-bold'>|</span> {eachItem?.team1Player2Name}</div>
+                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team1Player1Name} <span className='text-sm lg:text-2xl font-bold'>|</span> {eachItem?.team1Player2Name}</div>
                                             <div className='text-sm text-center'>vs</div>
-                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team2Player1Name} <span className='text-2xl font-bold'>|</span> {eachItem?.team2Player2Name}</div>
+                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team2Player1Name} <span className='text-sm lg:text-2xl font-bold'>|</span> {eachItem?.team2Player2Name}</div>
                                         </div>
                                     </td>
                                     <td className='p-2 text-center'>
@@ -204,7 +204,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                             <div className='text-center'>{eachItem?.team2SetScore}</div>
                                         </div>
                                     </td>
-                                    <td className='text-lg p-2 text-center'>{eachItem?.matchStatus === "PENDING" ? "Upcoming" : eachItem?.matchStatus}</td>
+                                    <td className='text-sm lg:text-lg p-2 text-center'>{eachItem?.matchStatus === "PENDING" ? "Upcoming" : eachItem?.matchStatus}</td>
                                     {user?.role === UserRole.SUPER_ADMIN &&
                                         <>
                                             <td className='p-2 text-center'>

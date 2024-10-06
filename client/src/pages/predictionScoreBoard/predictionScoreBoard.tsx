@@ -31,7 +31,6 @@ const PredictionScoreBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(role);
     getList();
   }, [role]);
 

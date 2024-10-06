@@ -31,7 +31,6 @@ const PredictionScoreBoard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(role);
     getList();
   }, [role]);
 
@@ -81,14 +80,14 @@ const PredictionScoreBoard: React.FC = () => {
   }
 
   let rowHead = [
-    { title: "Sl.No", isAdmin: false, width: "5%", field: "indexNumber", headCellStyle: "", bodyCellStyle: "text-center" },
-    { title: "Name", isAdmin: false, width: "20%", field: "displayName", headCellStyle: "text-left", bodyCellStyle: "text-left" },
-    { title: "Email", isAdmin: false, width: "15%", field: "email", headCellStyle: "text-left", bodyCellStyle: "text-left" },
-    { title: "Total Predictions", isAdmin: false, width: "10%", field: "totalPredictions", headCellStyle: "text-left", bodyCellStyle: "text-left" },
-    { title: "Win", isAdmin: false, width: "10%", field: "predictionsWin", headCellStyle: "text-left", bodyCellStyle: "text-left" },
-    { title: "Lose", isAdmin: false, width: "10%", field: "predictionsLose", headCellStyle: "text-left", bodyCellStyle: "text-left" },
+    { title: "Sl.No", isAdmin: false, width: "5%", field: ["indexNumber"], headCellStyle: "", bodyCellStyle: "text-center" },
+    { title: "Name", isAdmin: false, width: "20%", field: ["displayName"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Email", isAdmin: false, width: "15%", field: ["email"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Total Predictions", isAdmin: false, width: "10%", field: ["totalPredictions"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Wins", isAdmin: false, width: "10%", field: ["predictionsWin"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Losses", isAdmin: false, width: "10%", field: ["predictionsLose"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     {
-      title: "ChangeRole", isAdmin: true, width: "20%", field: "changeRole", actionCell: true, actionItem: <>
+      title: "ChangeRole", isAdmin: true, width: "20%", field: ["changeRole"], actionCell: true, actionItem: <>
         {/* <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleChangeRole(role === UserRole.USER ? UserRole.ADMIN : UserRole.USER)} /> */}
       </>
     },
@@ -116,8 +115,8 @@ const PredictionScoreBoard: React.FC = () => {
             {user?.role === UserRole.SUPER_ADMIN &&
               <div className='flex gap-2'>
                 <StyledButton title='Users' handleClick={() => handleChangeRole('user')} classes={`${role === UserRole.USER ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"100px"} />
-                <StyledButton title='Referies' handleClick={() => handleChangeRole('admin')} classes={`${role === UserRole.ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"100px"} />
-                <StyledButton title='SuperAdmin' handleClick={() => handleChangeRole('superAdmin')} classes={`${role === UserRole.SUPER_ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"90px"} />
+                <StyledButton title='Referee' handleClick={() => handleChangeRole('admin')} classes={`${role === UserRole.ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"100px"} />
+                <StyledButton title='Admin' handleClick={() => handleChangeRole('superAdmin')} classes={`${role === UserRole.SUPER_ADMIN ? 'bg-bgColor text-white border-[1px]' : ""}`} width={"90px"} />
               </div>
             }
           </div>

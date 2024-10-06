@@ -7,6 +7,13 @@
   @apply transition-all duration-300 ease-custom overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900;
 }
 
+@font-face {
+  font-family: 'rushk';
+  src: url('/fonts/Rushk.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   box-sizing: border-box;
   overflow-x: hidden;

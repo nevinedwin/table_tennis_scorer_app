@@ -117,7 +117,7 @@ const EditTeam: React.FC<EditPropType> = ({ data, setIsEdit }) => {
                     isbuttonClicked={isButtonClicked}
                     setButtonClicked={setIsButtonClicked}
                     isSuccess={isSuccess}
-                    buttonTitle='Edit Team'
+                    buttonTitle='Save'
                 />
             </div>
         </div>

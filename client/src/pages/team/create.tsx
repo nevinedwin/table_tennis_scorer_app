@@ -44,8 +44,8 @@ const CreateTeam: React.FC = () => {
         } else if (!teamData.player2Email) {
             setError("Player 2 Email is required");
             return false;
-        } else if (teamData?.pool?.toUpperCase() !== "A" && teamData?.pool?.toUpperCase() !== "B" && teamData?.pool?.toUpperCase() !== "C") {
-            setError("pool should be A | B |C");
+        } else if (teamData?.pool?.toUpperCase() !== "A" && teamData?.pool?.toUpperCase() !== "B" && teamData?.pool?.toUpperCase() !== "C" && teamData?.pool?.toUpperCase() !== "K") {
+            setError("pool should be A | B |C | K");
             return false;
         } else if (!validateEmail(teamData.player1Email!)) {
             setError("Player 1 Email is Invalid. Use InApp Email");

@@ -34,24 +34,24 @@ const Heading: React.FC = () => {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black opacity-30"></div>
       <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
-        <div className="bg-transparent rounded-lg p-8 w-full max-w-3xl text-center flex items-center justify-center flex-col">
+        <div className="bg-transparent rounded-lg lg:p-8 w-full text-center flex items-center justify-center flex-col">
           <h2 className="text-white text-xl lg:text-3xl mb-8 font-bold tracking-wide text-shadow">
-            INTER&mdash;PROJECT&nbsp;TABLE&nbsp; TENNIS <br />
+            INTER - PROJECT&nbsp;TABLE&nbsp; TENNIS <br />
             DOUBLES&nbsp;TOURNAMENT
           </h2>
-          <h1 className="text-4xl lg:text-8xl font-bold mb-4 text-white text-shadow-md lg:text-shadow-xl">
-            PING PONG '24
+          <h1 className="text-custom-3xl font-ttHeading lg:text-8xl mb-4 tracking-wider text-white text-shadow-md lg:text-shadow-xl">
+            PING PONG<sup>'24</sup>
           </h1>
-          <div className="lg:w-[500px] flex items-center justify-center">
+          {/* <div className="lg:w-[500px] flex items-center justify-center">
             <p className="w-full text-center text-white text-sm lg:text-xxl p-2 font-bold tracking-widest uppercase bg-[#3E5362] rounded-xl">
               You can also predict the winner
             </p>
-          </div>
+          </div> */}
           <div className="justify-center items-center text-center w-full">
-            <button className="mt-12 bg-blueColor rounded-xl p-2 font-medium w-48 text-md lg:text-xl border-4 border-[#1E4573] uppercase "
+            <button className="mt-12 bg-primary hover:bg-secondary rounded-xl py-2 px-8 font-medium text-md lg:text-xl uppercase "
               onClick={handlePredictClick}
             >
-              Predict Now
+              Predict the winners Now !!
             </button>
           </div>
         </div>

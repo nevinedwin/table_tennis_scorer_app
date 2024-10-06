@@ -78,7 +78,7 @@ const ListTeam: React.FC = () => {
                 <>
                     <h1 className='text-3xl font-bold text-center py-8'>Team List</h1>
                     <div className='w-[70%] m-auto h-full'>
-                        <Table data={teamList} handleEdit={handleEdit} handleDelete={handleDelete} isLoading={isLoading} />
+                        <Table data={teamList} handleEdit={handleEdit} handleDelete={handleDelete} isLoading={isLoading} isEdit={true}/>
                     </div>
                 </>
             }

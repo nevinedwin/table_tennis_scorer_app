@@ -5,10 +5,11 @@ export const formatDate = (date: string): string => {
     const dateString = new Date(date);
 
     const day = String(dateString.getUTCDate()).padStart(2, '0');
-    const month = String(dateString.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = dateString.toLocaleString('en-US', { month: 'short' }); // Months are 0-indexed
+    // const month = String(dateString.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
     const year = String(dateString.getUTCFullYear())?.slice(-2);
 
-    const formattedDate = `${day}/${month}/${year}`;
+    const formattedDate = `${day} ${month} ${year}`;
 
     return formattedDate;
 
@@ -124,3 +125,16 @@ function compare(a: any, b: any) {
     }
     return a.teamName.localeCompare(b.teamName); // Ascending order based on teamName
 }
+
+export function getInitials(str: string) {
+    // Split the string into words
+    const words = str.trim().split(/\s+/); // Trim and split by any whitespace
+  
+    if (words.length >= 2) {
+      // If there are two or more words, take the first letter of each
+      return words[0][0] + words[1][0];
+    } else {
+      // Otherwise, return the first two letters of the first word
+      return words[0].slice(0, 2);
+    }
+  }

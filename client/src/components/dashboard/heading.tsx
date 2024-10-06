@@ -36,7 +36,7 @@ const Heading: React.FC = () => {
       <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
         <div className="bg-transparent rounded-lg p-8 w-full max-w-3xl text-center flex items-center justify-center flex-col">
           <h2 className="text-white text-xl lg:text-3xl mb-8 font-bold tracking-wide text-shadow">
-            INTER&mdash;PROJECT&nbsp;TABLE&nbsp; TENNIS <br />
+            INTER - PROJECT&nbsp;TABLE&nbsp; TENNIS <br />
             DOUBLES&nbsp;TOURNAMENT
           </h2>
           <h1 className="text-4xl lg:text-8xl font-bold mb-4 text-white text-shadow-md lg:text-shadow-xl">

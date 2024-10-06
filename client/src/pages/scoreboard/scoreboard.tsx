@@ -12,7 +12,7 @@ const Scoreboard: React.FC = () => {
     { title: "Sl.No", isAdmin: false, width: "5%", field: ["indexNumber"], headCellStyle: "", bodyCellStyle: "text-center" },
     { title: "TeamName", isAdmin: false, width: "20%", field: ["teamName"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     { title: "Player Name", isAdmin: false, width: "15%", field: ["player1Name", "player2Name"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
-    { title: "Match Played", isAdmin: false, width: "10%", field: ["matchPlayed"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Matches Played", isAdmin: false, width: "10%", field: ["matchPlayed"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     { title: "Wins", isAdmin: false, width: "10%", field: ["matchWon"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     { title: "Losses", isAdmin: false, width: "10%", field: ["matchLose"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
   ]

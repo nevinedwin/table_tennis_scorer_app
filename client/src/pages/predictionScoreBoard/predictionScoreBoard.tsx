@@ -84,8 +84,8 @@ const PredictionScoreBoard: React.FC = () => {
     { title: "Name", isAdmin: false, width: "20%", field: ["displayName"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     { title: "Email", isAdmin: false, width: "15%", field: ["email"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     { title: "Total Predictions", isAdmin: false, width: "10%", field: ["totalPredictions"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
-    { title: "Win", isAdmin: false, width: "10%", field: ["predictionsWin"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
-    { title: "Lose", isAdmin: false, width: "10%", field: ["predictionsLose"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Wins", isAdmin: false, width: "10%", field: ["predictionsWin"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
+    { title: "Losses", isAdmin: false, width: "10%", field: ["predictionsLose"], headCellStyle: "text-center", bodyCellStyle: "text-center" },
     {
       title: "ChangeRole", isAdmin: true, width: "20%", field: ["changeRole"], actionCell: true, actionItem: <>
         {/* <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleChangeRole(role === UserRole.USER ? UserRole.ADMIN : UserRole.USER)} /> */}

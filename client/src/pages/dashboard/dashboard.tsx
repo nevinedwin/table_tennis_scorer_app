@@ -112,7 +112,7 @@ const Dashboard: React.FC = () => {
                         <Heading />}
                 </div>
                 <div className="h-full w-full flex" id="match-section">
-                    <div style={{ paddingTop: isLive ? "8px" : "30px", height: 'calc(100vh - 90px)' }} className={`flex-1`}>
+                    <div style={{ paddingTop: isLive ? "70px" : "30px", height: 'calc(100vh - 90px)' }} className={`flex-1`}>
                         <div className="text-md lg:text-xxl font-bold mb-3 pb-5 pl-[20px] lg:px-[70px]">UPCOMING MATCHES</div>
                         <div className=" border-b-[1px] border-b-[#514747] w-full h-[1px]"></div>
                         <div className="flex flex-col flex-wrap w-full justify-center items-center gap-10 pb-[50px] pt-[60px] lg:pt-[100px] lg:flex-row ">

@@ -16,18 +16,18 @@ type MatchTablePropTypes = {
     handleLive: (id: string) => void;
 }
 
-type LogoForPlayerPropTypes = {
-    letter: string
-}
+// type LogoForPlayerPropTypes = {
+//     letter: string
+// }
 
 
-const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
-    return (
-        <div className='w-[25px] h-[25px] p-1 rounded-full border-secondary-dark border-2 text-center text-white flex justify-center items-center'>
-            <p className='text-sm uppercase font-bold'>{letter?.slice(0, 2)}</p>
-        </div>
-    )
-};
+// const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
+//     return (
+//         <div className='w-[25px] h-[25px] p-1 rounded-full border-secondary-dark border-2 text-center text-white flex justify-center items-center'>
+//             <p className='text-sm uppercase font-bold'>{letter?.slice(0, 2)}</p>
+//         </div>
+//     )
+// };
 
 
 const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDelete, handleEdit, handleLive }) => {
@@ -120,12 +120,12 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                     <thead>
                         <tr className='border-[1px] border-borderColor h-10 lg:h-20 bg-primary font-bold text-md lg:text-xl'>
                             <th className='p-2  text-center'>Match</th>
-                            <th className='p-2  text-start'>Date</th>
-                            <th className='p-2 text-start'>Teams</th>
-                            <th className='p-2 text-start'>Players</th>
-                            <th className='p-2 text-start'>1</th>
-                            <th className='p-2 text-start'>2</th>
-                            <th className='p-2 text-start'>3</th>
+                            <th className='p-2  text-center'>Date</th>
+                            <th className='p-2 text-center'>Teams</th>
+                            <th className='p-2 text-center'>Players</th>
+                            <th className='p-2 text-center'>1</th>
+                            <th className='p-2 text-center'>2</th>
+                            <th className='p-2 text-center'>3</th>
                             <th className='p-2 text-center'>Final</th>
                             <th className='p-2 text-center'>Status</th>
                             {/* <th className='p-2 text-start'>Vote</th> */}
@@ -154,46 +154,51 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>
                                     <td className='p-2 text-center'>{eachItem?.matchNumber}</td>
                                     <td className='p-2'>
-                                        <div className='w-full flex flex-col text-sm lg:text-xl'>
+                                        <div className='w-full flex flex-col text-sm lg:text-xl text-center'>
                                             <div>{formatDate(eachItem?.date as string)}</div>
                                             <div className='text-md uppercase'>{formatTime(eachItem?.date as string)}</div>
                                         </div>
                                     </td>
                                     <td className='p-2 text-nowrap'>
                                         <div className='w-full flex flex-col'>
-                                            <div className='uppercase flex justify-start items-center gap-2 text-sm lg:text-xl'><LogoForPlayer letter={eachItem?.team1Name as string} />
-                                                <span>{eachItem?.team1Name}</span> {eachItem?.team1Id === eachItem?.winner &&
-                                                    <FontAwesomeIcon icon={faTrophy} className='text-yellow-500 rotate-12' />}</div>
-                                            <div className='pl-12 text-sm'>vs</div>
-                                            <div className='uppercase flex justify-start items-center gap-2 text-sm lg:text-xl'><LogoForPlayer letter={eachItem?.team2Name as string} />
-                                                <span>{eachItem?.team2Name}</span>{eachItem?.team2Id === eachItem?.winner && <FontAwesomeIcon icon={faTrophy} className='text-yellow-500' />}</div>
+                                            <div className='uppercase flex justify-center items-center gap-2 text-sm lg:text-xl'>
+                                                {eachItem?.team1Id === eachItem?.winner &&
+                                                    <FontAwesomeIcon icon={faTrophy} className='text-yellow-500 rotate-12' />}
+                                                <span>{eachItem?.team1Name}</span>
+                                            </div>
+                                            <div className='text-sm text-center'>vs</div>
+                                            <div className='uppercase flex justify-center items-center gap-2 text-sm lg:text-xl'>
+                                                {eachItem?.team2Id === eachItem?.winner && <FontAwesomeIcon icon={faTrophy} className='text-yellow-500 rotate-12' />}
+                                                <span>{eachItem?.team2Name}</span>
+                                            </div>
                                         </div>
                                     </td>
                                     <td className='p-2 text-nowrap'>
                                         <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                            <div className='text-sm lg:text-lg'>{eachItem?.team1Player1Name} & {eachItem?.team1Player2Name}</div>
-                                            <div className='text-sm lg:text-lg'>{eachItem?.team2Player1Name} & {eachItem?.team2Player2Name}</div>
+                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team1Player1Name} <span className='text-2xl font-bold'>|</span> {eachItem?.team1Player2Name}</div>
+                                            <div className='text-sm text-center'>vs</div>
+                                            <div className='text-sm lg:text-lg text-center'>{eachItem?.team2Player1Name} <span className='text-2xl font-bold'>|</span> {eachItem?.team2Player2Name}</div>
                                         </div>
                                     </td>
-                                    <td className='p-2'>
+                                    <td className='p-2 text-center'>
                                         <div className='w-full flex flex-col'>
                                             <div>{eachItem?.team1Set1Score}</div>
                                             <div>{eachItem?.team2Set1Score}</div>
                                         </div>
                                     </td>
-                                    <td className='p-2'>
+                                    <td className='p-2 text-center'>
                                         <div className='w-full flex flex-col'>
                                             <div>{eachItem?.team1Set2Score}</div>
                                             <div>{eachItem?.team2Set2Score}</div>
                                         </div>
                                     </td>
-                                    <td className='p-2'>
+                                    <td className='p-2 text-center'>
                                         <div className='w-full flex flex-col'>
                                             <div>{eachItem?.team1Set3Score}</div>
                                             <div>{eachItem?.team2Set3Score}</div>
                                         </div>
                                     </td>
-                                    <td className='p-2'>
+                                    <td className='p-2 text-center'>
                                         <div className='w-full flex flex-col'>
                                             <div className='text-center'>{eachItem?.team1SetScore}</div>
                                             <div className='text-center'>{eachItem?.team2SetScore}</div>

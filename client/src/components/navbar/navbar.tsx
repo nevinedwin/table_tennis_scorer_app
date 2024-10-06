@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
         <div className='w-full h-full py-4 px-4 lg:px-12 flex justify-between items-center text-white text-[16px] bg-navbarBg'>
             {/* left side */}
             <div className='flex-2 h-full flex items-center justify-start gap-10'>
-                <div className='w-max-[200px] w-[150px] h-max-[100px] h-[60px]'>
+                <div className='w-max-[200px] w-[150px] h-max-[100px]'>
                     <img src={inAppLogo} alt="" onClick={() => handleNavigation("/dashboard")} className='w-full h-full object-cover cursor-pointer' />
                 </div>
                 <ul className='hidden lg:flex justify-between gap-10'>

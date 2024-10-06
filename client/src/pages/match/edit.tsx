@@ -119,7 +119,7 @@ const EditMatch: React.FC<EditMatchPropTypes> = ({ data, setIsEdit }) => {
                     isSuccess={isSuccess}
                     forSearchInput={forSearchInput}
                     setForSearchInput={setForSearchInput}
-                    buttonTitle='Edit Match'
+                    buttonTitle='Save'
                 />
             </div>
         </div>

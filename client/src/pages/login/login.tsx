@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import GoogleLoginButton from '../../components/loginComponent/googleAuth';
 import { useAuth } from '../../context/authContext/authContext';
 import ManageLocalStorage, { localStorageKeys } from '../../utilities/ManageLocalStorage';
-import khelLogo from '../../assets/Khel_Logo.svg'; 
-import loginbg from '../../assets/login-bg.png'
+import khelLogo from '../../assets/Khel_Logo.svg';
+import loginbg from '../../assets/bg-login.svg'
 
 const { isLoading: isLoadingKey } = localStorageKeys;
 
@@ -17,18 +17,20 @@ const LoginPage: React.FC = () => {
   const isLoading = ManageLocalStorage.get(isLoadingKey);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: `url(${loginbg})`}}>
+    <div className="relative h-screen w-full overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${loginbg})` }}>
       {isLoading && (
         <div className="relative w-full h-1 bg-transparent overflow-hidden mx-auto">
-          <div className="absolute top-0 left-0 w-full h-full bg-primary animate-line-move"></div>
+          <div className="absolute top-0 left-0 w-full h-full bg-blueColor animate-line-move"></div>
         </div>
       )}
-   
+
       <div className="absolute inset-0 z-10 flex justify-center items-center px-4">
-       <div className="bg-gray-900 rounded-lg p-8  w-80 h-auto shadow-lg border border-white">
+        <div className="bg-cardBg rounded-lg p-8  w-80 lg:w-[360px] h-auto lg:h-[390px] shadow-lg border border-white flex items-center justify-center flex-col">
           <div className="flex flex-col items-center mb-6">
-            <img src={khelLogo} alt="Khel Logo" className="w-32 mb-2" />
-            <p className="text-gray-400 text-sm">Fuel Your Game, Stay Connected!</p>
+            <div className='w-[163px] h-[112px] flex items-center justify-center'>
+              <img src={khelLogo} alt="Khel Logo" className="w-full h-full" />
+            </div>
+            <p className="text-white text-md">Fuel Your Game, Stay Connected!</p>
           </div>
           <div className='w-full'>
             <GoogleLoginButton isLoading={isLoading} />

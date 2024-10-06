@@ -420,7 +420,7 @@ export class MatchService {
                     const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "FINISHED" });
 
                     if (updateErr) throw updateErr;
-                } else {
+                } else if (!match.winner && match.matchStatus === "LIVE") {
                     const [updateErr, updateResp] = await this.repository.updateSingle({ matchId, updateKey: "matchStatus", updateValue: "PENDING" });
 
                     if (updateErr) throw updateErr;

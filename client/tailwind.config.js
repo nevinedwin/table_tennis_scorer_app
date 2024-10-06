@@ -1,3 +1,5 @@
+import { transform } from 'typescript';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -8,6 +10,11 @@ export default {
     extend: {
       boxShadow: {
         'custom-secondary': '0 0px 4px #bebebe'
+      },
+      textShadow: {
+        default: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        md: '2px 2px 8px rgba(0, 0, 0, 0.6)',
+        lg: '3px 3px 12px rgba(0, 0, 0, 0.7)',
       },
       transitionTimingFunction: {
         'custom': "cubic-bezier(0.645, 0.045, 0.355, 1)"
@@ -33,10 +40,18 @@ export default {
           "0%": { opacity: 0, transform: "translateX(100%)" },
           "100%": { opacity: 1, transform: "translateX(0)" }
         },
+        slideInRight: {
+          "0%": { opacity: 0, transform: "translateX(-100%)" },
+          "100%": { opacity: 1, transform: "translateX(0%)" }
+        },
         opacity: {
-          "0%": {opacity: 0},
-          "100%": {opacity: 1},
-          "0%": {opacity: 0}
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+          "0%": { opacity: 0 }
+        },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
         }
       },
       animation: {
@@ -44,7 +59,9 @@ export default {
         'background-wave': 'background-wave 10s ease-in-out infinite',
         'line-move': 'line-move 1.5s linear infinite',
         slideIn: "slideIn .8s ease-in-out forwards",
-        opacity: "opacity .3s ease-in-out"
+        slideInRight: "slideInRight .8s ease-in-out forwards",
+        opacity: "opacity .3s ease-in-out",
+        'spin-slow': 'spin 2s linear infinite'
       },
       spacing: {
         '2': '0.5rem',
@@ -57,6 +74,10 @@ export default {
         boxShadowLightColor: "#bebebe",
         darkBlack: '#121212',
         greyShade: "#242526",
+        blueColor: "#3F88FB",
+        navbarBg: "#0E1528",
+        cardBg: "#0D1629",
+        bgColor: "#13151B",
         primary: {
           DEFAULT: '#AB1E23',
           light: '#F7BAC5',
@@ -101,6 +122,18 @@ export default {
       addUtilities({
         '.word-spacing-2': {
           'word-spacing': '0.5rem',
+        },
+        '.text-shadow': {
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-md': {
+          textShadow: '4px 2px 1px rgba(47, 48, 48, 0.7)',
+        },
+        '.text-shadow-lg': {
+          textShadow: '3px 3px 12px rgba(0, 0, 0, 0.7)',
+        },
+        '.text-shadow-xl': {
+          textShadow: '7px 4px 1px rgba(47, 48, 48, 0.7)',
         },
       });
     },

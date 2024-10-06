@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
 
 
     return (
-        <div className='w-full h-full py-4 px-4 lg:px-12 flex justify-between items-center text-white text-[16px]'>
+        <div className='w-full h-full py-4 px-4 lg:px-12 flex justify-between items-center text-white text-[16px] bg-navbarBg'>
             {/* left side */}
             <div className='flex-2 h-full flex items-center justify-start gap-10'>
                 <div className='w-max-[200px] w-[150px] h-max-[100px] h-[60px]'>
@@ -93,8 +93,8 @@ const Navbar: React.FC = () => {
                     <span className={`bg-white transition-all duration-300 ease-out block h-0.5 w-6 rounded-sm ${dropdownOpen ? '-rotate-45 -translate-y-1' : 'translate-y-0.5'}`}></span>
                 </button>
                 {dropdownOpen && (
-                    <ul className="min-w-[70vw] flex flex-col items-center justify-between fixed top-1/2 left-1/2 -translate-x-1/2
-              -translate-y-1/2 z-30 bg-black/90 dark:bg-light/75 rounded-lg backdrop-blur-md py-32 border-white border animate-opacity">
+                    <ul className="min-w-[75vw] h-[60%] flex flex-col items-center justify-center gap-[5px] fixed top-1/2 left-1/2 -translate-x-1/2
+              -translate-y-1/2 z-30 bg-navbarBg dark:bg-light/75 rounded-lg backdrop-blur-md border-white border animate-opacity">
                         <li
                             className={`
                                 p-2 text-md uppercase ${location.pathname === "/dashboard" ? 'opacity-100' : 'opacity-50'} transition-opacity duration-200 ease-custom cursor-pointer hover:opacity-100 font-medium

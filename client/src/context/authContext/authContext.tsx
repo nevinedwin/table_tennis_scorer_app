@@ -113,7 +113,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 dispatch({ type: AUTH_ACTIONS.LOGIN_SUCCESS, payload: currentUser.userId });
                 await fetchSocket();
                 setIsSocketConnected(true);
-                console.log("cdsbkcbdskb");
             } else {
                 signOut();
                 dispatch({ type: AUTH_ACTIONS.LOGOUT });

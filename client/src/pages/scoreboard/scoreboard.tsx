@@ -48,7 +48,9 @@ const Scoreboard: React.FC = () => {
   const filteredData = useMemo(() => {
     if (searchTerm) {
       return teamList.filter((team: any) =>
-        team.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+        team.teamName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        team.player1Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        team.player2Name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     return teamList;
@@ -146,7 +148,7 @@ const Scoreboard: React.FC = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+            className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md text-md"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);

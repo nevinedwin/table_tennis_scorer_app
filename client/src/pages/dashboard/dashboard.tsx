@@ -29,7 +29,6 @@ const Dashboard: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        console.log(newMessage);
         if (newMessage) {
             setIsLive(true);
             if (newMessage.matchId) {

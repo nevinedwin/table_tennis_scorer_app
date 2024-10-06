@@ -39,8 +39,8 @@ const Heading: React.FC = () => {
             INTER - PROJECT&nbsp;TABLE&nbsp; TENNIS <br />
             DOUBLES&nbsp;TOURNAMENT
           </h2>
-          <h1 className="text-custom-3xl font-ttHeading lg:text-8xl font-bold mb-4 tracking-widest text-white text-shadow-md lg:text-shadow-xl">
-            PING PONG <sup>'24</sup>
+          <h1 className="text-custom-3xl font-ttHeading lg:text-8xl mb-4 tracking-wider text-white text-shadow-md lg:text-shadow-xl">
+            PING PONG<sup>'24</sup>
           </h1>
           {/* <div className="lg:w-[500px] flex items-center justify-center">
             <p className="w-full text-center text-white text-sm lg:text-xxl p-2 font-bold tracking-widest uppercase bg-[#3E5362] rounded-xl">

@@ -5,7 +5,7 @@ import Matchpaper from "../../components/paper/matchpaper";
 import { quickSort } from "../../utilities/common";
 import LiveBoard from "../../components/dashboard/liveBoard";
 import { useSocket } from "../../context/websocketContext/websocketContext";
-import useMatchApi, { MatchListType } from "../../hooks/apiHooks/useMatchApi";
+import useMatchApi, { MatchListType, MatchStatus } from "../../hooks/apiHooks/useMatchApi";
 
 export type NavigationType = 'details' | 'prediction';
 
@@ -30,8 +30,8 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (newMessage) {
-            setIsLive(true);
-            if (newMessage.matchId) {
+            if (newMessage.matchId && newMessage.matchStatus === MatchStatus.Live) {
+                setIsLive(true);
                 getFullMatchData(newMessage.matchId);
             }
         }
@@ -125,7 +125,7 @@ const Dashboard: React.FC = () => {
                                     :
                                     matches.length ?
                                         matches.map((match, index) => (
-                                            <Matchpaper key={index}
+                                            match.matchStatus === MatchStatus.Pending && <Matchpaper key={index}
                                                 match={match}
                                             />
                                         ))

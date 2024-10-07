@@ -114,7 +114,7 @@ const LiveBoard: React.FC<LiveBoardType> = ({ data, handleRemove }) => {
 
   return (
     <div className="w-full h-full animate-opacity">
-      <h1 className="text-2xl lg:text-4xl font-bold mb-4 text-center text-white text-shadow-md lg:text-shadow-xl">
+      <h1 className="text-2xl lg:text-4xl font-ttHeading mb-4 text-center text-white text-shadow-md lg:text-shadow-xl">
         PING PONG '24
       </h1>
       <div className="w-full text-center">

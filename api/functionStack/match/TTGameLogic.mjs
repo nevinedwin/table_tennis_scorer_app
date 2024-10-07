@@ -1,8 +1,8 @@
-import { post, put, get } from 'libs/db-lib/index.mjs';
+import { post, put, get, query } from 'libs/db-lib/index.mjs';
 import { v4 as uuidV4 } from 'uuid';
 
 const WINNING_SCORE = 11;
-const THRESHOLD_SCORE=18;
+const THRESHOLD_SCORE = 18;
 
 const MatchStatus = {
     Live: "LIVE",
@@ -14,8 +14,9 @@ const MatchStatus = {
 
 
 export class TableTennisGame {
-    constructor(repository, matchId, tableName) {
+    constructor(repository, matchId, tableName, indexName) {
         this.tableName = tableName;
+        this.indexName = indexName;
         this.repository = repository;
         this.matchId = matchId;
         this.team1Set1Score = 0;
@@ -156,7 +157,7 @@ export class TableTennisGame {
                     this.currentSet += 1;
                 } else if (this.currentSet === 2) {
                     this.set2Winner = this.team2Id;
-                    await this.updateSets(this.currentSet);                    
+                    await this.updateSets(this.currentSet);
                     this.currentSet += 1;
                 } else {
                     this.set3Winner = this.team2Id;
@@ -167,12 +168,14 @@ export class TableTennisGame {
                 this.winner = this.team1Id;
                 this.team1Point += 2;
                 this.team1MatchPlayed += 1;
+                this.team2MatchPlayed += 1;
                 this.team1MatchWon += 1;
                 this.team2MatchLose += 1;
                 this.matchStatus = MatchStatus.Finished
             } else if (this.team2SetScore >= 2) {
                 this.winner = this.team2Id;
                 this.team2Point += 2;
+                this.team1MatchPlayed += 1;
                 this.team2MatchPlayed += 1;
                 this.team2MatchWon += 1;
                 this.team1MatchLose += 1;
@@ -588,6 +591,108 @@ export class TableTennisGame {
 
             if (udpate2Err) throw udpate2Err;
 
+            // update user Scores
+
+            const listVotesParams = {
+                TableName: this.tableName,
+                IndexName: this.indexName,
+                KeyConditionExpression: `#role = :role AND #details = :details`,
+                ExpressionAttributeNames: {
+                    "#role": "role",
+                    "#details": "id"
+                },
+                ExpressionAttributeValues: {
+                    ":role": "VOTE",
+                    ":details": this.matchId
+                }
+            };
+
+            //debugger
+            console.log(`listVotesParams: ${JSON.stringify(listVotesParams)}`);
+
+            const [listVotesErr, listVotes] = await query(listVotesParams);
+
+            if (listVotesErr) throw listVotesErr;
+
+            const voteList = listVotes?.Items || [];
+
+            const updatePromises = [];
+
+            for (let eachVote of voteList) {
+                let updateUserParams;
+                let updateVote;
+
+                if (eachVote.votedTeamId === this.winner) {
+                    updateUserParams = {
+                        TableName: this.tableName,
+                        Key: {
+                            id: `USER#${eachVote.details}`,
+                            details: "details"
+                        },
+                        UpdateExpression: `ADD #role :role`,
+                        ExpressionAttributeNames: {
+                            "#role": "predictionsWin",
+                        },
+                        ExpressionAttributeValues: {
+                            ":role": 1
+                        },
+                        ReturnValues: 'UPDATED_NEW'
+                    }
+
+                    updateVote = {
+                        TableName: this.tableName,
+                        Key: {
+                            id: eachVote.id,
+                            details: eachVote.details
+                        },
+                        UpdateExpression: `SET #role = :role`,
+                        ExpressionAttributeNames: {
+                            "#role": "isPredictionCorrect",
+                        },
+                        ExpressionAttributeValues: {
+                            ":role": "CORRECT"
+                        },
+                        ReturnValues: 'UPDATED_NEW'
+                    }
+                } else {
+                    updateUserParams = {
+                        TableName: this.tableName,
+                        Key: {
+                            id: `USER#${eachVote.details}`,
+                            details: "details"
+                        },
+                        UpdateExpression: `ADD #role :role`,
+                        ExpressionAttributeNames: {
+                            "#role": "predictionsLose",
+                        },
+                        ExpressionAttributeValues: {
+                            ":role": 1
+                        },
+                        ReturnValues: 'UPDATED_NEW'
+                    }
+
+                    updateVote = {
+                        TableName: this.tableName,
+                        Key: {
+                            id: eachVote.id,
+                            details: eachVote.details
+                        },
+                        UpdateExpression: `SET #role = :role`,
+                        ExpressionAttributeNames: {
+                            "#role": "isPredictionCorrect",
+                        },
+                        ExpressionAttributeValues: {
+                            ":role": "WRONG"
+                        },
+                        ReturnValues: 'UPDATED_NEW'
+                    }
+                }
+
+                updatePromises.push(await put(updateUserParams))
+                updatePromises.push(await put(updateVote));
+            }
+
+            Promise.all(updatePromises);
         }
     };
 

@@ -153,131 +153,133 @@ export async function main(event) {
             console.log(`newImg: ${JSON.stringify(newImg)}`);
             console.log(`oldImg: ${JSON.stringify(oldImg)}`);
 
-            if (newImg?.role === "MATCH" && ((newImg?.matchStatus === "LIVE" || newImg?.matchStatus === "FINISHED") && (newImg?.showMatch === true) || (newImg?.showMatch === false))) {
+            if (newImg?.role === "MATCH") {
+                if (newImg?.matchStatus === "LIVE" || newImg?.matchStatus === "FINISHED") {
 
-                const match = newImg;
+                    const match = newImg;
 
-                // get1Team data
-                const [team1Err, team1] = await fetchTeam(match.team1Id);
+                    // get1Team data
+                    const [team1Err, team1] = await fetchTeam(match.team1Id);
 
-                if (team1Err) throw team1Err;
+                    if (team1Err) throw team1Err;
 
-                const team1Data = team1?.Item || {};
+                    const team1Data = team1?.Item || {};
 
-                // get2Team data
-                const [team2Err, team2] = await fetchTeam(match.team2Id);
+                    // get2Team data
+                    const [team2Err, team2] = await fetchTeam(match.team2Id);
 
-                if (team2Err) throw team2Err;
+                    if (team2Err) throw team2Err;
 
-                const team2Data = team2?.Item || {};
+                    const team2Data = team2?.Item || {};
 
-                // get match set data
-                const [matchSet1Err, matchSet1Data] = await getMatchSet(match.id, 1);
+                    // get match set data
+                    const [matchSet1Err, matchSet1Data] = await getMatchSet(match.id, 1);
 
-                if (matchSet1Err) throw matchSet1Err;
+                    if (matchSet1Err) throw matchSet1Err;
 
-                const [matchSet2Err, matchSet2Data] = await getMatchSet(match.id, 2);
+                    const [matchSet2Err, matchSet2Data] = await getMatchSet(match.id, 2);
 
-                if (matchSet2Err) throw matchSet2Err;
+                    if (matchSet2Err) throw matchSet2Err;
 
-                const [matchSet3Err, matchSet3Data] = await getMatchSet(match.id, 3);
+                    const [matchSet3Err, matchSet3Data] = await getMatchSet(match.id, 3);
 
-                if (matchSet3Err) throw matchSet3Err;
+                    if (matchSet3Err) throw matchSet3Err;
 
-                const matchSet = {
-                    1: matchSet1Data.Item || {},
-                    2: matchSet2Data.Item || {},
-                    3: matchSet3Data.Item || {},
-                };
+                    const matchSet = {
+                        1: matchSet1Data.Item || {},
+                        2: matchSet2Data.Item || {},
+                        3: matchSet3Data.Item || {},
+                    };
 
-                const returnData = {
-                    matchId: match?.id || null,
-                    matchNumber: match?.matchNumber || null,
-                    date: match?.date || null,
-                    team1Id: match?.team1Id || null,
-                    team1Name: team1Data?.teamName || null,
-                    team1Player1Name: team1Data?.player1Name || null,
-                    team1Player2Name: team1Data?.player2Name || null,
-                    team1Set1Score: matchSet["1"]?.team1Score || 0,
-                    team1Set2Score: matchSet["2"]?.team1Score || 0,
-                    team1Set3Score: matchSet["3"]?.team1Score || 0,
-                    team1SetScore: match?.team1SetScore || 0,
-                    team1Voting: match?.team1Voting || 0,
-                    team2Id: match?.team2Id || null,
-                    team2Name: team2Data?.teamName || null,
-                    team2Player1Name: team2Data?.player1Name || null,
-                    team2Player2Name: team2Data?.player2Name || null,
-                    team2Set1Score: matchSet["1"]?.team2Score || 0,
-                    team2Set2Score: matchSet["2"]?.team2Score || 0,
-                    team2Set3Score: matchSet["3"]?.team2Score || 0,
-                    team2SetScore: match?.team2SetScore || 0,
-                    team2Voting: match?.team2Voting || 0,
-                    votingStarted: match?.votingStarted || false,
-                    totalVoting: match.totalVoting || 0,
-                    matchResult: match?.matchResult || null,
-                    matchStatus: match?.matchStatus || null,
-                    undoHistory: match?.undoHistory || null,
-                    winner: match?.winner || null,
-                    currentSet: match?.currentSet || null,
-                    set1Winner: matchSet["1"]?.winner || null,
-                    set2Winner: matchSet["2"]?.winner || null,
-                    set3Winner: matchSet["3"]?.winner || null,
-                    team1Point: team1Data?.point || 0,
-                    team2Point: team2Data?.point || 0,
-                    team1MatchPlayed: team1Data?.matchPlayed || 0,
-                    team1MatchWon: team1Data?.matchWon || 0,
-                    team1MatchLose: team1Data?.matchLose || 0,
-                    team2MatchPlayed: team2Data?.matchPlayed || 0,
-                    team2MatchWon: team2Data?.matchWon || 0,
-                    team2MatchLose: team2Data?.matchLose || 0
-                };
-
-
-                //debugger
-                console.log(`returnData: ${JSON.stringify(returnData)}`);
-
-                // get all connetion Ids
-                const [getErr, connectionIds] = await getAllConnectionIds();
-
-                if (getErr) throw getErr;
-
-                //debugger
-                console.log(`connectionIds: ${JSON.stringify(connectionIds)}`);
+                    const returnData = {
+                        matchId: match?.id || null,
+                        matchNumber: match?.matchNumber || null,
+                        date: match?.date || null,
+                        team1Id: match?.team1Id || null,
+                        team1Name: team1Data?.teamName || null,
+                        team1Player1Name: team1Data?.player1Name || null,
+                        team1Player2Name: team1Data?.player2Name || null,
+                        team1Set1Score: matchSet["1"]?.team1Score || 0,
+                        team1Set2Score: matchSet["2"]?.team1Score || 0,
+                        team1Set3Score: matchSet["3"]?.team1Score || 0,
+                        team1SetScore: match?.team1SetScore || 0,
+                        team1Voting: match?.team1Voting || 0,
+                        team2Id: match?.team2Id || null,
+                        team2Name: team2Data?.teamName || null,
+                        team2Player1Name: team2Data?.player1Name || null,
+                        team2Player2Name: team2Data?.player2Name || null,
+                        team2Set1Score: matchSet["1"]?.team2Score || 0,
+                        team2Set2Score: matchSet["2"]?.team2Score || 0,
+                        team2Set3Score: matchSet["3"]?.team2Score || 0,
+                        team2SetScore: match?.team2SetScore || 0,
+                        team2Voting: match?.team2Voting || 0,
+                        votingStarted: match?.votingStarted || false,
+                        totalVoting: match.totalVoting || 0,
+                        matchResult: match?.matchResult || null,
+                        matchStatus: match?.matchStatus || null,
+                        undoHistory: match?.undoHistory || null,
+                        winner: match?.winner || null,
+                        currentSet: match?.currentSet || null,
+                        set1Winner: matchSet["1"]?.winner || null,
+                        set2Winner: matchSet["2"]?.winner || null,
+                        set3Winner: matchSet["3"]?.winner || null,
+                        team1Point: team1Data?.point || 0,
+                        team2Point: team2Data?.point || 0,
+                        team1MatchPlayed: team1Data?.matchPlayed || 0,
+                        team1MatchWon: team1Data?.matchWon || 0,
+                        team1MatchLose: team1Data?.matchLose || 0,
+                        team2MatchPlayed: team2Data?.matchPlayed || 0,
+                        team2MatchWon: team2Data?.matchWon || 0,
+                        team2MatchLose: team2Data?.matchLose || 0
+                    };
 
 
-                const notificationSendPromises = [];
-                if (Array.isArray(connectionIds?.Items)) {
-                    for (const eachId of connectionIds.Items) {
-                        const message = {
-                            action: "LIVE_MATCH",
-                            data: returnData
-                        }
+                    //debugger
+                    console.log(`returnData: ${JSON.stringify(returnData)}`);
 
-                        if (eachId?.connectionId) {
-                            notificationSendPromises.push(sendNotification({
-                                connectionId: eachId.connectionId,
-                                notificationType: "LIVE",
-                                payload: message
-                            }));
+                    // get all connetion Ids
+                    const [getErr, connectionIds] = await getAllConnectionIds();
+
+                    if (getErr) throw getErr;
+
+                    //debugger
+                    console.log(`connectionIds: ${JSON.stringify(connectionIds)}`);
+
+
+                    const notificationSendPromises = [];
+                    if (Array.isArray(connectionIds?.Items)) {
+                        for (const eachId of connectionIds.Items) {
+                            const message = {
+                                action: "LIVE_MATCH",
+                                data: returnData
+                            }
+
+                            if (eachId?.connectionId) {
+                                notificationSendPromises.push(sendNotification({
+                                    connectionId: eachId.connectionId,
+                                    notificationType: "LIVE",
+                                    payload: message
+                                }));
+                            };
                         };
                     };
-                };
 
-                //debugger
-                console.log(`notificationSendPromises: ${JSON.stringify(notificationSendPromises)}`);
+                    //debugger
+                    console.log(`notificationSendPromises: ${JSON.stringify(notificationSendPromises)}`);
 
-                if (notificationSendPromises.length) {
+                    if (notificationSendPromises.length) {
 
-                    const result = await Promise.allSettled(notificationSendPromises);
+                        const result = await Promise.allSettled(notificationSendPromises);
 
-                    result.forEach(eachResult => {
-                        if (eachResult.status === "rejected") {
-                            const { error, connectionId } = result.reason;
-                            console.log(`Failed to send notification to ${connectionId}: ${error.message}`);
-                        } else {
-                            console.log(`Notification sent successfully to ${result.value.connectionId}`);
-                        };
-                    })
+                        result.forEach(eachResult => {
+                            if (eachResult.status === "rejected") {
+                                const { error, connectionId } = result.reason;
+                                console.log(`Failed to send notification to ${connectionId}: ${error.message}`);
+                            } else {
+                                console.log(`Notification sent successfully to ${result.value.connectionId}`);
+                            };
+                        })
+                    };
                 };
             };
         };

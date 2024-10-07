@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         getMatchList();
-    }, []);
+    }, [isLive]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -30,13 +30,12 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (newMessage) {
-            if (newMessage.matchId && newMessage.matchStatus === MatchStatus.Live) {
+            if (newMessage.matchId && newMessage.showMatch === true) {
                 setIsLive(true);
                 getFullMatchData(newMessage.matchId);
             }
         }
     }, [newMessage]);
-
 
     const checkLiveMatch = async (arr: any[]) => {
         for (const i of arr) {

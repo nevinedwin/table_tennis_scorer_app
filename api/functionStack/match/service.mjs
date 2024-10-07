@@ -212,6 +212,10 @@ export class MatchService {
 
             if (writeErr) throw writeErr;
 
+            // update User totalprediciton
+            const [updateUserErr, updateUserResp] = await this.repository.updateUser(userId);
+            if (updateUserErr) throw updateUserErr;
+
             return success({ writeResp, matchId });
 
         } catch (error) {
@@ -346,14 +350,14 @@ export class MatchService {
     };
 
 
-    async playGame(data, TABLE_NAME) {
+    async playGame(data, TABLE_NAME, INDEX_NAME) {
 
         try {
             const { matchId, teamId, action } = data;
 
             if (!matchId && !teamId && !action) throw "matchId, teamId and action is required";
 
-            const game = new TableTennisGame(this.repository, matchId, TABLE_NAME);
+            const game = new TableTennisGame(this.repository, matchId, TABLE_NAME, INDEX_NAME);
             await game.initialize();
 
             let response;

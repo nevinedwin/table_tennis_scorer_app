@@ -100,7 +100,7 @@ export const main = async (event) => {
                     isAuthorized = validateAccess(role, LAMBDA.MATCH.PLAYGAME)
 
                     if (isAuthorized) {
-                        response = await service.playGame(data, TABLE_NAME)
+                        response = await service.playGame(data, TABLE_NAME, INDEX_NAME)
                     }
 
                 } else if (action === "updateSingle") {

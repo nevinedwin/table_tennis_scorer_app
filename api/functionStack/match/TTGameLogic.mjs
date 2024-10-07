@@ -688,8 +688,8 @@ export class TableTennisGame {
                     }
                 }
 
-                updatePromises.push(await put(updateUserParams))
-                updatePromises.push(await put(updateVote));
+                updatePromises.push(put(updateUserParams))
+                updatePromises.push(put(updateVote));
             }
 
             Promise.all(updatePromises);

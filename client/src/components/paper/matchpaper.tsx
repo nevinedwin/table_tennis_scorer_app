@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { findPercentage, formatDate, formatTime, getInitials } from "../../utilities/common";
-import useMatchApi from "../../hooks/apiHooks/useMatchApi";
+import useMatchApi, { MatchStatus } from "../../hooks/apiHooks/useMatchApi";
 
 type LogoForPlayerPropTypes = {
   letter: string;
@@ -67,6 +67,7 @@ type MatchpaperType = {
   team1Id: string;
   team2Id: string;
   matchId: string;
+  matchStatus: string
 };
 
 type VoteDataType = {
@@ -98,6 +99,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     team1Id = "",
     team2Id = "",
     matchId = "",
+    matchStatus = MatchStatus.Pending
   } = matches as MatchpaperType;
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [voteData, setVoteData] = useState<VoteDataType | {}>({});
@@ -147,7 +149,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
   const handleVote = async (teamId: string, matchId: string) => {
     try {
-      if (!isVoted) {
+      if (!isVoted && matchStatus === MatchStatus.Pending) {
         setIsLoading(true);
         await addVote({ teamId, matchId });
         await getFullMatchData(matchId);

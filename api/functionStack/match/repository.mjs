@@ -428,8 +428,8 @@ export class MatchRepository {
             const params = {
                 TableName: this.tableName,
                 Key: {
-                    id: userId,
-                    details: matchId
+                    id: matchId,
+                    details: userId
                 }
             };
 
@@ -484,8 +484,8 @@ export class MatchRepository {
             const params = {
                 TableName: this.tableName,
                 Item: {
-                    id: userId,
-                    details: matchId,
+                    id: matchId,
+                    details: userId,
                     role: 'VOTE',
                     votedTeamId: teamId,
                     isPredictionCorrect: PredictionCorrectStatus.Pending
@@ -606,6 +606,104 @@ export class MatchRepository {
             if (err) throw err;
 
             return [null, resp];
+        } catch (error) {
+            return [error, null];
+        };
+    };
+
+    async updateUser(userId, wins = false, fails = false) {
+        try {
+            let updateParams;
+
+            if (wins) {
+                updateParams = {
+                    TableName: this.tableName,
+                    Key: {
+                        id: `USER#${userId}`,
+                        details: "details"
+                    },
+                    UpdateExpression: `ADD #role :role`,
+                    ExpressionAttributeNames: {
+                        "#role": "predictionsWin",
+                    },
+                    ExpressionAttributeValues: {
+                        ":role": 1
+                    },
+                    ReturnValues: 'UPDATED_NEW'
+                }
+
+            } else if (fails) {
+                updateParams = {
+                    TableName: this.tableName,
+                    Key: {
+                        id: `USER#${userId}`,
+                        details: "details"
+                    },
+                    UpdateExpression: `ADD #role :role`,
+                    ExpressionAttributeNames: {
+                        "#role": "predictionsLose",
+                    },
+                    ExpressionAttributeValues: {
+                        ":role": 1
+                    },
+                    ReturnValues: 'UPDATED_NEW'
+                }
+            } else {
+
+                updateParams = {
+                    TableName: this.tableName,
+                    Key: {
+                        id: `USER#${userId}`,
+                        details: "details"
+                    },
+                    UpdateExpression: `ADD #role :role`,
+                    ExpressionAttributeNames: {
+                        "#role": "totalPredictions",
+                    },
+                    ExpressionAttributeValues: {
+                        ":role": 1
+                    },
+                    ReturnValues: 'UPDATED_NEW'
+                }
+            }
+
+            const [err, resp] = await put(updateParams);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null]
+        }
+    }
+
+    async listVotesBasedOnMatch(matchId) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                IndexName: this.indexName,
+                KeyConditionExpression: `#role = :role AND #details = :details`,
+                ExpressionAttributeNames: {
+                    "#role": "role",
+                    "#details": "id"
+                },
+                ExpressionAttributeValues: {
+                    ":role": "VOTE",
+                    ":details": matchId
+                }
+            };
+
+            //debugger
+            console.log(`params: ${JSON.stringify(params)}`);
+
+            const [err, succ] = await query(params);
+
+            if (err) throw err;
+
+            return [null, succ];
+
         } catch (error) {
             return [error, null];
         };

@@ -153,8 +153,7 @@ export async function main(event) {
             console.log(`newImg: ${JSON.stringify(newImg)}`);
             console.log(`oldImg: ${JSON.stringify(oldImg)}`);
 
-
-            if (newImg?.role === "MATCH" && (newImg?.matchStatus === "LIVE" || newImg?.matchStatus === "FINISHED") && (newImg?.showMatch === true) ) {
+            if (newImg?.role === "MATCH" && ((newImg?.matchStatus === "LIVE" || newImg?.matchStatus === "FINISHED") && (newImg?.showMatch === true) || (newImg?.showMatch === false))) {
 
                 const match = newImg;
 

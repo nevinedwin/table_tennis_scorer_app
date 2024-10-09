@@ -119,8 +119,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     if (matchId) {
       getVoteUser(matchId);
     }
-
-  }, [matchId])
+  }, [])
 
 
 

@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
 
             const soreted = quickSort(data, 'matchNumber');
             const filtered = filterData(soreted);
-            setMatches(filtered?.slice(0, 4));
+            setMatches(filtered);
             setLoading(false);
         } catch (error) {
             console.log(error);

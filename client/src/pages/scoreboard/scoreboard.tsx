@@ -32,7 +32,7 @@ const Scoreboard: React.FC = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 5; // Number of rows per page
+  const itemsPerPage: number = 5; // Number of rows per page
 
   useEffect(() => {
     setIsVisible(true);
@@ -177,6 +177,7 @@ const Scoreboard: React.FC = () => {
           setCurrentPage={setCurrentPage}
           totalPages={totalPages}
           bodyData={currentData}
+          itemsPerPage={itemsPerPage}
         />
       </div>
     </div>

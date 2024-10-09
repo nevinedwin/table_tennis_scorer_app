@@ -19,13 +19,14 @@ type TableProps = {
     isLoading: boolean,
     bodyData: any,
     currentPage: number,
-    totalPages: number,
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>
+    totalPages: number;
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+    itemsPerPage: number;
 }
 
 const Table: React.FC<TableProps> = ({ ...props }) => {
 
-    const { tableColumns, isLoading, bodyData, currentPage = 1, totalPages = 1, setCurrentPage } = props;
+    const { tableColumns, isLoading, bodyData, currentPage = 1, totalPages = 1, setCurrentPage, itemsPerPage = 5 } = props;
 
     const { state: { user } } = useAuth();
 
@@ -86,7 +87,7 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                                                     eachColum.field[0] === "indexNumber" ?
                                                         <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
                                                             <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                                <div className='text-sm lg:text-lg'>{index1 + 1}</div>
+                                                                <div className='text-sm lg:text-lg'>{(currentPage - 1) * itemsPerPage + index1 + 1}</div>
                                                             </div>
                                                         </td>
                                                         :

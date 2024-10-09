@@ -38,7 +38,11 @@ export class MatchRepository {
                 team1Voting = 0,
                 team2Voting = 0,
                 totalVoting = 0,
-                matchNumber
+                matchNumber,
+                currentSet = 1,
+                winner = null,
+                showMatch = false,
+                undoHistory = []
             } = data;
 
             const matchId = id || uuidV4();
@@ -62,10 +66,10 @@ export class MatchRepository {
                     totalVoting,
                     matchNumber,
                     role: "MATCH",
-                    currentSet: 1,
-                    undoHistory: [],
-                    winner: null,
-                    showMatch: false,
+                    currentSet,
+                    undoHistory,
+                    winner,
+                    showMatch,
                     sf: `${matchId} ${date} ${team1Id} ${team2Id} ${team1SetScore} ${team2SetScore} ${team1Voting} ${team2Voting} ${matchStatus} ${matchResult}`
                 }
             };

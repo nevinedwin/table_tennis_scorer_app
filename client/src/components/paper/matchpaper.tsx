@@ -1,9 +1,10 @@
 import React, { memo, useEffect, useState } from "react";
-import { findPercentage, formatDate, formatTime } from "../../utilities/common";
-import useMatchApi from "../../hooks/apiHooks/useMatchApi";
+import { findPercentage, formatDate, formatTime, getInitials } from "../../utilities/common";
+import useMatchApi, { MatchStatus } from "../../hooks/apiHooks/useMatchApi";
 
 type LogoForPlayerPropTypes = {
   letter: string;
+  bgcolor: string;
 };
 
 type EachSectionPropTypes = {
@@ -14,10 +15,14 @@ type EachSectionPropTypes = {
   bgcolor: string;
 };
 
-const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter }) => {
+const LogoForPlayer: React.FC<LogoForPlayerPropTypes> = ({ letter, bgcolor }) => {
   return (
-    <div className="w-[25px] h-[25px] p-1 rounded-full border-borderColor border-2 text-center text-white flex justify-center items-center">
-      <p className="text-sm uppercase font-bold">{letter?.slice(0, 2)}</p>
+    <div
+      className={`w-[25px] h-[25px] rounded-full ${bgcolor} border-borderColor border text-center text-white flex justify-center items-center`}
+    >
+      <p className="text-md lg:text-sm uppercase font-bold">
+        {getInitials(letter)}
+      </p>
     </div>
   );
 };
@@ -29,17 +34,17 @@ const EachSection: React.FC<EachSectionPropTypes> = ({
   bgcolor,
 }) => {
   return (
-    <div className="flex  flex-col pt-3 justify-center items-center cursor-default">
+    <div className="flex flex-[2] flex-col pt-3 justify-center items-center cursor-default">
       <div className="flex-2">
         <div
           className={`w-[30px] lg:w-[40px] h-[30px] lg:h-[40px] rounded-full ${bgcolor} border-borderColor border text-center text-white flex justify-center items-center`}
         >
           <p className="text-md lg:text-xl uppercase font-bold">
-            {teamName?.slice(0, 2)}
+            {getInitials(teamName)}
           </p>
         </div>
       </div>
-      <div className="mt-3 w-[100px] overflow-hidden whitespace-nowrap text-ellipsis text-center text-md lg:text-xl">
+      <div className="mt-3 text-center text-sm lg:text-lg">
         {teamName}
       </div>
     </div>
@@ -62,6 +67,7 @@ type MatchpaperType = {
   team1Id: string;
   team2Id: string;
   matchId: string;
+  matchStatus: string
 };
 
 type VoteDataType = {
@@ -93,6 +99,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     team1Id = "",
     team2Id = "",
     matchId = "",
+    matchStatus = MatchStatus.Pending
   } = matches as MatchpaperType;
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [voteData, setVoteData] = useState<VoteDataType | {}>({});
@@ -112,8 +119,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     if (matchId) {
       getVoteUser(matchId);
     }
-
-  }, [matchId])
+  }, [])
 
 
 
@@ -142,7 +148,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
   const handleVote = async (teamId: string, matchId: string) => {
     try {
-      if (!isVoted) {
+      if (!isVoted && matchStatus === MatchStatus.Pending) {
         setIsLoading(true);
         await addVote({ teamId, matchId });
         await getFullMatchData(matchId);
@@ -182,17 +188,17 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
 
         <div className="flex justify-between text-white bg-[#2D2D2D] p-4">
           <div className="flex flex-col justify-center items-center flex-1 w-full">
-            <p className="text-sm lg:text-md mt-2">Players</p>
+            <p className="text-sm lg:text-md mt-2 font-bold">Players</p>
             <p className="text-sm mt-2 lg:text-lg overflow-hidden whitespace-nowrap text-ellipsis w-[90px] lg:w-[150px] text-center">{team1Player1Name}</p>
             <p className="text-sm lg:text-lg overflow-hidden whitespace-nowrap text-ellipsis w-[90px] lg:w-[150px] text-center">{team1Player2Name}</p>
           </div>
           <div className="text-center flex-1">
             <p className="text-md lg:text-lg mb-4">{matchNumber}</p>
-            <p className="text-md lg:text-lg">{formatTime(date)}</p>
-            <p className="text-xs lg:text-sm">{formatDate(date)}</p>
+            <p className="text-md lg:text-lg">{formatDate(date)}</p>
+            <p className="text-xs lg:text-sm">{formatTime(date)}</p>
           </div>
           <div className="flex flex-col justify-center items-center flex-1">
-            <p className="text-sm lg:text-md  mt-2">Players</p>
+            <p className="text-sm lg:text-md  mt-2 font-bold">Players</p>
             <p className="mt-2 text-sm lg:text-lg overflow-hidden whitespace-nowrap text-ellipsis w-[90px] lg:w-[150px] text-center">{team2Player1Name}</p>
             <p className="text-sm lg:text-lg overflow-hidden whitespace-nowrap text-ellipsis w-[90px] lg:w-[150px] text-center">{team2Player2Name}</p>
           </div>
@@ -268,11 +274,11 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
               vottingStarted ?
                 isVoted ?
                   <div className='flex justify-start items-center text-sm lg:text-md gap-2'>
-                    <LogoForPlayer letter={votedTeam} />
+                    <LogoForPlayer letter={votedTeam} bgcolor={`${votedTeam === team1Name ? "bg-[#65558F]" : "bg-[#558F73]"}`} />
                     <p className='text-sm lg:text-md text-white'>Your Vote</p>
                   </div>
                   :
-                  <div className='text-sm lg:text-md'>Your Prediction, your game - cast yout vote.</div>
+                  <div className='text-sm lg:text-md'>Your prediction, your game - cast yout vote.</div>
                 :
                 <p className='text-sm lg:text-md'>Voting Not Started.</p>
             }

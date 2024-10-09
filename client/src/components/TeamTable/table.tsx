@@ -7,12 +7,13 @@ import Pagination from './pagination'; // Import the Pagination component
 
 type TablePropTypes = {
     data: Record<string, any>[];
-    handleEdit: (data: Record<string, any>) => void;
+    handleEdit?: (data: Record<string, any>) => void;
     handleDelete: (id: string) => void;
     isLoading: boolean;
+    isEdit: boolean;
 };
 
-const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoading }) => {
+const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoading, isEdit = true }) => {
     const { state: { user } } = useAuth();
 
     const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -45,21 +46,37 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
 
     return (
         <div className={`transition-opacity duration-300 ease-custom ${isVisible ? 'opacity-100' : "opacity-0"}`}>
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Search by Team Name or Player Name.."
-                    className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        setCurrentPage(1); // Reset to first page on search
-                    }}
-                />
+            <div className='flex flex-col lg:flex-row justify-between items-center'>
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Search by Team Name or Player Name.."
+                        className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1); // Reset to first page on search
+                        }}
+                    />
+                </div>
             </div>
             <table className='w-full border-spacing-y-4 border-separate text-xl cursor-default'>
+                <colgroup>
+                    <col width="5%"></col>
+                    <col width="10%"></col>
+                    <col width="25%"></col>
+                    <col width="10%"></col>
+                    <col width="10%"></col>
+                    <col width="10%"></col>
+                    {user?.role === UserRole.SUPER_ADMIN &&
+                        <>
+                            {isEdit && <col width="10%"></col>}
+                            <col width="10%"></col>
+                        </>
+                    }
+                </colgroup>
                 <thead>
-                    <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold text-xxl'>
+                    <tr className='border-[1px] border-borderColor h-20 bg-primary font-bold text-md lg:text-xl'>
                         <th className='pl-4 text-center'></th>
                         <th className='pl-8 text-start'>Team Name</th>
                         <th className='text-start'>Player's Name</th>
@@ -68,7 +85,7 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
                         <th className='pr-4 text-start'>L</th>
                         {user?.role === UserRole.SUPER_ADMIN &&
                             <>
-                                <th className='pl-8 text-start'>Edit</th>
+                                {isEdit && <th className='pl-8 text-start'>Edit</th>}
                                 <th className='text-start'>Delete</th>
                             </>
                         }
@@ -78,20 +95,20 @@ const Table: React.FC<TablePropTypes> = ({ data, handleEdit, handleDelete, isLoa
                     {currentData.length ?
                         currentData.map((eachItem, index) => (
                             <tr className='border border-borderColor h-20 bg-borderColor text-white' key={index}>
-                                <td className='pl-4 text-center'>{((currentPage - 1) * itemsPerPage) + (index + 1)}</td>
-                                <td className='pl-8'>{eachItem.teamName}</td>
-                                <td>
+                                <td className='pl-4 text-center text-sm lg:text-xl'>{((currentPage - 1) * itemsPerPage) + (index + 1)}</td>
+                                <td className='pl-8 text-sm lg:text-xl'>{eachItem.teamName}</td>
+                                <td className='text-sm lg:text-xl'>
                                     <span>{eachItem.player1Name}</span><br />
                                     <span>{eachItem.player2Name}</span>
                                 </td>
-                                <td className='pr-4'>{eachItem.matchPlayed}</td>
-                                <td className='pr-4'>{eachItem.matchWon}</td>
-                                <td className='pr-4'>{eachItem.matchLose}</td>
+                                <td className='pr-4 text-sm lg:text-xl'>{eachItem.matchPlayed}</td>
+                                <td className='pr-4 text-sm lg:text-xl'>{eachItem.matchWon}</td>
+                                <td className='pr-4 text-sm lg:text-xl'>{eachItem.matchLose}</td>
                                 {user?.role === UserRole.SUPER_ADMIN &&
                                     <>
-                                        <td className='pl-8'>
+                                        {handleEdit && isEdit && <td className='pl-8'>
                                             <FontAwesomeIcon icon={faEdit} className='cursor-pointer text-xl p-4' onClick={() => handleEdit(eachItem)} />
-                                        </td>
+                                        </td>}
                                         <td>
                                             <FontAwesomeIcon icon={faTrash} className='cursor-pointer text-xl p-4' onClick={() => handleDelete(eachItem.id)} />
                                         </td>

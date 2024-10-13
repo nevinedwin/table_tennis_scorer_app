@@ -119,7 +119,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                     <input
                         type="text"
                         placeholder="Search..."
-                        className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md"
+                        className="border border-white bg-bgColor p-2 w-[300px] focus:border-white placeholder:opacity-70 placeholder:text-md lg:placeholder:text-lg text-md lg:text-lg"
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
@@ -183,11 +183,11 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                         }
                         {currentData.length ?
                             currentData.map((eachItem, index) => (
-                                <tr 
-                                style={{backgroundSize: '200% 100%'}}
-                                className={`border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl 
+                                <tr
+                                    style={{ backgroundSize: '200% 100%' }}
+                                    className={`border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl 
                                 ${eachItem?.matchStatus === 'LIVE' ? 'bg-gradient-to-r from-primary-light via-transparent to-primary-light animate-gradient-move' : ''}`
-                                } key={index}>
+                                    } key={index}>
                                     <td className='p-2 text-center'>{eachItem?.matchNumber}</td>
                                     <td className='p-2'>
                                         <div className='w-full flex flex-col text-sm lg:text-xl text-center'>

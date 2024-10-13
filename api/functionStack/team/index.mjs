@@ -80,6 +80,14 @@ export const main = async (event) => {
                         response = await service.delete(data);
                     };
 
+                } else if (action === "updateSingle") {
+
+                    isAuthorized = validateAccess(role, LAMBDA.TEAM.UPDATE);
+
+                    if (isAuthorized) {
+
+                        response = await service.updateSingle(data);
+                    };
                 } else {
                     response = failure("Invalid Endpoint");
                 };

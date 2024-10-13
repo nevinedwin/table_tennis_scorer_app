@@ -1,4 +1,4 @@
-import { get, post, query, del } from 'libs/db-lib/index.mjs'
+import { get, post, query, del, put } from 'libs/db-lib/index.mjs'
 import { v4 as uuidV4 } from 'uuid';
 
 
@@ -44,7 +44,7 @@ export class TeamRepository {
             // debugger
             console.log(`Data: ${JSON.stringify(data)}`);
 
-            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName, id = null, pool } = data;
+            const { player1Name, player2Name, player1Email, player2Email, createdBy, teamName, id = null, pool, league = null } = data;
 
             const params = {
                 TableName: this.tableName,
@@ -63,6 +63,7 @@ export class TeamRepository {
                     matchPlayed: 0,
                     point:0,
                     pool,
+                    league,
                     sf: `${player1Email} ${player2Email} ${player1Name} ${player2Name} ${teamName} ${createdBy}`
                 }
             };
@@ -229,6 +230,38 @@ export class TeamRepository {
             return [error, null];
         };
 
+    };
+
+    async updateSigleTeam({teamId, updateKey, updateValue}) {
+        try {
+
+            const params = {
+                TableName: this.tableName,
+                Key: {
+                    id: teamId,
+                    details: "details"
+                },
+                UpdateExpression: `SET #keyItem = :valueItem`,
+                ExpressionAttributeNames: {
+                    "#keyItem": updateKey,
+                },
+                ExpressionAttributeValues: {
+                    ":valueItem": updateValue
+                },
+                ReturnValues: 'UPDATED_NEW'
+            };
+
+            console.log(JSON.stringify(params));
+
+            const [err, resp] = await put(params);
+
+            if (err) throw err;
+
+            return [null, resp];
+
+        } catch (error) {
+            return [error, null];
+        };
     };
 
 

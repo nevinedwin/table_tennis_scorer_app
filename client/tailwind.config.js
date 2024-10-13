@@ -52,6 +52,10 @@ export default {
         spin: {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' }
+        },
+        gradientMove: {
+          '100%': {backgroundPosition: '0% 50%'},
+          '0%': {backgroundPosition: '200% 50%'}
         }
       },
       animation: {
@@ -61,7 +65,8 @@ export default {
         slideIn: "slideIn .8s ease-in-out forwards",
         slideInRight: "slideInRight .8s ease-in-out forwards",
         opacity: "opacity .3s ease-in-out",
-        'spin-slow': 'spin 2s linear infinite'
+        'spin-slow': 'spin 2s linear infinite',
+        'gradient-move': 'gradientMove 3s ease-in-out infinite'
       },
       spacing: {
         '2': '0.5rem',
@@ -81,7 +86,7 @@ export default {
         bgColor: "#13151B",
         primary: {
           DEFAULT: '#AB1E23',
-          light: '#F7BAC5',
+          light: '#d9363c',
         },
         secondary: {
           DEFAULT: '#2B2D42',

@@ -152,4 +152,26 @@ export class TeamService {
             return failure(error);
         }
     };
+
+    async updateSingle({updateKey, updateValue, teamId}) {
+        try {
+
+            if (!teamId && !updateKey && !updateValue) return failure("Team Id, UpdateKey and UpdateValue are required");
+
+            const [updateErr, updateSucc] = await this.repository.updateSigleTeam({teamId, updateKey, updateValue});
+
+            if (updateErr | !updateSucc) throw updateErr;
+
+            // debugger
+            console.log(`updateSuccess: ${JSON.stringify(updateSucc)}`);
+
+            return success(`updated ${updateKey} = ${updateValue}`);
+
+        } catch (error) {
+            // debugger
+            console.log(`Error: ${JSON.stringify(error)}`);
+
+            return failure(error);
+        }
+    };
 }

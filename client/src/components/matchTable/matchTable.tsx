@@ -16,6 +16,13 @@ type MatchTablePropTypes = {
     handleLive: (id: string) => void;
 }
 
+type SortByType = "matchNumber" | "date" | "matchStatus";
+
+type SortStateType = {
+    sortBy: SortByType,
+    sortDirection: "asc" | "desc"
+}
+
 // type LogoForPlayerPropTypes = {
 //     letter: string
 // }
@@ -39,6 +46,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortState, setSortState] = useState<SortStateType>({ sortBy: "date", sortDirection: "desc" });
     const itemsPerPage = 5; // Number of rows per page
 
     useEffect(() => {
@@ -48,18 +56,25 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
         };
     }, []);
 
+    const handleSort = (column: SortByType) => {
+        setSortState(prev => ({
+            sortBy: column,
+            sortDirection: prev.sortBy === column && prev.sortDirection === 'asc' ? 'desc' : 'asc'
+        }))
+    }
+
 
     // Filtered data based on search term
     const filteredData = useMemo(() => {
-        let passdata;
+        let passdata = data;
 
         if (toggleState.toggleState) {
             passdata = data.filter(eachItem => eachItem?.matchStatus === MatchStatus.Finished)
         } else {
-            passdata = data.filter(eachItem => eachItem?.matchStatus === MatchStatus.Pending)
+            passdata = data
         };
 
-        return passdata.filter(item =>
+        const filteredData = passdata.filter(item =>
             item?.team1Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item?.team1Player1Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item?.team1Player2Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,9 +85,26 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
             item?.matchStatus?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+        const sortOrder = sortState.sortDirection === 'asc' ? 1 : -1;
 
+        return filteredData.sort((a: any, b: any) => {
 
-    }, [searchTerm, data, toggleState]);
+            if (a.matchStatus === 'LIVE' && b.matchStatus !== 'LIVE') return -1;
+            if (b.matchStatus === 'LIVE' && a.matchStatus !== 'LIVE') return 1;
+
+            if (sortState.sortBy === 'matchNumber') {
+                return a?.matchNumber?.localeCompare(b?.matchNumber!) * sortOrder;
+            } else if (sortState.sortBy === 'date') {
+                return sortState.sortDirection === 'asc'
+                    ? new Date(a.date).getTime() - new Date(b.date).getTime()
+                    : new Date(b.date).getTime() - new Date(a.date).getTime()
+            } else if (sortState.sortBy === 'matchStatus') {
+                return a?.matchStatus?.localeCompare(b?.matchStatus!) * sortOrder;
+            }
+            return 0;
+        });
+
+    }, [searchTerm, data, toggleState, sortState]);
 
     // const filteredData = data;
 
@@ -95,7 +127,7 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                         }}
                     />
                 </div>
-                <ToggleButton isFalseState='Upcoming' isTruthState='Finished' name='toggleState' setToggle={setToggleState} toggle={toggleState.toggleState} />
+                <ToggleButton isFalseState='All' isTruthState='Finished' name='toggleState' setToggle={setToggleState} toggle={toggleState.toggleState} />
             </div>
             <div className='w-full overflow-x-auto'>
                 <table className='w-full border-spacing-y-4 border-separate text-xl cursor-default'>
@@ -119,15 +151,15 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                     </colgroup>
                     <thead>
                         <tr className='border-[1px] border-borderColor h-10 lg:h-20 bg-primary font-bold text-md lg:text-xl'>
-                            <th className='p-2  text-center'>Match</th>
-                            <th className='p-2  text-center'>Date</th>
+                            <th className='p-2  text-center cursor-pointer' onClick={() => handleSort('matchNumber')}>Match {sortState.sortBy === 'matchNumber' && (sortState.sortDirection === 'asc' ? '↑' : '↓')}</th>
+                            <th className='p-2  text-center cursor-pointer' onClick={() => handleSort('date')}>Date {sortState.sortBy === 'date' && (sortState.sortDirection === 'asc' ? '↑' : '↓')}</th>
                             <th className='p-2 text-center'>Teams</th>
                             <th className='p-2 text-center'>Players</th>
                             <th className='p-2 text-center'>1</th>
                             <th className='p-2 text-center'>2</th>
                             <th className='p-2 text-center'>3</th>
                             <th className='p-2 text-center'>Final</th>
-                            <th className='p-2 text-center'>Status</th>
+                            <th className='p-2 text-center cursor-pointer' onClick={() => handleSort('matchStatus')}> Status <span >{sortState.sortBy === 'matchStatus' && (sortState.sortDirection === 'asc' ? '↑' : '↓')}</span></th>
                             {/* <th className='p-2 text-start'>Vote</th> */}
                             {user?.role === UserRole.SUPER_ADMIN &&
                                 <>
@@ -151,7 +183,11 @@ const MatchTable: React.FC<MatchTablePropTypes> = ({ data, isLoading, handleDele
                         }
                         {currentData.length ?
                             currentData.map((eachItem, index) => (
-                                <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index}>
+                                <tr 
+                                style={{backgroundSize: '200% 100%'}}
+                                className={`border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl 
+                                ${eachItem?.matchStatus === 'LIVE' ? 'bg-gradient-to-r from-primary-light via-transparent to-primary-light animate-gradient-move' : ''}`
+                                } key={index}>
                                     <td className='p-2 text-center'>{eachItem?.matchNumber}</td>
                                     <td className='p-2'>
                                         <div className='w-full flex flex-col text-sm lg:text-xl text-center'>

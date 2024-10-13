@@ -10,7 +10,7 @@ type RowHeadTypes = {
     field: string[],
     actionCell?: boolean,
     // actionItem?: HTMLElement,
-    actionFn?: () => void,
+    renderAction?: (data: any) => JSX.Element,
     bodyCellStyle?: string
 }
 
@@ -19,13 +19,14 @@ type TableProps = {
     isLoading: boolean,
     bodyData: any,
     currentPage: number,
-    totalPages: number,
-    setCurrentPage: React.Dispatch<React.SetStateAction<number>>
+    totalPages: number;
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+    itemsPerPage: number;
 }
 
 const Table: React.FC<TableProps> = ({ ...props }) => {
 
-    const { tableColumns, isLoading, bodyData, currentPage = 1, totalPages = 1, setCurrentPage } = props;
+    const { tableColumns, isLoading, bodyData, currentPage = 1, totalPages = 1, setCurrentPage, itemsPerPage = 5 } = props;
 
     const { state: { user } } = useAuth();
 
@@ -80,20 +81,20 @@ const Table: React.FC<TableProps> = ({ ...props }) => {
                             bodyData.length ? bodyData.map((eachData: any, index1: number) => (
                                 <tr className='border border-borderColor h-10 lg:h-20 bg-borderColor text-white text-sm lg:text-xl' key={index1}>
                                     {tableColumns.map((eachColum, index) => (
-                                        eachColum.field.length === 1 ?
+                                        eachColum?.field?.length === 1 ?
                                             <React.Fragment key={index}>
                                                 {
                                                     eachColum.field[0] === "indexNumber" ?
                                                         <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
                                                             <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                                <div className='text-sm lg:text-lg'>{index1 + 1}</div>
+                                                                <div className='text-sm lg:text-lg'>{(currentPage - 1) * itemsPerPage + index1 + 1}</div>
                                                             </div>
                                                         </td>
                                                         :
                                                         eachColum.actionCell ?
                                                             <td key={index} className={`p-2 text-nowrap ${eachColum?.bodyCellStyle || 'text-center'}`}>
-                                                                <div className='w-full flex flex-col text-sm lg:text-xl'>
-                                                                    {/* {eachColum.actionItem} */}
+                                                                <div className='w-full flex flex-col justify-center items-center text-sm lg:text-xl'>
+                                                                    {eachColum.renderAction && eachColum.renderAction(eachData)}
                                                                 </div>
                                                             </td>
                                                             :

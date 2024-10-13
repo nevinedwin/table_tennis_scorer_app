@@ -40,7 +40,7 @@ const EachSection: React.FC<EachSectionPropTypes> = ({
           className={`w-[30px] lg:w-[40px] h-[30px] lg:h-[40px] rounded-full ${bgcolor} border-borderColor border text-center text-white flex justify-center items-center`}
         >
           <p className="text-md lg:text-xl uppercase font-bold">
-            {getInitials(teamName)}
+            {teamName && getInitials(teamName)}
           </p>
         </div>
       </div>
@@ -119,8 +119,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
     if (matchId) {
       getVoteUser(matchId);
     }
-
-  }, [matchId])
+  }, [])
 
 
 

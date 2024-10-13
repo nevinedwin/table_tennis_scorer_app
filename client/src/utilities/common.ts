@@ -127,14 +127,30 @@ function compare(a: any, b: any) {
 }
 
 export function getInitials(str: string) {
-    // Split the string into words
+    // Split the string into words\
     const words = str.trim().split(/\s+/); // Trim and split by any whitespace
-  
+
     if (words.length >= 2) {
-      // If there are two or more words, take the first letter of each
-      return words[0][0] + words[1][0];
+        // If there are two or more words, take the first letter of each
+        return words[0][0] + words[1][0];
     } else {
-      // Otherwise, return the first two letters of the first word
-      return words[0].slice(0, 2);
+        // Otherwise, return the first two letters of the first word
+        return words[0].slice(0, 2);
     }
-  }
+}
+
+export function getKnockoutScore(data: any, isLeague = false) {
+    const returnValue = [];
+    for (let i = 0; i < data.length; i++) {
+        if (!isLeague) {
+            if (data[i].matchWon >= 1) {
+                returnValue.push({ ...data[i], matchWon: 1, matchPlayed: 1 })
+            } else {
+                returnValue.push(data[i]);
+            };
+        } else {
+            returnValue.push({ ...data[i], matchWon: data[i].matchWon - 1, matchPlayed: data[i].matchPlayed - 1, point: data[i].point - 2 });
+        }
+    };
+    return quickSortList(returnValue);
+}

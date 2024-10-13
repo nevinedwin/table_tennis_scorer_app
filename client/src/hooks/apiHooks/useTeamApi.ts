@@ -7,7 +7,8 @@ export const endpoints = {
     LIST: "team/list",
     EDIT: "team/update",
     DELETE: "team/delete",
-    GET: "team/get"
+    GET: "team/get",
+    UPDATE_SINGLE:"team/updateSingle"
 }
 
 
@@ -23,6 +24,7 @@ export type TeamType = {
     matchWon?: number;
     matchLose?: number;
     pool?: string;
+    league?: "A" | "B" | "C" 
 };
 
 const useTeamApi = () => {
@@ -78,12 +80,22 @@ const useTeamApi = () => {
         return res;
     };
 
+    // update team
+    const updateSingleTeam = async (data: any) => {
+        const res: any = await post(endpoints.UPDATE_SINGLE, data);
+        if (res?.response?.status === 500) {
+            throw res.response.data
+        }
+        return res;
+    };
+
     return {
         createTeam,
         listTeam,
         editTeam,
         deleteTeam,
-        getTeam
+        getTeam,
+        updateSingleTeam
     };
 };
 

@@ -4,7 +4,7 @@ import Hoc from '../../components/hoc/hoc'
 // import { quickSortList } from '../../utilities/common';
 import useTeamApi, { TeamType } from '../../hooks/apiHooks/useTeamApi';
 import Table from '../../components/table/tableContainer';
-import { quickSortList } from '../../utilities/common';
+import { getKnockoutScore, quickSortList } from '../../utilities/common';
 import PoolTable from '../../components/poolTable/poolTable';
 
 const Scoreboard: React.FC = () => {
@@ -121,7 +121,10 @@ const Scoreboard: React.FC = () => {
     const poolB: TeamType[] = [];
     const poolC: TeamType[] = [];
 
-    data.forEach(team => {
+    const updatedData = getKnockoutScore(data, true)
+
+
+    updatedData.forEach(team => {
       if (team.league === "A") {
         poolA.push(team);
       } else if (team.league === "B") {
@@ -166,11 +169,11 @@ const Scoreboard: React.FC = () => {
 
           <p className='text-xxl lg:text-2xl'>Knockouts</p>}
       </div>
-      <div className='flex justify-end items-center'>
+      <div className='flex justify-end items-center mb-2'>
         {table === "league" ?
-          <div onClick={() => handleTableChange('knockouts')} className='cursor-pointer bg-primary px-4 py-2 rounded-lg hover:bg-secondary'>Knockouts</div>
+          <div onClick={() => handleTableChange('knockouts')} className='cursor-pointer bg-primary px-2 lg:px-4 py-1 lg:py-2 rounded-lg hover:bg-secondary text-lg lg:text:xl'>Knockouts</div>
           :
-          <div onClick={() => handleTableChange('league')} className='cursor-pointer bg-primary px-4 py-2 rounded-lg hover:bg-secondary'>League</div>}
+          <div onClick={() => handleTableChange('league')} className='cursor-pointer bg-primary px-2 lg:px-4 py-1 lg:py-2 rounded-lg hover:bg-secondary text-lg lg:text:xl'>League</div>}
       </div>
 
       {/* <h1 className='text-3xl font-bold text-center py-8'>Team List</h1> */}
@@ -224,7 +227,7 @@ const Scoreboard: React.FC = () => {
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
-                bodyData={currentData}
+                bodyData={getKnockoutScore(currentData)}
                 itemsPerPage={itemsPerPage}
               />
             </div>

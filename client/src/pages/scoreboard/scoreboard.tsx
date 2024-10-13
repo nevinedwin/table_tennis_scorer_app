@@ -44,7 +44,7 @@ const Scoreboard: React.FC = () => {
   const [teamAList, setTeamAList] = useState<TeamType[]>([]);
   const [teamBList, setTeamBList] = useState<TeamType[]>([]);
   const [teamCList, setTeamCList] = useState<TeamType[]>([]);
-  const [table, setTable] = useState<string>('knockouts')
+  const [table, setTable] = useState<string>('league')
 
 
   // Pagination state
@@ -200,7 +200,7 @@ const Scoreboard: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="border border-borderColor bg-bgColor p-2 w-[300px] focus:border-borderColor placeholder:opacity-70 placeholder:text-md text-md"
+                  className="border border-white bg-bgColor p-2 w-[300px] focus:border-white placeholder:opacity-70 placeholder:text-md lg:placeholder:text-lg text-md lg:text-lg"
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);

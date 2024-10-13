@@ -127,7 +127,7 @@ function compare(a: any, b: any) {
 }
 
 export function getInitials(str: string) {
-    // Split the string into words
+    // Split the string into words\
     const words = str.trim().split(/\s+/); // Trim and split by any whitespace
   
     if (words.length >= 2) {

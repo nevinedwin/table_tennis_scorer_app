@@ -232,7 +232,7 @@ export class TeamRepository {
 
     };
 
-    async updateSigleTeam(teamId, updateKey, updateValue) {
+    async updateSigleTeam({teamId, updateKey, updateValue}) {
         try {
 
             const params = {
@@ -250,6 +250,8 @@ export class TeamRepository {
                 },
                 ReturnValues: 'UPDATED_NEW'
             };
+
+            console.log(JSON.stringify(params));
 
             const [err, resp] = await put(params);
 

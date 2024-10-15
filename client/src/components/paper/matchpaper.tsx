@@ -278,7 +278,7 @@ const Matchpaper: React.FC<MatchPaperPropTypes> = ({ match }) => {
                     <p className='text-sm lg:text-md text-white'>Your Vote</p>
                   </div>
                   :
-                  <div className='text-sm lg:text-md'>Your prediction, your game - cast yout vote.</div>
+                  <div className='text-sm lg:text-md'>Your prediction, your game - cast your vote.</div>
                 :
                 <p className='text-sm lg:text-md'>Voting Not Started.</p>
             }

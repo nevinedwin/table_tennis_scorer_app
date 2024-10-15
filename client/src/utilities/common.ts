@@ -144,7 +144,7 @@ export function getKnockoutScore(data: any, isLeague = false) {
     for (let i = 0; i < data.length; i++) {
         if (!isLeague) {
             if (data[i].matchWon >= 1) {
-                returnValue.push({ ...data[i], matchWon: 1, matchPlayed: 1 })
+                returnValue.push({ ...data[i], matchWon: 1, matchPlayed: 1, matchLose: 0 })
             } else {
                 returnValue.push(data[i]);
             };
